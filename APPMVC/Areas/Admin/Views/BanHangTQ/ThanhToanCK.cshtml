@@ -1,0 +1,164 @@
+﻿@model AppData.ViewModel.ThanhToanCKViewModel
+
+@{
+    ViewData["Title"] = "ThanhToanCK";
+}
+
+<style>
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5); /* Nền tối mờ */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        opacity: 1;
+        visibility: visible;
+        transition: opacity 0.3s ease;
+    }
+
+    .modal-content {
+        background: #ffffff; /* Nền trắng sáng */
+        border-radius: 8px;
+        padding: 20px;
+        width: 90%; /* Chiều rộng 90% */
+        max-width: 800px; /* Tăng max-width để modal rộng hơn */
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        position: relative;
+    }
+
+    .close {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 24px;
+        cursor: pointer;
+        color: #aaa;
+    }
+
+    .modal-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .order-info {
+        flex: 1;
+        background: #f9f9f9; /* Giữ màu nền sáng */
+        padding: 15px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin-right: 20px; /* Tạo khoảng cách bên phải */
+    }
+
+    .total-amount {
+        margin-top: 10px;
+    }
+
+    .label {
+        font-weight: bold;
+        display: block;
+    }
+
+    .value {
+        font-size: 16px;
+        color: #333;
+    }
+
+    .qr-code {
+        text-align: center;
+        flex: 1;
+    }
+
+    .modal-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+    }
+
+    button {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        background: #4CAF50;
+        color: white;
+        font-size: 16px;
+        transition: background 0.3s;
+    }
+
+    button:hover {
+        background: #45a049;
+    }
+</style>
+
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">×</span>
+        <div class="modal-row">
+            <div class="order-info">
+                <h2>Thông tin đơn hàng</h2>
+                <div class="total-amount">
+                    <span class="label">Mã Đơn Hàng</span>
+                    <span class="value">@Model.MaDon.ToString()</span>
+                </div>
+                <div class="total-amount">
+                    <span class="label">Số Tiền Thanh Toán</span>
+                    <span class="value">@Model.SanPhamChiTiets.Sum(x => x.Price * x.Quantity).ToString("#,0") VNĐ</span>
+                </div>
+                <div class="total-amount">
+                    <span class="label">Phí Giao Dịch</span>
+                    <span class="value">0 VNĐ</span>
+                </div>
+                <div class="total-amount">
+                    <span class="label">Giá Trị Đơn Hàng</span>
+                    <span class="value">@Model.SanPhamChiTiets.Sum(x => x.Price * x.Quantity).ToString("#,0") VNĐ</span>
+                </div>               
+            </div>
+            <div class="qr-code">
+                <h3>Quét mã ứng dụng Ngân hàng/ Ví điện tử</h3>
+                <img id="qrCode" src="~/Admin/assets/img/avatars/Chuyenkhoanmb.jpg" alt="Mã QR" />
+            </div>
+        </div>
+        <div class="modal-buttons">
+            <button onclick="confirmPayment('@Model.IdHoaDon', '@Model.IdKhachHang')">Xác nhận thanh toán</button>
+            <button onclick="closeModal()">Hủy</button>
+        </div>
+    </div>
+</div>
+<script>
+    function closeModal() {
+        $('#modalOverlay').css({
+            display: 'none',
+            opacity: '0',
+            visibility: 'hidden'
+        });
+    }
+
+        function confirmPayment(idHoaDon, idKhachHang) { // Added idKhachHang parameter
+        if (confirm("Bạn có chắc chắn muốn xác nhận thanh toán cho hóa đơn này không?")) {
+            $.ajax({
+                url: '@Url.Action("XacNhanThanhToanCK", "BanHangTQ")',
+                type: 'POST',
+                data: {
+                    idHoaDon: idHoaDon,
+                    idKhachHang: idKhachHang // Pass idKhachHang here
+                },
+                success: function(response) {
+                    if (response.success) {
+                        window.location.href = response.redirectUrl; // Redirect to the invoice page
+                    } else {
+                        alert(response.message); // Show error message
+                    }
+                },
+                error: function() {
+                    alert("Có lỗi xảy ra. Vui lòng thử lại."); // General error message
+                }
+            });
+        }
+    }
+</script>

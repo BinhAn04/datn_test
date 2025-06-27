@@ -1,0 +1,80 @@
+﻿@model AppData.Model.NhanVien
+
+@{
+    ViewData["Title"] = "Thông Tin Tài Khoản";
+}
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">My Profile</h1>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success text-center">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4 text-center">
+                    <img src="~/Admin/imgNV/@Model.AnhNhanVien" alt="User Avatar" class="img-fluid rounded-circle" style="width: 150px; height: 150px;" />
+                </div>
+                <div class="col-md-8">
+                    <dl class="row">
+                        <dt class="col-sm-4">Họ Tên:</dt>
+                        <dd class="col-sm-8">@Model.TenNhanVien</dd>
+
+                        <dt class="col-sm-4">Số Điện Thoại:</dt>
+                        <dd class="col-sm-8">@Model.SoDienThoai</dd>
+
+                        <dt class="col-sm-4">Email:</dt>
+                        <dd class="col-sm-8">@Model.Email</dd>
+
+                        <dt class="col-sm-4">Địa Chỉ:</dt>
+                        <dd class="col-sm-8">@Model.DiaChi</dd>
+
+                        <dt class="col-sm-4">Chức Vụ:</dt>
+                        <dd class="col-sm-8">@ViewBag.TenChucVu</dd>
+
+                        <dt class="col-sm-4">Ngày Tạo:</dt>
+                        <dd class="col-sm-8">@Model.NgayTao.ToString("dd-MM-yyyy")</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <button type="button" class="btn btn-primary me-2" onclick="location.href='@Url.Action("ChangePassword", "NhanVien", new { id = Model.IdNhanVien })'">Đổi Mật Khẩu</button>
+        <button type="button" class="btn btn-secondary" onclick="location.href='@Url.Action("EditProfile", "NhanVien", new { id = Model.IdNhanVien })'">Chỉnh Sửa</button>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 10px;
+        background-color: gainsboro;
+    }
+
+    .img-fluid {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .mt-5 {
+        margin-top: 3rem !important;
+    }
+
+    .mb-4 {
+        margin-bottom: 1.5rem !important;
+    }
+
+    .shadow-sm {
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+</style>

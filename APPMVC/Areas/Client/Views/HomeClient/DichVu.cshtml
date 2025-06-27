@@ -1,0 +1,192 @@
+﻿@{
+    ViewData["Title"] = "Dv";
+    Layout = "~/Areas/Client/Views/Shared/_LayoutClient.cshtml";
+}
+<div class="hero">
+    <div class="container">
+        <div class="row justify-content-between">
+            <div class="col-lg-5">
+                <div class="intro-excerpt">
+                    <h1>Dịch Vụ</h1>
+                    <p class="mb-4">Chúng tôi cung cấp các dịch vụ chất lượng cao với sự tận tâm và chuyên nghiệp.</p>
+                    <p><a href="@Url.Action("Index", "SanPham", new { area = "Client" })" class="btn btn-secondary me-2">Mua Ngay</a><a href="@Url.Action("Index", "SanPham", new { area = "Client" })" class="btn btn-white-outline">Khám Phá</a></p>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="hero-img-wrap">
+                    <img src="~/Client/img/mau2.png" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Hero Section -->
+<!-- Start Why Choose Us Section -->
+<div class="why-choose-section">
+    <div class="container">
+        <div class="row justify-content-between">
+            <div class="col-lg-6">
+                <h2 class="section-title">Hãy Chọn SoleMates</h2>
+                <p>Uy Tín & Chất Lượng Đảm Bảo</p>
+
+                <div class="row my-5">
+                    <div class="col-6 col-md-6">
+                        <div class="feature">
+                            <div class="icon">
+                                <img src="~/Client/img/truck.svg" alt="Giao Hàng Nhanh & Miễn Phí" class="img-fluid">
+                            </div>
+                            <h3>Giao Hàng Nhanh & Miễn Phí</h3>
+                            <p>Giao hàng miễn phí cho mọi đơn hàng, chỉ trong vòng 48h!</p>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-md-6">
+                        <div class="feature">
+                            <div class="icon">
+                                <img src="~/Client/img/bag.svg" alt="Dễ Dàng Mua Sắm" class="img-fluid">
+                            </div>
+                            <h3>Dễ Dàng Mua Sắm</h3>
+                            <p>Trải nghiệm mua sắm nhanh chóng và thuận tiện ngay tại SoleMates.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-md-6">
+                        <div class="feature">
+                            <div class="icon">
+                                <img src="~/Client/img/support.svg" alt="Hỗ Trợ Khách Hàng 24/7" class="img-fluid">
+                            </div>
+                            <h3>Hỗ Trợ Khách Hàng 24/7</h3>
+                            <p>Chúng tôi luôn sẵn sàng hỗ trợ bạn mọi lúc, mọi nơi.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-md-6">
+                        <div class="feature">
+                            <div class="icon">
+                                <img src="~/Client/img/return.svg" alt="Đổi Trả Dễ Dàng" class="img-fluid">
+                            </div>
+                            <h3>Đổi Trả Dễ Dàng</h3>
+                            <p>Yên tâm đổi trả sản phẩm trong vòng 30 ngày nếu không hài lòng.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="img-wrap">
+                    <img src="~/Client/images/maugiay2.jpg" alt="Hình ảnh" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Why Choose Us Section -->
+
+<!-- Start Testimonial Slider -->
+<div class="testimonial-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-7 mx-auto text-center">
+                <h2 class="section-title">Phản hồi của SoleMates</h2>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-12">
+                <div class="testimonial-slider-wrap text-center">
+
+                    <div id="testimonial-nav">
+                        <span class="prev" data-controls="prev"><span class="fa fa-chevron-left"></span></span>
+                        <span class="next" data-controls="next"><span class="fa fa-chevron-right"></span></span>
+                    </div>
+
+                    <div class="testimonial-slider">
+
+                        <div class="item">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-8 mx-auto">
+                                    <div class="testimonial-block text-center">
+                                        <blockquote class="mb-5">
+                                            <p>&ldquo;SoleMates đã thay đổi cách tôi chọn giày sneaker. Dịch vụ nhanh chóng, sản phẩm chất lượng, và trải nghiệm mua sắm dễ dàng đã khiến tôi rất hài lòng. Tôi sẽ giới thiệu SoleMates đến tất cả bạn bè của mình!&rdquo;</p>
+                                        </blockquote>
+                                        <div class="author-info">
+                                            <div class="author-pic">
+                                                <img src="~/Client/images/anhlong.jpg" alt="PhamDucHieu" class="img-fluid">
+                                            </div>
+                                            <h3 class="font-weight-bold">Pham Duc Hieu</h3>
+                                            <span class="position d-block mb-3">CEO, Sneaker Enthusiast</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END item -->
+
+                        <div class="item">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-8 mx-auto">
+                                    <div class="testimonial-block text-center">
+                                        <blockquote class="mb-5">
+                                            <p>&ldquo;Những mẫu sneaker tại SoleMates không chỉ có thiết kế đẹp mà còn rất bền bỉ. Đây là nơi đáng tin cậy cho các tín đồ yêu giày sneaker!&rdquo;</p>
+                                        </blockquote>
+                                        <div class="author-info">
+                                            <div class="author-pic">
+                                                <img src="~/Client/images/person-1.png" alt="Tran Ngoc Ha" class="img-fluid">
+                                            </div>
+                                            <h3 class="font-weight-bold">Tran Ngoc Ha</h3>
+                                            <span class="position d-block mb-3">Sneaker Collector</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END item -->
+
+                        <div class="item">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-8 mx-auto">
+                                    <div class="testimonial-block text-center">
+                                        <blockquote class="mb-5">
+                                            <p>&ldquo;Tôi rất ấn tượng với sự chuyên nghiệp của SoleMates. Từ khâu đặt hàng đến giao hàng, mọi thứ đều nhanh chóng và hiệu quả. Chắc chắn tôi sẽ quay lại!&rdquo;</p>
+                                        </blockquote>
+                                        <div class="author-info">
+                                            <div class="author-pic">
+                                                <img src="~/Client/images/anhlong.jpg" alt="Kim Hoang Long" class="img-fluid">
+                                            </div>
+                                            <h3 class="font-weight-bold">Kim Hoang Long</h3>
+                                            <span class="position d-block mb-3">Fashion Influencer</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END item -->
+
+                        <div class="item">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-8 mx-auto">
+                                    <div class="testimonial-block text-center">
+                                        <blockquote class="mb-5">
+                                            <p>&ldquo;SoleMates là điểm đến lý tưởng cho các dòng sneaker hot nhất. Sản phẩm đa dạng, giá cả hợp lý, và dịch vụ chăm sóc khách hàng tuyệt vời.&rdquo;</p>
+                                        </blockquote>
+                                        <div class="author-info">
+                                            <div class="author-pic">
+                                                <img src="~/Client/images/anhlong.jpg" alt="Dao Thanh Nam" class="img-fluid">
+                                            </div>
+                                            <h3 class="font-weight-bold">Dao Thanh Nam</h3>
+                                            <span class="position d-block mb-3">Sneaker Enthusiast & Blogger</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END item -->
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Testimonial Slider -->

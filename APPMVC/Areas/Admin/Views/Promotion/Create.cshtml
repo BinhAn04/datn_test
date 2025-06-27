@@ -1,0 +1,339 @@
+﻿@model AppData.ViewModel.PromotionViewModel
+
+@{
+    ViewData["Title"] = "Tạo Khuyến Mãi";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<style>
+    .input-group {
+        display: flex;
+        align-items: center;
+    }
+
+    .input-group-addon {
+        margin-left: -1px;
+        padding: 0.5rem 1rem;
+        background-color: #e9ecef;
+        border: 1px solid #ced4da;
+        border-left: none;
+    }
+
+    h1, h3 {
+        color: #333;
+    }
+
+    .form-control {
+        border-radius: 0.25rem;
+        box-shadow: none;
+        border: 1px solid #ced4da;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+    .table {
+        width: 100%;
+        margin-bottom: 1rem;
+        background-color: transparent;
+    }
+
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+
+        .table td {
+            vertical-align: middle;
+        }
+
+    .text-danger {
+        font-weight: bold;
+    }
+
+    /* Enhanced styling for product details table */
+    #productDetailsTable {
+        margin-top: 20px;
+        border-collapse: collapse;
+    }
+
+        #productDetailsTable th, #productDetailsTable td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #dee2e6;
+        }
+
+        #productDetailsTable th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        #productDetailsTable tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+</style>
+
+<div class="container mt-4">
+    <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">Promotion/</span> Thêm promotion
+    </h4>
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @Html.Raw(TempData["ErrorMessage"])
+        </div>
+    }
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="Create" method="post" onsubmit="return validateForm()">
+                <div class="card shadow-lg me-1">
+                    <div class="card-body">
+                        <h4>Thông Tin Promotion</h4>
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="form-group">
+                            <label asp-for="Promotion.TenPromotion" class="control-label">Tên Khuyến Mãi</label>
+                            <input asp-for="Promotion.TenPromotion" class="form-control" />
+                            <span asp-validation-for="Promotion.TenPromotion" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Promotion.PhanTramGiam" class="control-label">Phần Trăm Giảm</label>
+                            <div class="input-group">
+                                <input asp-for="Promotion.PhanTramGiam" class="form-control" id="phanTramGiam" oninput="validatePercentage()" />
+                                <span class="input-group-addon">%</span>
+                            </div>
+                            <span asp-validation-for="Promotion.PhanTramGiam" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="NgayBatDau" class="control-label">Ngày Bắt Đầu</label>
+                            <input asp-for="NgayBatDau" class="form-control" type="datetime-local" value="@Model.NgayBatDau.ToString("yyyy-MM-ddTHH:mm")" />
+                            <span asp-validation-for="NgayBatDau" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="NgayKetThuc" class="control-label">Ngày Kết Thúc</label>
+                            <input asp-for="NgayKetThuc" class="form-control" type="datetime-local" value="@Model.NgayKetThuc.ToString("yyyy-MM-ddTHH:mm")" onchange="validateEndDate()" />
+                            <span asp-validation-for="NgayKetThuc" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="hidden" asp-for="Promotion.TrangThai" value="1" />
+                        </div>
+                        <div class="form-group mt-2">
+                            <input type="submit" value="Tạo" class="btn btn-primary me-3"  />
+                            <a asp-action="Index" class="btn btn-secondary">Quay lại danh sách</a>
+
+                        </div>
+                        <div class="col-md-12 mt-4">
+                            <h4>Chi Tiết Sản Phẩm</h4>
+                            <table id="productDetailsTable" class="table" style="display: none;">
+                                <thead>
+                                    <tr>
+                                        <th>Chọn</th>
+                                        <th hidden>ID Sản Phẩm</th>
+                                        <th>Mã Sản Phẩm</th>
+                                        <th>Tên Sản Phẩm</th>
+                                        <th>Giá</th>
+                                        <th>Số Lượng</th>
+                                        <th>Màu Sắc</th>
+                                        <th>Kích Cỡ</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="productDetailsBody">
+                                    <!-- Dòng sẽ được thêm vào đây bằng JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>                     
+                    </div>
+                </div>            
+            </form>         
+        </div>
+        <!-- Cột Danh Sách Sản Phẩm -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h4>Danh Sách Sản Phẩm</h4>
+                    <div class="form-group">
+                        <label for="searchProduct" class="control-label">Tìm Kiếm Sản Phẩm</label>
+                        <input type="text" id="searchProduct" class="form-control" placeholder="Nhập tên sản phẩm để tìm..." />
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th hidden>ID</th>
+                                <th>Chọn</th>
+                                <th>Tên Sản Phẩm</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productList">
+                            @if (Model.SanPhams != null && Model.SanPhams.Any())
+                            {
+                                foreach (var product in Model.SanPhams)
+                                {
+                                    <tr>
+                                        <td hidden>@product.IdSanPham</td>
+                                        <td>
+                                            <input type="checkbox" name="SelectedSanPhamIds" class="select-product" value="@product.IdSanPham" />
+                                        </td>
+                                        <td>@product.TenSanPham</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="3" class="text-center">Không có sản phẩm nào để hiển thị.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+@section scripts {
+    <script>
+        $(document).ready(function () {
+             $('#searchProduct').on('input', function () {
+                var searchValue = $(this).val().toLowerCase();
+                $('#productList tr').filter(function () {
+                    $(this).toggle($(this).find('td:nth-child(3)').text().toLowerCase().indexOf(searchValue) > -1);
+                });
+            });
+
+            $('.select-product').change(function () {
+                var selectedProductIds = $('.select-product:checked').map(function () {
+                    return $(this).val();
+                }).get();
+
+                $('#productDetailsBody').empty();
+                $('#productDetailsTable').hide();
+
+                if (selectedProductIds.length > 0) {
+                    const url = '@Url.Action("GetProductDetails", "Promotion", new { area = "Admin" })';
+
+                    var startDate = new Date($('input[name="NgayBatDau"]').val());
+                    var endDate = new Date($('input[name="NgayKetThuc"]').val());
+
+                    $.ajax({
+                        url: url,
+                        type: 'GET',
+                        data: { sanPhamIds: selectedProductIds.join(',') },
+                        success: function (data) {
+                            
+                            var availableProductDetails = [];
+
+                            if (data.chiTietSanPhams && data.chiTietSanPhams.length > 0) {
+                                $.each(data.chiTietSanPhams, function (index, item) {
+                                    var isInPromotion = checkProductInPromotion(item.idSanPhamChiTiet, startDate, endDate);
+                                    if (!isInPromotion) {
+                                        availableProductDetails.push(item);
+                                    }
+                                });
+                            }
+
+                            if (availableProductDetails.length > 0) {
+                                $.each(availableProductDetails, function (index, item) {
+                                    var mauSacDisplay = item.mauSac && Array.isArray(item.mauSac) ? item.mauSac.join(", ") : 'N/A';
+                                    var kichCoDisplay = item.kichCo && Array.isArray(item.kichCo) ? item.kichCo.join(", ") : 'N/A';
+                                    var formattedPrice = item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VND";
+
+                                    var row = `<tr>
+                                                <td><input type="checkbox" name="SelectedSanPhamChiTietIds" value="${item.idSanPhamChiTiet}" /></td>
+                                                <td hidden>${item.idSanPhamChiTiet}</td>
+                                                <td>${item.maSP}</td>
+                                                <td>${item.productName}</td>
+                                                <td>${formattedPrice}</td>
+                                                <td>${item.quantity}</td>
+                                                <td>${mauSacDisplay}</td>
+                                                <td>${kichCoDisplay}</td>
+                                            </tr>`;
+                                    $('#productDetailsBody').append(row);
+                                });
+
+                                $('#productDetailsTable').show();
+                            } else {
+                                alert('Không có sản phẩm chi tiết nào có sẵn để chọn.');
+                                $('#productDetailsTable').hide();
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Lỗi khi lấy thông tin sản phẩm: ", error);
+                            alert("Đã xảy ra lỗi trong quá trình lấy thông tin sản phẩm. Vui lòng thử lại.");
+                        }
+                    });
+                } else {
+                    $('#productDetailsTable').hide();
+                }
+            });
+
+            function checkProductInPromotion(productDetailId, startDate, endDate) {
+                var isInPromotion = false;
+                $.ajax({
+                    url: '@Url.Action("CheckProductInPromotion", "Promotion", new { area = "Admin" })',
+                    type: 'GET',
+                    async: false,
+                    data: {
+                        productDetailId: productDetailId,
+                        startDate: startDate.toISOString(),
+                        endDate: endDate.toISOString()
+                    },
+                    success: function (result) {
+                        isInPromotion = result;
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Lỗi khi kiểm tra sản phẩm trong khuyến mãi: ", error);
+                        isInPromotion = true; // Mặc định không cho chọn nếu có lỗi
+                    }
+                });
+                return isInPromotion;
+            }
+        });
+
+        function validatePercentage() {
+            var phanTramGiamInput = document.getElementById("phanTramGiam");
+            var numericValue = parseFloat(phanTramGiamInput.value);
+
+            if (isNaN(numericValue) || numericValue <= 0 || numericValue > 100) {
+                alert("Phần trăm giảm phải là một số từ 1 đến 100.");
+                phanTramGiamInput.value = null;
+            }
+        }
+
+        function validateEndDate() {
+            var startDateInput = document.querySelector('input[name="NgayBatDau"]');
+            var endDateInput = document.querySelector('input[name="NgayKetThuc"]');
+
+            var startDate = new Date(startDateInput.value);
+            var endDate = new Date(endDateInput.value);
+
+            if (endDate <= startDate) {
+                alert("Ngày Kết Thúc phải sau Ngày Bắt Đầu.");
+                endDateInput.value = "";
+            }
+        }
+        function validateForm() {
+            var phanTramGiamInput = document.getElementById("phanTramGiam");
+            var numericValue = parseFloat(phanTramGiamInput.value);
+
+            // Kiểm tra nếu phần trăm giảm là 0 hoặc vượt quá 100
+            if (isNaN(numericValue) || numericValue <= 0 || numericValue > 100) {
+                alert("Phần trăm giảm phải là một số từ 1 đến 100.");
+                return false; // Ngăn không cho gửi form
+            }
+            return true; // Cho phép gửi form
+        }
+    </script>
+}

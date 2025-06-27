@@ -1,0 +1,102 @@
+﻿
+@model AppData.Model.KhachHang
+
+@{
+    ViewData["Title"] = "Thông Tin Khách Hàng";
+    Layout = "~/Areas/Client/Views/Shared/_Tttk.cshtml";
+}
+<style>
+  
+
+   
+    h4 {
+        font-family: 'Arial', sans-serif;
+        font-size: 24px;
+        font-weight: 600; 
+        text-align: center; 
+        color: #333; 
+        margin-bottom: 30px; 
+    }
+
+    /* Định dạng danh sách */
+    dl.row {
+        margin: 0;
+        padding: 0;
+        display: grid;
+        grid-template-columns: 1fr 3fr; /* Chia thành 2 cột, cột đầu nhỏ, cột sau rộng */
+        gap: 10px;
+    }
+
+    dt {
+        font-weight: 500; /* Làm đậm phần tiêu đề */
+        color: #666; /* Màu xám nhạt cho tiêu đề */
+        font-size: 14px;
+    }
+
+    dd {
+        font-size: 16px;
+        color: #333;
+        margin: 0;
+    }
+
+    /* Định dạng nút Chỉnh Sửa */
+    button.btn-secondary {
+        display: block;
+        margin: 30px auto 0; /* Căn giữa nút */
+        padding: 10px 30px;
+        font-size: 16px;
+        font-weight: 600;
+        border: none;
+        background-color: #333; /* Màu nền xám tối */
+        color: #fff; /* Màu chữ trắng */
+        border-radius: 4px; /* Bo góc cho nút */
+        transition: background-color 0.3s ease;
+    }
+
+        button.btn-secondary:hover {
+            background-color: #555; /* Nền xám sáng khi hover */
+        }
+
+    /* Thông báo thành công */
+    .alert-success {
+        background-color: #28a745;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+</style>
+
+<div class="container">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+    @if (TempData["DoiMK"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" id="successMessage" role="alert">
+            <strong>Thành công!</strong> @TempData["DoiMK"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    <h4>Khách Hàng</h4>
+    <hr />
+    <dl class="row">
+        <dt>Họ Tên</dt>
+        <dd>@Model.HoTen</dd>
+
+        <dt>Số Điện Thoại</dt>
+        <dd>@Model.SoDienThoai</dd>
+
+        <dt>Email</dt>
+        <dd>@Model.Email</dd>       
+    </dl>
+    
+    <button type="button" onclick="location.href='@Url.Action("Edit", "KhachHang", new { id = Model.IdKhachHang })'" class="btn btn-secondary">
+        Chỉnh Sửa
+    </button>
+</div>
+

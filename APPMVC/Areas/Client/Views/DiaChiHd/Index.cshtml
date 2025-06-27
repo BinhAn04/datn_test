@@ -1,0 +1,77 @@
+﻿@model IEnumerable<AppData.Model.DiaChiHoaDon>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.IdDiaChiHoaDon)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HoTen)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SoDienThoai)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MoTa)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProvinceName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DistrictName)
+            </th>           
+            <th>
+                @Html.DisplayNameFor(model => model.WardName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DiaChiMacDinh)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdDiaChiHoaDon)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HoTen)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SoDienThoai)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MoTa)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProvinceName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DistrictName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WardName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DiaChiMacDinh)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.IdDiaChiHoaDon }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

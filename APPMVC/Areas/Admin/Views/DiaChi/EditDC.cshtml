@@ -1,0 +1,165 @@
+﻿@using Newtonsoft.Json
+@model AppData.Model.DiaChi
+
+@{
+    ViewData["Title"] = "EditDC";
+}
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@error.ErrorMessage</p>
+        }
+    </div>
+}
+
+<h1 class="text-center">Sửa địa chỉ</h1>
+<hr />
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <form asp-action="EditDC">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- IdDiaChi (Hidden) -->
+            <input type="hidden" asp-for="IdDiaChi" />
+
+            <!-- HoTen -->
+            <div class="form-group mb-3">
+                <label asp-for="HoTen" class="control-label"></label>
+                <input asp-for="HoTen" class="form-control" placeholder="Enter full name" />
+                <span asp-validation-for="HoTen" class="text-danger"></span>
+            </div>
+
+            <!-- SoDienThoai -->
+            <div class="form-group mb-3">
+                <label asp-for="SoDienThoai" class="control-label"></label>
+                <input asp-for="SoDienThoai" class="form-control" placeholder="Enter phone number" />
+                <span asp-validation-for="SoDienThoai" class="text-danger"></span>
+            </div>
+
+            <!-- Province (Dropdown) -->
+            <div class="form-group mb-3">
+                <label>Tỉnh/Thành phố</label>
+                <select id="ProvinceId" asp-for="ProvinceId" class="form-control" asp-items="@(new SelectList(ViewBag.Provinces, "ProvinceId", "ProvinceName"))">
+                    <option value="">Chọn tỉnh/thành phố</option>
+                </select>
+                <input type="hidden" id="ProvinceName" name="ProvinceName" asp-for="ProvinceName" />
+            </div>
+
+            <!-- District (Dropdown) -->
+            <div class="form-group mb-3">
+                <label>Quận/Huyện</label>
+                <select asp-for="DistrictId" class="form-control" asp-items="@(new SelectList(ViewBag.Districts, "DistrictId", "DistrictName", Model.DistrictId))">
+                    <option value="">Chọn Quận/Huyện</option>
+                </select>
+                <input type="hidden" id="DistrictName" name="DistrictName" asp-for="DistrictName" />
+            </div>
+
+            <!-- Ward (Dropdown) -->
+            <div class="form-group mb-3">
+                <label>Phường/Xã</label>
+                <select asp-for="WardId" class="form-control" asp-items="@(new SelectList(ViewBag.Wards, "WardId", "WardName", Model.WardId))">
+                    <option value="">Chọn Phường/Xã</option>
+                </select>
+                <input type="hidden" id="WardName" name="WardName" asp-for="WardName" />
+            </div>
+
+            <!-- MoTa -->
+            <div class="form-group mb-3">
+                <label>Mô Tả</label>
+                <input class="form-control" asp-for="MoTa" placeholder="Enter description" />
+                <span asp-validation-for="MoTa" class="text-danger"></span>
+            </div>
+
+            <!-- DiaChiMacDinh -->
+            <div class="form-check mb-3">
+                <input type="checkbox" class="form-check-input" asp-for="DiaChiMacDinh" id="DiaChiMacDinh" />
+                <label class="form-check-label" for="DiaChiMacDinh">Đặt làm địa chỉ mặc định</label>
+                <span asp-validation-for="DiaChiMacDinh" class="text-danger"></span>
+            </div>
+
+            <!-- IdKhachHang (Dropdown) -->
+            <div class="form-group mb-3">
+                <label asp-for="IdKhachHang" class="control-label">Khách Hàng</label>
+                <select asp-for="IdKhachHang" class="form-control" asp-items="@(new SelectList(ViewBag.khachHang, "IdKhachHang", "HoTen"))">
+                    <option value="">Chọn khách hàng</option>
+                </select>
+                <span asp-validation-for="IdKhachHang" class="text-danger"></span>
+            </div>
+
+            <!-- Submit & Cancel Buttons -->
+            <div class="form-group mb-3 text-center">
+                <input type="submit" value="Lưu thay đổi" class="btn btn-success" />
+                <a asp-action="GetAll" class="btn btn-secondary ml-3">Quay lại danh sách</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Check if default address exists
+            var isDefaultAddress = @Html.Raw(JsonConvert.SerializeObject(ViewBag.HasDefaultAddress));
+            if (isDefaultAddress) {
+                $('#DiaChiMacDinh').prop('disabled', true);
+                $('label[for="DiaChiMacDinh"]').text("Địa chỉ mặc định đã tồn tại");
+            }
+
+            // Reload dropdown with selected values
+            $("#ProvinceId").val("@Model.ProvinceId").change();
+            $("#DistrictId").val("@Model.DistrictId").change();
+            $("#WardId").val("@Model.WardId").change();
+
+            // Province change event
+            $("#ProvinceId").change(function () {
+                var provinceId = $(this).val();
+                if (provinceId) {
+                    $.get("/Admin/DiaChi/GetDistricts?provinceId=" + provinceId, function (data) {
+                        $("#DistrictId").empty();
+                        $("#DistrictId").append('<option value="">Chọn Quận/Huyện</option>');
+                        $.each(data, function (index, item) {
+                            $("#DistrictId").append('<option value="' + item.districtId + '">' + item.districtName + '</option>');
+                        });
+
+                        // Update ProvinceName field
+                        var selectedProvince = $("#ProvinceId option:selected").text();
+                        $("#ProvinceName").val(selectedProvince);
+                    });
+                }
+            });
+
+            // District change event
+            $("#DistrictId").change(function () {
+                var districtId = $(this).val();
+                if (districtId) {
+                    $.get("/Admin/DiaChi/GetWards?districtId=" + districtId, function (data) {
+                        $("#WardId").empty();
+                        $("#WardId").append('<option value="">Chọn Phường/Xã</option>');
+                        $.each(data, function (index, item) {
+                            $("#WardId").append('<option value="' + item.wardId + '">' + item.wardName + '</option>');
+                        });
+
+                        // Update DistrictName field
+                        var selectedDistrict = $("#DistrictId option:selected").text();
+                        $("#DistrictName").val(selectedDistrict);
+                    });
+                }
+            });
+
+            // Ward change event
+            $("#WardId").change(function () {
+                var wardName = $("#WardId option:selected").text();
+                $("#WardName").val(wardName); // Update WardName field
+            });
+
+            // Ensure WardName is updated on page load
+            $("#WardId").val("@Model.WardId");
+            var selectedWard = $("#WardId option:selected").text();
+            $("#WardName").val(selectedWard);
+        });
+    </script>
+}

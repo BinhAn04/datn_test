@@ -1,0 +1,104 @@
+﻿@model AppData.Model.KhachHang
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Areas/Client/Views/Shared/_Tttk.cshtml";
+}
+<style>
+    h4 {
+        font-family: 'Arial', sans-serif;
+        font-size: 24px;
+        font-weight: 600;
+        text-align: center;
+        color: #333;
+        margin-bottom: 30px;
+    }
+
+    button.btn-secondary {
+        display: block;
+        margin: 30px auto 0; /* Căn giữa nút */
+        padding: 10px 30px;
+        font-size: 16px;
+        font-weight: 600;
+        border: none;
+        background-color: #333; /* Màu nền xám tối */
+        color: #fff; /* Màu chữ trắng */
+        border-radius: 4px; /* Bo góc cho nút */
+        transition: background-color 0.3s ease;
+    }
+</style>
+<h4>Chỉnh sửa thông tin</h4>
+<hr />
+<div  class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Edit" id="editForm">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="IdKhachHang" class="control-label" hidden></label>
+                    <input asp-for="IdKhachHang" class="form-control" hidden />
+                    <span asp-validation-for="IdKhachHang" class="text-danger" hidden></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="HoTen" class="control-label"></label>
+                    <input asp-for="HoTen" class="form-control" id="HoTen" />
+                    <span asp-validation-for="HoTen" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="SoDienThoai" class="control-label"></label>
+                    <input asp-for="SoDienThoai" class="form-control" id="SoDienThoai" />
+                    <span asp-validation-for="SoDienThoai" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label"></label>
+                    <input asp-for="Email" class="form-control" id="Email" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group mt-3">
+                    <input type="submit" value="Save" class="btn btn-secondary" />
+                    <a class="btn btn-success" asp-action="ThongTinKhachHang">Quay về</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div>
+    
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Validate form before submission
+            $("#editForm").submit(function (e) {
+                var isValid = true;
+
+                // Check if HoTen field is empty
+                if ($("#HoTen").val().trim() === "") {
+                    isValid = false;
+                    alert("Vui lòng nhập họ tên.");
+                }
+
+                // Check if SoDienThoai field is empty
+                if ($("#SoDienThoai").val().trim() === "") {
+                    isValid = false;
+                    alert("Vui lòng nhập số điện thoại.");
+                }
+
+                // Check if Email field is empty
+                if ($("#Email").val().trim() === "") {
+                    isValid = false;
+                    alert("Vui lòng nhập email.");
+                }
+
+                // If any field is empty, prevent form submission
+                if (!isValid) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+}

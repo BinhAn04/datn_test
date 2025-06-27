@@ -1,0 +1,153 @@
+﻿@model AppData.ViewModel.SanPhamChiTietItemViewModel
+@{
+    ViewData["Title"] = "Cập Nhật Chi Tiết Sản Phẩm";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="text-center mb-4">Cập Nhật Chi Tiết Sản Phẩm</h2>
+
+<form asp-action="UpdateSPCT" method="post" enctype="multipart/form-data" class="container">
+    <input type="hidden" asp-for="IdSanPhamChiTiet" />
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Màu sắc:</label>
+                <input type="hidden" asp-for="MauSac" value="@string.Join(",", Model.MauSac ?? new List<string>())" />
+                <input type="text" value="@string.Join(", ", Model.MauSac ?? new List<string>())" class="form-control" readonly />
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Kích cỡ:</label>
+                <input type="hidden" asp-for="KichCo" value="@string.Join(",", Model.KichCo ?? new List<string>())" />
+                <input type="text" value="@string.Join(", ", Model.KichCo ?? new List<string>())" class="form-control" readonly />
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Giá:</label>
+                <input type="number" asp-for="Gia" class="form-control" step="0.01" required />
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Số lượng:</label>
+                <input type="number" asp-for="SoLuong" class="form-control" required />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group mb-3">
+        <label>Xuất xứ:</label>
+        <input type="text" asp-for="XuatXu" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label>Hình ảnh:</label>
+        <div id="imageContainer" class="mb-2" style="display: flex; flex-wrap: wrap; overflow: hidden;">
+            @if (Model.HinhAnhs != null && Model.HinhAnhs.Any())
+            {
+                foreach (var hinhAnh in Model.HinhAnhs)
+                {
+                    var base64String = Convert.ToBase64String(hinhAnh.DataHinhAnh);
+                    var imageUrl = $"data:{hinhAnh.LoaiFileHinhAnh};base64,{base64String}";
+                    <img src="@imageUrl" alt="Hình ảnh sản phẩm" class="img-thumbnail" />
+                }
+            }
+            else
+            {
+                <span class="text-muted">Không có hình ảnh cho sản phẩm này.</span>
+            }
+        </div>
+        <input type="file" name="Files" multiple class="form-control-file" onchange="previewImages(event)" />
+        <small id="fileHelp" class="form-text text-muted">Chỉ được chọn tối đa 3 ảnh.</small>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="KichHoat" class="control-label">Kích Hoạt</label>
+        <div>
+            <input type="radio" asp-for="KichHoat" value="1" /> Hoạt động
+            <input type="radio" asp-for="KichHoat" value="0" /> Không hoạt động
+        </div>
+        <span asp-validation-for="KichHoat" class="text-danger"></span>
+    </div>
+
+    <div class="form-group text-center">
+        <button type="submit" class="btn btn-primary">Cập nhật</button>
+    </div>
+</form>
+
+<script>
+    function previewImages(event) {
+        const imageContainer = document.getElementById('imageContainer');
+        imageContainer.innerHTML = ''; // Clear existing images
+
+        const files = event.target.files;
+        if (files.length > 3) {
+            alert("Bạn chỉ được chọn tối đa 3 ảnh.");
+            event.target.value = ""; // Clear the input
+            return;
+        }
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.className = 'img-thumbnail';
+                img.style.maxWidth = '200px';
+                img.style.maxHeight = '200px';
+                img.style.margin = '5px';
+                imageContainer.appendChild(img);
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
+
+<style>
+    .container {
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+        background-color: #ffffff; /* Màu nền trắng */
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #imageContainer img {
+        max-width: 100%;
+        height: auto;
+        margin: 5px;
+        display: block; /* Đảm bảo hình ảnh không bị tràn */
+    }
+
+    h2 {
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .control-label {
+        font-weight: bold;
+    }
+
+    .form-control {
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+
+    .text-danger {
+        font-size: 0.9em;
+    }
+
+    .btn {
+        padding: 10px 15px;
+    }
+</style>

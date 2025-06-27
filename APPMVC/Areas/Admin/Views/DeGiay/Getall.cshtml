@@ -1,0 +1,123 @@
+﻿@using X.PagedList.Mvc.Core
+@model X.PagedList.IPagedList<AppData.Model.DeGiay>
+
+@{
+    ViewData["Title"] = "Get all";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content-wrapper">
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success" style="padding: 10px; margin-right:20px;margin-top:20px; align-self:end; position: absolute">
+            @TempData["Success"]
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger" style="padding: 10px; align-self:end;margin-right:20px;margin-top:20px; position: absolute">
+            @TempData["Error"]
+        </div>
+    }
+    <!-- Content -->
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4">
+            <span class="text-muted fw-light">Quản lý sản phẩm /</span> Đế Giày
+        </h4>
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success" style="padding: 10px; align-self:end; position: absolute">
+                @TempData["Success"]
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger" style="padding: 10px; align-self:end; position: absolute">
+                @TempData["Error"]
+            </div>
+        }
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-4" style="padding: 20px">
+                    <div class="nav-item d-flex align-items-center" style="display: flex; justify-content: space-between;">
+                        <form action="Getall" method="get" style="display: flex; align-items: center;">
+                            <i class="bx bx-search fs-4 lh-0"></i>
+                            <input type="text" name="name" class="form-control border-1 shadow-none" placeholder="Search by name..." aria-label="Search..." />
+                            <button type="submit" title="Search" style="margin-left: 10px; padding: 5px 10px; border: none; border-radius: 5px; background-color: #4CAF50; color: #fff; cursor: pointer;">Tìm</button>
+                        </form>
+                        <a asp-action="Create" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal" style="margin-left: 10px;">Create New</a>
+
+                    </div>
+                    <br>
+                    <div class="panel-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Mã Đế Giày</th>
+                                    <th>Tên Đế Giày</th>
+                                    <th hidden>Ngày cập nhật</th>
+                                    <th>Ngày tạo</th>
+                                    <th hidden>Người cập nhật</th>
+                                    <th hidden>Người tạo</th>
+                                    <th>Kích hoạt</th>
+                                    <th>Chức năng</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr style="border-bottom: 1px solid #dee2e6;">
+                                        <td>@item.IdDeGiay.ToString().Substring(0, 5)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.TenDeGiay)</td>
+                                        <td hidden>@Html.DisplayFor(modelItem => item.NgayCapNhat)</td>
+                                        <td>@item.NgayTao.ToString("dd/MM/yyyy")</td>
+                                        <td hidden>@Html.DisplayFor(modelItem => item.NguoiCapNhat)</td>
+                                        <td hidden>@Html.DisplayFor(modelItem => item.NguoiTao)</td>
+                                        <td>
+                                            @(item.KichHoat == 1 ? "Hoạt động" : "Không hoạt động")
+                                        </td>
+                                        <td>
+                                            <a asp-action="Edit" asp-route-id="@item.IdDeGiay" title="Edit">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pagination">
+                        @Html.PagedListPager(Model, Page => Url.Action("Getall", "DeGiay", new { Page = Page }),
+                                 new PagedListRenderOptions
+                        {
+                            DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+                            DisplayLinkToLastPage = PagedListDisplayMode.Always,
+                            DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+                            DisplayLinkToNextPage = PagedListDisplayMode.Always,
+                            MaximumPageNumbersToDisplay = 5,
+                            LiElementClasses = new string[] { "page-item" },
+                            PageClasses = new string[] { "page-link" }
+                        })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Add this code before the closing `</div>` tag of your content wrapper -->
+<div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-body">
+            @Html.Partial("Create", new AppData.Model.DeGiay
+       {
+           TenDeGiay = "Hieudz",
+           NgayCapNhat = DateTime.Now,
+           NgayTao = DateTime.Now,
+           NguoiCapNhat = "admin",
+           NguoiTao = "admin",
+           KichHoat = 1,
+       })
+
+        </div>
+    </div>
+</div>

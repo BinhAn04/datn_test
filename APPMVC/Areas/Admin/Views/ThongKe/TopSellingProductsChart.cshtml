@@ -1,0 +1,92 @@
+﻿@model List<AppData.ViewModel.ChartDataViewModel>
+@{
+    ViewData["Title"] = "Top Sản Phẩm Bán Chạy (Biểu Đồ Tròn)";
+    var startDate = ViewBag.StartDate as string;
+    var endDate = ViewBag.EndDate as string;
+}
+<div class="container mt-4">
+    <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">Thống kê/</span> Biểu đồ sản phẩm
+    </h4>
+    <div class="card mb-10">
+        <div class="card-body">
+            <form method="get" class="mb-4" style="justify-content: center; align-items: center;">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="startDate">Từ ngày:</label>
+                        <input type="date" name="startDate" id="startDate" class="form-control me-2" value="@startDate">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="startDate">Đến ngày:</label>
+                        <input type="date" name="endDate" id="endDate" class="form-control me-2" value="@endDate">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary">Lọc</button>
+                    </div>
+                </div>
+            </form>
+            <!-- Biểu đồ -->
+            <div style="display: flex; justify-content: center; align-items: center;">
+                <canvas id="productChart" width="500" height="500"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const labels = @Html.Raw(Json.Serialize(Model.Select(x => x.Label).ToArray()));
+    const dataValues = @Html.Raw(Json.Serialize(Model.Select(x => x.Value).ToArray()));
+
+    const data = {
+        labels: labels,
+        datasets: [{
+            label: 'Số lượng bán',
+            data: dataValues,
+            backgroundColor: [
+                '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
+            ],
+            hoverOffset: 4
+        }]
+    };
+
+    const config = {
+        type: 'pie',
+        data: data,
+        options: {
+            responsive: true,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function (tooltipItem) {
+                            const label = tooltipItem.label || '';
+                            const value = dataValues[tooltipItem.dataIndex];
+                            return `${label}: ${value} sản phẩm`;
+                        }
+                    }
+                },
+                legend: {
+                    position: 'right',
+                    labels: {
+                        font: {
+                            size: 14
+                        },
+                        color: '#555'
+                    }
+                }
+            }
+        }
+    };
+
+    const productChart = new Chart(
+        document.getElementById('productChart'),
+        config
+    );
+</script>
+
+<style>
+    #productChart {
+        width: 500px !important;
+        height: 500px !important;
+    }
+</style>

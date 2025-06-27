@@ -1,0 +1,47 @@
+﻿@{
+    ViewData["Title"] = "Xác Minh Mã";
+    var email = Context.Request.Cookies["Email"];
+}
+
+<h2 class="text-center mb-4">Xác Minh Mã</h2>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-lg">
+            <div class="card-body">
+                @using (Html.BeginForm("VerifyCode", "NhanVien", FormMethod.Post, new { @class = "needs-validation", novalidate = "" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <!-- Hiển thị thông báo lỗi tổng quan -->
+                    @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                    <!-- Mã xác thực -->
+                    <div class="form-group mb-3">
+                        <label class="form-label" for="code">
+                            <i class="fa fa-key"></i> Nhập mã xác thực
+                        </label>
+                        <input type="text" name="code" class="form-control" id="code" placeholder="Nhập mã xác thực" required />
+                        @Html.ValidationMessage("code", "", new { @class = "text-danger" })
+                    </div>
+
+                    <!-- Email được ẩn và gửi theo -->
+                    <input type="hidden" name="email" value="@email" />
+
+                    <!-- Nút xác minh mã -->
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-check-circle"></i> Xác minh mã
+                        </button>
+                    </div>
+                }
+
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Thêm thư viện FontAwesome và Bootstrap (nếu chưa có) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" />

@@ -1,0 +1,107 @@
+﻿@model List<AppData.ViewModel.ThongKeKhoangThoiGian>
+
+<div class="container mt-4">
+    <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">Thống kê/</span> Biểu đồ đơn hàng
+    </h4>
+    <div class="card mb-10">
+        <div class="card-body">
+            <!-- Bộ lọc thời gian -->
+            <form method="get" action="">
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="startDate" class="form-label">Ngày bắt đầu:</label>
+                        <input type="date" class="form-control" id="startDate" name="startDate" value="@ViewBag.StartDate">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="endDate" class="form-label">Ngày kết thúc:</label>
+                        <input type="date" class="form-control" id="endDate" name="endDate" value="@ViewBag.EndDate">
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary">Lọc</button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Biểu đồ -->
+            <canvas id="myChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+   
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Lấy dữ liệu từ Model
+    var labels = @Html.Raw(Json.Serialize(Model.Select(m => m.Ngay.ToString("yyyy-MM-dd"))));
+    var totalOrders = @Html.Raw(Json.Serialize(Model.Select(m => m.TongDonHang)));
+    var pendingOrders = @Html.Raw(Json.Serialize(Model.Select(m => m.DonHangChoXacNhan)));
+    var completedOrders = @Html.Raw(Json.Serialize(Model.Select(m => m.DonHangThanhCong)));
+    var donHuy = @Html.Raw(Json.Serialize(Model.Select(m => m.DonHangHuy))); 
+    // Cấu hình biểu đồ
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Tổng Đơn Hàng',
+                    data: totalOrders,
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Đơn Hàng Chờ Xác Nhận',
+                    data: pendingOrders,
+                    backgroundColor: 'rgba(255, 206, 86, 0.6)',
+                    borderColor: 'rgba(255, 206, 86, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Đơn Hàng Thành Công',
+                    data: completedOrders,
+                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Đơn Hủy',
+                    data: donHuy,
+                    backgroundColor: 'rgba(255, 0, 0, 0.6)',
+                    borderColor: 'rgba(255, 0, 0, 1)',
+                    borderWidth: 1
+                },               
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Thống Kê Theo Khoảng Thời Gian'
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Khoảng Thời Gian'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Số Lượng'
+                    }
+                }
+            }
+        }
+    });
+</script>

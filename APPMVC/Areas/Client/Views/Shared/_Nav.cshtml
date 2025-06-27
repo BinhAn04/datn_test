@@ -1,0 +1,134 @@
+﻿<style>
+    .custom-navbar {
+        padding: 0.5rem 1rem; /* Giảm padding trên và dưới */
+    }
+
+    .navbar-brand img {
+        max-width: 180px; /* Giảm kích thước logo */
+        height: auto; /* Giữ tỷ lệ hình ảnh */
+    }
+
+    .nav-link {
+        font-size: 16px; /* Giảm kích thước font chữ */
+        padding: 0.25rem 0.5rem; /* Giảm padding cho các link */
+    }
+
+        .nav-link i {
+            font-size: 18px; /* Giảm kích thước biểu tượng */
+            color: black;
+        }
+
+    .dropdown-menu {
+        padding: 0; /* Giảm padding cho menu dropdown */
+    }
+
+    .dropdown-header {
+        padding: 0.5rem 1rem; /* Giữ padding cho header dropdown */
+        font-size: 14px; /* Giảm kích thước font chữ */
+    }
+
+    .dropdown-item {
+        font-size: 14px; /* Giảm kích thước font chữ cho các item */
+        padding: 0.5rem 1rem; /* Giảm padding cho các item */
+    }
+
+    .navbar-toggler {
+        padding: 0.25rem; /* Giảm padding cho nút toggle */
+    }
+</style>
+<link rel="stylesheet" href="/Client/css/loading.css" />
+<div class="loading-container" id="loading" style="display: none;">
+    <div class="loader"></div>
+    <p>Chờ xíu SoleMates đang tìm sản phẩm cho bạn!</p>
+</div>
+
+<nav class="custom-navbar navbar navbar-expand-md navbar-dark bg-dark" aria-label="Thanh điều hướng SoleMates">
+    <div class="container">
+        <a class="navbar-brand" href="index.html"><img src="~/Client/images/logo.png" width="200px" height="60px"></a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsSoleMates" aria-controls="navbarsSoleMates" aria-expanded="false" aria-label="Chuyển đổi điều hướng">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarsSoleMates">
+            <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
+                <li class="nav-item @(ViewContext.RouteData.Values["action"].ToString() == "Index" && ViewContext.RouteData.Values["controller"].ToString() == "HomeClient" ? "active" : "")">
+                    <a class="nav-link" href="@Url.Action("Index", "HomeClient", new { area = "Client" })">Trang Chủ</a>
+                </li>
+                <li class="nav-item @(ViewContext.RouteData.Values["action"].ToString() == "Index" && ViewContext.RouteData.Values["controller"].ToString() == "SanPham" ? "active" : "")">
+                    <a class="nav-link" href="@Url.Action("Index", "SanPham", new { area = "Client" })" onclick="document.getElementById('loading').style.display = 'flex';">Cửa Hàng</a>
+                </li>
+                <li class="nav-item @(ViewContext.RouteData.Values["action"].ToString() == "About" ? "active" : "")">
+                    <a class="nav-link" href="@Url.Action("About", "HomeClient", new { area = "Client" })">Về Chúng Tôi</a>
+                </li>
+                <li class="nav-item @(ViewContext.RouteData.Values["action"].ToString() == "DichVu" ? "active" : "")">
+                    <a class="nav-link" href="@Url.Action("DichVu", "HomeClient", new { area = "Client" })">Dịch Vụ</a>
+                </li>
+                <li class="nav-item @(ViewContext.RouteData.Values["action"].ToString() == "Blog" ? "active" : "")">
+                    <a class="nav-link" href="@Url.Action("Blog", "HomeClient", new { area = "Client" })">Blog</a>
+                </li>
+                <li class="nav-item @(ViewContext.RouteData.Values["action"].ToString() == "LienHe" ? "active" : "")">
+                    <a class="nav-link" href="@Url.Action("LienHe", "HomeClient", new { area = "Client" })">Liên Hệ</a>
+                </li>
+                <li class="nav-item @(ViewContext.RouteData.Values["action"].ToString() == "GetHoaDonDetails" && ViewContext.RouteData.Values["controller"].ToString() == "HoaDon" ? "active" : "")">
+                    <a class="nav-link" href="@Url.Action("GetHoaDonDetails", "HoaDon", new { area = "Client" })">Tra Cứu</a>
+                </li>
+            </ul>
+            <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
+                <div class="dropdown">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="dropdownMenu1" data-bs-toggle="dropdown" href="#" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-user"></i>
+                    </a>
+                        @if (ViewContext.HttpContext.Session.GetString("KhachHang") != null)
+                        {
+                            var tenKhach = ViewContext.HttpContext.Session.GetString("TenKhachHang");
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenu1">
+                            <li>
+                                <div class="dropdown-header" style="padding: 0.5rem 1rem; font-family: Arial, sans-serif; font-size: 16px; font-weight: 600; color: #333; border-bottom: 1px solid #e0e0e0;">
+                                    <span class="fw-semibold d-block">Xin chào, @tenKhach</span>
+                                </div>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="@Url.Action("ThongTinKhachHang", "KhachHang", new { area = "Client" })">
+                                    <i class="fas fa-user me-2"></i>
+                                    Tài Khoản Của Tôi
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="@Url.Action("Index", "HoaDon", new { area = "Client" })">
+                                    <i class="fas fa-cog me-2"></i>
+                                    Đơn Mua
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="@Url.Action("Logout", "KhachHang", new { area = "Client" })">
+                                    <i class="fas fa-sign-out-alt me-2"></i>
+                                    Đăng Xuất
+                                </a>
+                            </li>
+                        </ul>
+                        }
+                        else
+                        {
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                            <li>
+                                <a class="dropdown-item" href="@Url.Action("Login", "KhachHang", new { area = "Client" })" style="font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; color: #007bff; text-decoration: none;">
+                                    Đăng Nhập/ Đăng Ký
+                                </a>
+                            </li>
+                        </ul>
+                        }
+                </li>
+        </div>
+        <li class="nav-item">
+            <a class="nav-link" href="@Url.Action("Card", "HomeClient", new { area = "Client" })"><i class="fas fa-shopping-cart"></i></a>
+        </li>
+        </ul>
+    </div>
+    </div>
+</nav>
+<script>
+
+   
+</script>

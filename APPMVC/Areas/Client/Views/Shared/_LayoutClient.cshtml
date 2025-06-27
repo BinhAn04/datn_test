@@ -1,0 +1,49 @@
+﻿
+<!-- /*
+* Bootstrap 5
+* Template Name: Furni
+* Template Author: Untree.co
+* Template URI: https://untree.co/
+* License: https://creativecommons.org/licenses/by/3.0/
+
+*/ -->
+<!doctype html>
+<html lang="en">
+
+<head>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="author" content="Untree.co">
+	<link rel="shortcut icon" href="favicon.png">
+	<title>SoleMates Store</title>
+	<meta name="description" content="" />
+	<meta name="keywords" content="bootstrap, bootstrap4" />
+
+	<!-- Bootstrap CSS -->
+	<link href="~/Client/css/bootstrap.min.css" rel="stylesheet">
+	<link href="~/Client/css/tiny-slider.css" rel="stylesheet">
+	<link href="~/Client/css/style.css" rel="stylesheet">
+</head>
+
+<body>
+	<!-- Start Header/Navigation -->
+	@Html.Partial("_Nav") 
+	
+	<!-- End Header/Navigation -->
+	<!-- Start Hero Section -->
+	@RenderBody()
+	@RenderSection("Scripts", required: false)
+	<!-- End Blog Section -->
+	<!-- Start Footer Section -->
+	@Html.Partial("_Footer")
+	<!-- End Footer Section -->
+
+
+	<script src="~/Client/js/bootstrap.bundle.min.js"></script>
+	<script src="~/Client/js/tiny-slider.js"></script>
+	<script src="~/Client/js/custom.js"></script>
+</body>
+
+</html>
+

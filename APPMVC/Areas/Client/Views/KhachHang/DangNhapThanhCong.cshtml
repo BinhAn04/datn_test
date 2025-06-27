@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "View Session Data";
+}
+
+<h1>Session Data</h1>
+
+@if (Model != null)
+{
+    <p>Dữ liệu trong Session:</p>
+    <pre>@Model</pre>
+}
+else
+{
+    <p>Không có dữ liệu nào trong Session.</p>
+}

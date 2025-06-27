@@ -1,0 +1,108 @@
+﻿@model IEnumerable<AppData.Model.HoaDon>
+
+@{
+    ViewData["Title"] = "Danh Sách Hóa Đơn";
+    Layout = "~/Areas/Client/Views/Shared/_Tttk.cshtml";
+}
+
+<style>
+    body {
+        font-family: 'Roboto', Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f5f7fa;
+    }
+
+    h1 {
+        text-align: center;
+        color: #333;
+        font-size: 2em;
+        margin-bottom: 30px;
+    }
+
+    .invoice-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+
+    .invoice-item {
+        background: #fff;
+        border: 1px solid #e4e6eb;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .invoice-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .invoice-header {
+        font-weight: 600;
+        font-size: 1.5em;
+        color: #007bff;
+        margin-bottom: 15px;
+    }
+
+    .invoice-detail {
+        margin: 8px 0;
+        font-size: 0.9em;
+        color: #555;
+    }
+
+    .btn-detail {
+        display: inline-block;
+        margin-top: 15px;
+        padding: 10px 15px;
+        background-color: #007bff;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: 500;
+        text-align: center;
+        transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+    .btn-detail:hover {
+        background-color: #0056b3;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Responsive */
+     (max-width: 768px) {
+        .invoice-item {
+            padding: 15px;
+        }
+
+        .invoice-header {
+            font-size: 1.2em;
+        }
+
+        .btn-detail {
+            padding: 8px 12px;
+        }
+    }
+</style>
+
+<h1>Danh Sách Hóa Đơn</h1>
+
+<div class="invoice-list">
+    @foreach (var hoaDon in Model)
+    {
+        <div class="invoice-item">
+            <div class="invoice-header">Hóa Đơn #@hoaDon.MaDon</div>
+            <div class="invoice-detail"><strong>Người Nhận:</strong> @hoaDon.NguoiNhan</div>
+            <div class="invoice-detail"><strong>Số Điện Thoại:</strong> @hoaDon.SoDienThoaiNguoiNhan</div>
+            <div class="invoice-detail"><strong>Địa Chỉ:</strong> @hoaDon.DiaChiGiaoHang</div>
+            <div class="invoice-detail"><strong>Tổng Tiền:</strong> @hoaDon.TongTienHoaDon.ToString("N0") VNĐ</div>
+            <div class="invoice-detail"><strong>Ngày Tạo:</strong> @hoaDon.NgayTao.ToString("dd/MM/yyyy")</div>
+            <a href="@Url.Action("Details", "HoaDon", new { id = hoaDon.IdHoaDon })" class="btn-detail">Xem Chi Tiết</a>
+        </div>
+    }
+</div>

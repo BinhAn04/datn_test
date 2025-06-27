@@ -1,0 +1,120 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hóa Đơn</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f9f9f9; /* Màu nền nhẹ */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Font chữ hiện đại */
+        }
+
+        .header {
+            text-align: center; /* Căn giữa */
+            margin: 20px 0; /* Khoảng cách trên và dưới */
+        }
+
+        .name {
+            font-size: 40px; /* Kích thước chữ lớn hơn */
+            color: #333; /* Màu chữ */
+            border-bottom: 4px solid #ff6b6b; /* Đường viền dưới */
+            padding-bottom: 10px; /* Khoảng cách bên dưới */
+        }
+
+        .contact-info {
+            font-size: 16px; /* Kích thước chữ lớn hơn */
+            color: #555; /* Màu chữ nhạt hơn */
+        }
+
+        .invoice-title {
+            font-size: 36px; /* Kích thước chữ cho tiêu đề hóa đơn */
+            color: #333;
+            margin-top: 30px;
+            text-align: center; /* Căn giữa tiêu đề hóa đơn */
+            font-weight: bold; /* In đậm tiêu đề */
+        }
+
+        table {
+            width: 100%; /* Chiều rộng bảng */
+            margin-top: 20px; /* Khoảng cách trên bảng */
+            border-collapse: collapse; /* Gộp các biên */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Đổ bóng cho bảng */
+        }
+
+        th, td {
+            border: 1px solid #ddd; /* Đường biên cho ô */
+            padding: 15px; /* Khoảng cách bên trong ô */
+            text-align: center; /* Căn giữa văn bản trong ô */
+            transition: background-color 0.3s; /* Hiệu ứng chuyển màu */
+        }
+
+        th {
+            background-color: #f2f2f2; /* Màu nền cho tiêu đề bảng */
+            font-weight: bold; /* In đậm tiêu đề bảng */
+            color: #333; /* Màu chữ tiêu đề */
+        }
+
+        tr:hover td {
+            background-color: #e9ecef; /* Màu nền khi hover */
+        }
+
+        .total {
+            font-size: 28px; /* Kích thước chữ tổng tiền */
+            font-weight: bold; /* In đậm */
+            margin-top: 20px; /* Khoảng cách trên tổng tiền */
+            text-align: right; /* Căn phải tổng tiền */
+            color: #ff6b6b; /* Màu chữ tổng tiền */
+        }
+
+        .footer {
+            margin-top: 30px; /* Khoảng cách dưới cùng */
+            text-align: center; /* Căn giữa */
+            font-size: 14px; /* Kích thước chữ nhỏ */
+            color: #888; /* Màu chữ nhạt */
+        }
+
+        @media print {
+            body {
+                background-color: white; /* Màu nền khi in */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="name">SoleMates Store</h1>
+            <h6 class="contact-info">Số điện thoại: 0123456789</h6>
+            <p class="contact-info">Email: solematestore2024@gmail.com</p>
+        </div>
+
+        <h1 class="invoice-title">Hóa Đơn: {{MaDon}}</h1>
+        <p>Ngày tạo: {{NgayTao}}</p>
+        <p>Nhân Viên: {{TenNhanVien}}</p>
+        <p>Khách Hàng: {{TenKhachHang}}</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Sản phẩm</th>
+                    <th>Màu</th>
+                    <th>Kích thước</th>
+                    <th>Số lượng</th>
+                    <th>Đơn giá (VND)</th>
+                    <th>Thành tiền (VND)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{ChiTietHoaDon}} <!-- Dữ liệu chi tiết hóa đơn -->
+            </tbody>
+        </table>
+
+        <h3 class="total">Tổng tiền: {{TongTien}} VND</h3>
+        <div class="footer">
+            <h6>Cảm ơn bạn đã mua sắm tại SoleMates Store!</h6>
+        </div>
+    </div>
+</body>
+</html>

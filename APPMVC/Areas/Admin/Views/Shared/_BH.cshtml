@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+    <style>
+        /* Các style của bạn ở đây */
+    </style>
+</head>
+@Html.Partial("_Head")
+<body>
+    <div class="layout-wrapper layout-content-navbar">
+        <div class="layout-container">
+            <!-- Menu -->
+            @Html.Partial("_Aside")
+            <!-- / Menu -->
+            <!-- Layout container -->
+            <div class="layout-page">
+                <!-- Navbar -->
+                @Html.Partial("_Nav")
+
+                <div class="layout-wrapper layout-content-navbar">
+                    <div class="layout-container">
+                        <div class="container-xxl flex-grow-1 container-p-y">
+                            <h4 class="fw-bold py-3 mb-4">
+                                <span class="text-muted fw-light">Bán Hàng Tại Quầy</span>
+                            </h4>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="card mb-4" style="padding: 20px">
+                                        <div class="header">
+                                            <h2>Bán hàng</h2>
+                                            <form action="@Url.Action("TaoHD", "BanHangTQ", new { area = "Admin" })" method="post" class="d-inline">
+                                                <button type="submit" class="btn btn-primary ms-2">+ Tạo Đơn Hàng</button>
+                                            </form>
+                                        </div>
+                                        <div class="product-list">
+                                            @RenderBody()
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="edit-section">
+                                @RenderSection("EditSection", required: false)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layout-overlay layout-menu-toggle"></div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="layout-overlay layout-menu-toggle"></div>
+
+    </div>
+
+    @RenderSection("Scripts", required: false) 
+
+    <script>
+        function deleteInvoice(id) {
+            if (confirm("Bạn có chắc chắn muốn xóa đơn hàng này?")) {
+                alert("Đơn hàng " + id + " đã được xóa.");
+            }
+        }
+
+        function viewInvoiceDetail(idHoaDon) {
+            console.log("ID Hóa Đơn:", idHoaDon);
+            window.location.href = '@Url.Action("Edit", "BanHangTQ", new { area = "Admin" })' + '?id=' + idHoaDon;
+        }
+    </script>
+</body>
+</html>

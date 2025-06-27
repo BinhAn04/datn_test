@@ -1,0 +1,49 @@
+﻿@model List<AppData.Model.HinhAnh>
+@{
+    ViewData["Title"] = "Danh sách hình ảnh";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<h1>Image List</h1>
+<p>
+    <a asp-action="Upload" class="btn btn-primary">Tải lên hình ảnh mới</a>
+</p>
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (Model.Any())
+{
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <img src="@Url.Action("GetHinhAnhById", "HinhAnh", new { area = "Admin", id = item.IdHinhAnh })"
+                         class="card-img-top"
+                         alt="Hình ảnh"
+                         onerror="this.onerror=null;this.src='/path/to/placeholder-image.jpg';">
+                    <div class="card-body">
+                        <h5 class="card-title">ID: @item.IdHinhAnh</h5>
+                        <p class="card-text">Loại file: @item.LoaiFileHinhAnh</p>
+                        <a asp-action="Delete" asp-route-id="@item.IdHinhAnh" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa hình ảnh này?');">Xóa</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p>Không có hình ảnh nào.</p>
+}

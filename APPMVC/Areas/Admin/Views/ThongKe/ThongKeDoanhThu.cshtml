@@ -1,0 +1,91 @@
+﻿@model List<AppData.ViewModel.ThongKeDoanhThu>
+@{
+    ViewBag.Title = "Thống Kê Doanh Thu";
+    var startDate = ViewBag.StartDate as string;
+    var endDate = ViewBag.EndDate as string;
+}
+
+<div class="container mt-4">
+    <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">Thống kê/</span> Biểu đồ doanh thu
+    </h4>
+    <div class="card mb-10">
+        <div class="card-body">
+            <form method="get" class="mb-4">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="startDate">Từ ngày:</label>
+                        <input type="date" name="startDate" id="startDate" class="form-control" value="@startDate">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="endDate">Đến ngày:</label>
+                        <input type="date" name="endDate" id="endDate" class="form-control" value="@endDate">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary">Lọc</button>
+                    </div>
+                </div>
+            </form>
+            <p>Tổng Doanh Thu: <strong>@Model.Sum(m => m.TongDoanhThu).ToString("N0") VNĐ</strong></p>
+            <canvas id="revenueChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Dữ liệu từ Model
+    var labels = @Html.Raw(Json.Serialize(Model.Select(m => m.Ngay.ToString("yyyy-MM-dd"))));
+    var data = @Html.Raw(Json.Serialize(Model.Select(m => m.TongDoanhThu)));
+
+    // Cấu hình biểu đồ
+    var ctx = document.getElementById('revenueChart').getContext('2d');
+    var revenueChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Doanh Thu',
+                data: data,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderWidth: 4,
+                fill: true,
+                tension: 0.1 // Đường cong mềm mại
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false
+                }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Ngày'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Doanh Thu (VNĐ)'
+                    }
+                }
+            }
+        }
+    });
+</script>

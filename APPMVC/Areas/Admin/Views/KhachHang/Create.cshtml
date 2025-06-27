@@ -1,0 +1,118 @@
+﻿@model AppData.Model.KhachHang
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Tạo mới khách hàng</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>     
+        <div class="modal-body">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-group">
+                    <label asp-for="HoTen" class="control-label" style="margin-bottom:2px">Họ Tên</label>
+                    <input asp-for="HoTen" class="form-control" />
+                    <span asp-validation-for="HoTen" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="SoDienThoai" class="control-label" style="margin-bottom:2px">Số Điện Thoại</label>
+                    <input asp-for="SoDienThoai" class="form-control" />
+                    <span asp-validation-for="SoDienThoai" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label" style="margin-bottom:2px">Email</label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group" hidden>
+                    <label asp-for="AuthProvider" class="control-label" style="margin-bottom:2px">AuthProvider</label>
+                    <input asp-for="AuthProvider" class="form-control" />
+                    <span asp-validation-for="AuthProvider" class="text-danger"></span>
+                </div>
+
+              @*   <div class="form-group">
+                    <label asp-for="MatKhau" class="control-label" style="margin-bottom:2px">Mật Khẩu</label>
+                    <input asp-for="MatKhau" class="form-control" type="password" />
+                    <span asp-validation-for="MatKhau" class="text-danger"></span>
+                </div> *@
+
+                <div class="form-group" hidden>
+                    <label asp-for="NgayTao" class="control-label"></label>
+                    <input asp-for="NgayTao" class="form-control" type="date" asp-format="{0:yyyy-MM-dd}" />
+                    <span asp-validation-for="NgayTao" class="text-danger"></span>
+                </div>
+
+                <div class="form-group" hidden>
+                    <label asp-for="NgayCapNhat" class="control-label"></label>
+                    <input asp-for="NgayCapNhat" class="form-control" type="date" asp-format="{0:yyyy-MM-dd}" />
+                    <span asp-validation-for="NgayCapNhat" class="text-danger"></span>
+                </div>
+
+                <div class="form-group" hidden>
+                    <label asp-for="NguoiTao" class="control-label"></label>
+                    <input asp-for="NguoiTao" class="form-control" />
+                    <span asp-validation-for="NguoiTao" class="text-danger"></span>
+                </div>
+
+                <div class="form-group" hidden>
+                    <label asp-for="NguoiCapNhat" class="control-label"></label>
+                    <input asp-for="NguoiCapNhat" class="form-control" />
+                    <span asp-validation-for="NguoiCapNhat" class="text-danger"></span>
+                </div>
+
+                <div class="form-group" hidden>
+                    <label asp-for="KichHoat" class="control-label"></label>
+                    <input asp-for="KichHoat" class="form-control" />
+                    <span asp-validation-for="KichHoat" class="text-danger"></span>
+                </div>
+
+                <div class="form-group" style="margin-top: 10px; text-align:center">
+                    <input type="submit" value="Tạo mới" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function (event) {
+            let isValid = true;
+            const hoTen = document.querySelector('input[name="HoTen"]');
+            const soDienThoai = document.querySelector('input[name="SoDienThoai"]');
+            const email = document.querySelector('input[name="Email"]');
+
+            // Kiểm tra các trường thông tin
+            if (!hoTen.value.trim()) {
+                isValid = false;
+                alert("Họ Tên không được để trống.");
+                hoTen.focus();
+            } else if (!soDienThoai.value.trim()) {
+                isValid = false;
+                alert("Số Điện Thoại không được để trống.");
+                soDienThoai.focus();
+            } else if (!email.value.trim()) {
+                isValid = false;
+                alert("Email không được để trống.");
+                email.focus();
+            }
+
+            // Nếu không hợp lệ, ngăn gửi biểu mẫu
+            if (!isValid) {
+                event.preventDefault();
+            }
+        });
+    });
+</script>

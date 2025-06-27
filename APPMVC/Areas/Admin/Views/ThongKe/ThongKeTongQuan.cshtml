@@ -1,0 +1,285 @@
+﻿@model AppData.ViewModel.ThongKeViewModel
+
+<div class="container mt-4 " >
+    <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">Thống kê/</span> Tổng quan
+    </h4>
+    <div class="card shadow-sm border mb-4" >
+        <div class="card-body text-center">
+            <h3 class="card-title">Thống Kê Tổng Quan</h3>
+            <p class="card-text">Tổng Số Đơn Hàng: <strong>@Model.TongDonHang</strong></p>
+            <p class="card-text">Tổng Doanh Thu: <strong>@Model.TongDoanhThu.ToString("C", new System.Globalization.CultureInfo("vi-VN"))</strong></p>
+        </div>
+    </div>
+    <div class="d-flex flex-wrap">
+        <div class="card flex-fill me-2 mb-3 shadow" id="bg-ngay">
+            @if (Model.ThongKeNgay == null || !Model.ThongKeNgay.Any())
+            {
+                <div class="alert alert-warning">
+                    <strong>Thông báo:</strong> Không có đơn hàng nào trong ngày.
+                </div>
+            }
+            else
+            {
+                <i class="fa-solid fa-wallet fa-2xl d-flex justify-content-center mt-1"></i>
+                <h4 class="text-center mt-2">Hôm Nay: @ViewData["Date"]</h4>
+                @foreach (var item in Model.ThongKeNgay)
+                {
+                    <h5 class="text-center mt-1">Tổng Tiền: <strong class="ms-1">@item.TongTien.ToString("C", new System.Globalization.CultureInfo("vi-VN"))</strong></h5>
+                    <div class="d-flex justify-content-around mt-2">
+                        <div class="text-center">
+                            <p>Đơn Hàng</p>
+                            <strong>@item.TongDonHang</strong>
+                        </div>
+                        <div class="text-center">
+                            <p>Chờ Xác Nhận</p>
+                            <strong>@item.DonHangChoXacNhan</strong>
+                        </div>
+                       
+                        <div class="text-center">
+                            <p>Thành Công</p>
+                            <strong>@item.DonHangThanhCong</strong>
+                        </div>
+                        <div class="text-center">
+                            <p>Đã Hủy</p>
+                            <strong class="text-danger">@item.DonHangHuy</strong>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+
+        <div class="card flex-fill me-2 mb-3 shadow bg-tuan">
+            @if (Model.ThongKeTuan == null || !Model.ThongKeTuan.Any())
+            {
+                <div class="alert alert-warning">
+                    <strong>Thông báo:</strong> Không có đơn hàng nào trong tuần.
+                </div>
+            }
+            else
+            {
+                <i class="fa-solid fa-rectangle-list fa-2xl d-flex justify-content-center mt-1"></i>
+                <h4 class="text-center mt-2">Tuần Này</h4>
+                @foreach (var item in Model.ThongKeTuan)
+                {
+                    <h5 class="text-center">Tổng Tiền: <strong>@item.TongTien.ToString("C", new System.Globalization.CultureInfo("vi-VN"))</strong></h5>
+                    <div class="d-flex justify-content-around">
+                        <div class="text-center">
+                            <p>Đơn Hàng</p>
+                            <strong>@item.TongDonHang</strong>
+                        </div>
+                        <div class="text-center">
+                            <p>Chờ Xác Nhận</p>
+                            <strong>@item.DonHangChoXacNhan</strong>
+                        </div>
+                        <div class="text-center">
+                            <p>Thành Công</p>
+                            <strong>@item.DonHangThanhCong</strong>
+                        </div>
+                        <div class="text-center">
+                            <p>Đã Hủy</p>
+                            <strong class="text-danger">@item.DonHangHuy</strong>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+    <div class="d-flex flex-wrap">
+        <div class="card flex-fill me-2 mb-3 shadow" id="bg-thang">
+            @if (Model.ThongKeThang == null || !Model.ThongKeThang.Any())
+            {
+                <div class="alert alert-warning">
+                    <strong>Thông báo:</strong> Không có đơn hàng nào trong tháng.
+                </div>
+            }
+            else
+            {
+                <i class="fa-solid fa-wallet fa-2xl d-flex justify-content-center mt-1"></i>
+                <h4 class="text-center mt-2">Tháng Này</h4>
+                @foreach (var item in Model.ThongKeThang)
+                {
+                    <h5 class="text-center mt-1">Tổng Tiền: <strong>@item.TongTien.ToString("C", new System.Globalization.CultureInfo("vi-VN"))</strong></h5>
+                    <div class="d-flex justify-content-around">
+                        <div class="text-center">
+                            <p>Đơn Hàng</p>
+                            <strong>@item.TongDonHang</strong>
+                        </div>
+                        <div class="text-center">
+                            <p>Chờ Xác Nhận</p>
+                            <strong>@item.DonHangChoXacNhan</strong>
+                        </div>
+                        <div class="text-center">
+                            <p>Thành Công</p>
+                            <strong>@item.DonHangThanhCong</strong>
+                        </div>
+                        <div class="text-center">
+                            <p>Đã Hủy</p>
+                            <strong class="text-danger">@item.DonHangHuy</strong>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+
+        <div class="card flex-fill me-2 mb-3 shadow" id="bg-nam">
+            @if (Model.ThongKeNam == null || !Model.ThongKeNam.Any())
+            {
+                <div class="alert alert-warning">
+                    <strong>Thông báo:</strong> Không có đơn hàng nào trong năm.
+                </div>
+            }
+            else
+            {
+                <i class="fa-solid fa-wallet fa-2xl d-flex justify-content-center mt-1"></i>
+                <h4 class="text-center mt-2">Năm Nay</h4>
+                @foreach (var item in Model.ThongKeNam)
+                {
+                    <h5 class="text-center mt-1">Tổng Tiền: <strong>@item.TongTien.ToString("C", new System.Globalization.CultureInfo("vi-VN"))</strong></h5>
+                    <div class="d-flex justify-content-around">
+                        <div class="text-center">
+                            <p>Đơn Hàng</p>
+                            <strong>@item.TongDonHang</strong>
+                        </div>
+                        <div class="text-center">
+                            <p>Chờ Xác Nhận</p>
+                            <strong>@item.DonHangChoXacNhan</strong>
+                        </div>
+                        <div class="text-center">
+                            <p>Thành Công</p>
+                            <strong>@item.DonHangThanhCong</strong>
+                        </div>
+                        <div class="text-center">
+                            <p>Đã Hủy</p>
+                            <strong class="text-danger">@item.DonHangHuy</strong>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+    <div class="card mb-5 shadow border">
+        <h4 class="card-header text-center bg-primary-rgb text-white">Thống Kê Theo Khoảng Thời Gian</h4>
+        <form method="get" action="@Url.Action("ThongKeTongQuan", "ThongKe")" class="filter-form d-flex align-items-center justify-content-center">
+            <div class="mb-1 me-3">
+                <label for="startDate" class="form-label">Ngày bắt đầu:</label>
+                <input type="date" id="startDate" name="startDate" class="form-control" style="width: 200px;" value="@Model.StartDate.ToString("yyyy-MM-dd")" />
+            </div>
+            <div class="mb-1 me-3">
+                <label for="endDate" class="form-label">Ngày kết thúc:</label>
+                <input type="date" id="endDate" name="endDate" class="form-control" style="width: 200px;" value="@Model.EndDate.ToString("yyyy-MM-dd")" />
+            </div>
+            <div class="mb-1 mt-5">
+                <button type="submit" class="btn btn-secondary" id="btn" style="height: 38px;">Xác Nhận</button>
+            </div>
+        </form>
+        <div class="card-body">
+            @if (Model.ThongKeKhoangThoiGian == null || !Model.ThongKeKhoangThoiGian.Any())
+            {
+                <div class="alert alert-warning">
+                    <strong>Thông báo:</strong> Không có dữ liệu thống kê trong khoảng thời gian đã chọn.
+                </div>
+            }
+            else
+            {
+                @foreach (var item in Model.ThongKeKhoangThoiGian)
+                {
+                    <div class="d-flex justify-content-center">
+                        <h5 class="text-center me-3 text-primary">Ngày: <strong>@item.Ngay.ToString("yyyy-MM-dd")</strong></h5>
+                        <h5 class="text-center text-primary">Tổng Tiền: <strong>@item.TongDoanhThu.ToString("C", new System.Globalization.CultureInfo("vi-VN"))</strong></h5>
+                    </div>
+                   
+                    <div class="d-flex justify-content-around">
+                        <div class="text-center">
+                            <p>Đơn Hàng</p>
+                            <strong>@item.TongDonHang</strong>
+                        </div>
+                        <div class="text-center">
+                            <p>Chờ Xác Nhận</p>
+                            <strong>@item.DonHangChoXacNhan</strong>
+                        </div>
+                        <div class="text-center">
+                            <p>Thành Công</p>
+                            <strong>@item.DonHangThanhCong</strong>
+                        </div>
+                        <div class="text-center">
+                            <p>Đã Hủy</p>
+                            <strong class="text-danger">@item.DonHangHuy</strong>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 8px;
+        margin: 20px 0;
+        transition: transform 0.2s;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h3, h4 {
+        color: #333;
+    }
+
+    h5 {
+        color: #555;
+    }
+
+    .bg_tq {
+        background-color: #D7F9FA;
+    }
+
+    #bg-ngay {
+        background-color: #E3F2FD; 
+        border-left: 5px solid #2196F3; 
+    }
+
+    .bg-tuan {
+        background-color: #F1F8E9; 
+        border-left: 5px solid #4CAF50; 
+    }
+
+    #bg-thang {
+        background-color: #FFF3E0; 
+        border-left: 5px solid #FF9800; 
+    }
+
+    #bg-nam {
+        background-color: #EDE7F6; 
+        border-left: 5px solid #673AB7;
+    }
+
+    .filter-form {
+        padding: 10px;
+        background-color: #f9f9f9;
+        margin: 10px 0;
+        border-radius: 8px;
+    }
+
+    .card-header {
+        background-color: #007bff;
+        color: white;
+        padding: 10px;
+        border-radius: 8px 8px 0 0;
+    }
+
+    .alert {
+        font-weight: bold;
+    }
+
+    #btn {
+        background-color: #007bff;
+        color: white;
+        transition: background-color 0.2s;
+    }
+
+    #btn:hover {
+            background-color: #0056b3;
+    }
+</style>

@@ -1,0 +1,240 @@
+﻿@model IEnumerable<AppData.Model.DiaChi>
+
+@{
+    ViewBag.Title = "Danh Sách Địa Chỉ";
+    Layout = "~/Areas/Client/Views/Shared/_Tttk.cshtml";
+}
+<style>
+    h4 {
+        font-family: 'Arial', sans-serif;
+        font-size: 24px;
+        font-weight: 600; /* Làm đậm tiêu đề */
+        text-align: center; /* Căn giữa tiêu đề */
+        color: #333; /* Màu chữ tối */
+        margin-bottom: 30px; /* Khoảng cách dưới tiêu đề */
+    }
+</style>
+
+<h4>Danh sách địa chỉ</h4>
+<hr />
+<div class="container">
+
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Thêm Địa Chỉ Mới</a>
+    </p>
+
+    <div class="table-container">
+        <table class="table table-hover table-bordered">
+            <thead>
+                <tr>
+                    <th hidden>@Html.DisplayNameFor(model => model.IdDiaChi)</th>
+                    <th>Họ Tên</th>
+                    <th>Số Điện Thoại</th>
+                    <th>Địa Chỉ Cụ Thể</th>
+                    <th>Tỉnh/Thành phố</th>
+                    <th>Quận/Huyện</th>
+                    <th>Phường/Xã</th>
+                    <th>Địa Chỉ Mặc Định</th>
+                    <th hidden>@Html.DisplayNameFor(model => model.IdKhachHang)</th>
+                    <th>Hành Động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model == null || !Model.Any())
+                {
+                    <tr>
+                        <td colspan="9" class="text-center">Chưa có địa chỉ nào.</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td hidden>@Html.DisplayFor(modelItem => item.IdDiaChi)</td>
+                            <td>@Html.DisplayFor(modelItem => item.HoTen)</td>
+                            <td>@Html.DisplayFor(modelItem => item.SoDienThoai)</td>
+                            <td>@Html.DisplayFor(modelItem => item.MoTa)</td>
+                            <td>@Html.DisplayFor(modelItem => item.ProvinceName)</td>
+                            <td>@Html.DisplayFor(modelItem => item.DistrictName)</td>
+                            <td>@Html.DisplayFor(modelItem => item.WardName)</td>
+                            <td class="text-center">
+                                @if (item.DiaChiMacDinh)
+                                {
+                                    <span class="badge bg-success">Mặc Định</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Phụ</span>
+                                }
+                            </td>
+                            <td hidden> @Html.DisplayFor(modelItem => item.IdKhachHang)</td>
+                            <td>
+                                <a asp-action="EditDC" asp-route-IdDiaChi="@item.IdDiaChi" class="btn btn-sm btn-warning">Sửa</a>
+                                <a asp-action="Delete" asp-route-IdDiaChi="@item.IdDiaChi" class="btn btn-sm btn-danger">Xóa</a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    /* Tổng thể thiết kế */
+    body {
+        font-family: 'Arial', sans-serif; /* Dùng font dễ đọc */
+        background-color: #f7f7f7;
+        margin: 0;
+        padding: 0;
+        color: #333;
+    }
+
+    /* Trang bìa */
+    .page-title {
+        font-size: 28px;
+        font-weight: 700;
+        text-align: center;
+        color: #111;
+        margin: 40px 0;
+        text-transform: uppercase;
+    }
+
+    /* Nút Thêm Địa Chỉ Mới */
+    .btn-primary {      
+        color: white;
+        border: none;
+        padding: 14px 35px;
+        font-size: 16px;
+        font-weight: 500;
+        border-radius: 25px;
+        text-align: center;
+        display: block;
+        margin: 30px auto;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            background-color: #e55b00;
+        }
+
+    /* Bảng dữ liệu */
+    .table {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1); /* Thêm hiệu ứng bóng để nổi bật bảng */
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 40px;
+    }
+
+        /* Tiêu đề bảng */
+        .table th {
+            background-color: #f4f4f4;
+            color: #555;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 12px 20px;
+            text-align: left;
+        }
+
+        /* Dữ liệu bảng */
+        .table td {
+            font-size: 15px;
+            padding: 14px 20px;
+            color: #555;
+        }
+
+        /* Dòng bảng khi hover */
+        .table tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Các badge trạng thái */
+        .table .badge {
+            padding: 6px 14px;
+            font-size: 12px;
+            text-transform: uppercase;
+            border-radius: 20px;
+        }
+
+    .bg-success {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .bg-secondary {
+        background-color: #868e96;
+        color: white;
+    }
+
+    /* Nút hành động Sửa và Xóa */
+    .btn {
+        font-size: 13px;
+        padding: 10px 20px;
+        border-radius: 20px;
+        text-transform: uppercase;
+        font-weight: 500;
+        transition: background-color 0.3s ease;
+    }
+
+    /* Nút Cảnh Báo (Warning) */
+    .btn-warning {
+        background-color: #6c757d; /* Màu xám sáng */
+        color: white;
+        font-size: 12px; /* Giảm kích thước chữ */
+        padding: 8px 15px; /* Thu nhỏ kích thước nút */
+        border-radius: 20px; /* Bo góc nút */
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-warning:hover {
+            background-color: #495057; /* Màu xám đậm hơn khi hover */
+        }
+
+    /* Nút Nguy Hiểm (Danger) */
+    .btn-danger {
+        background-color: #868e96; /* Màu xám đậm */
+        color: white;
+        font-size: 12px; /* Giảm kích thước chữ */
+        padding: 8px 15px; /* Thu nhỏ kích thước nút */
+        border-radius: 20px; /* Bo góc nút */
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-danger:hover {
+            background-color: #495057; /* Màu xám đậm khi hover */
+        }
+    /* Cải thiện thiết kế container */
+   
+
+    /* Các thành phần của bảng dữ liệu */
+    .table-container {
+        overflow-x: auto;
+    }
+
+        .table-container table {
+            width: 100%;
+            margin: 0;
+        }
+
+    /* Cải tiến các ô nhập liệu khi thay đổi địa chỉ */
+    .input-group {
+        margin-bottom: 20px;
+    }
+
+        .input-group input, .input-group select {
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-size: 15px;
+            border: 1px solid #ddd;
+            width: 100%;
+            transition: border-color 0.3s;
+        }
+
+            .input-group input:focus, .input-group select:focus {
+                border-color: #FF6A00;
+            }
+
+</style>

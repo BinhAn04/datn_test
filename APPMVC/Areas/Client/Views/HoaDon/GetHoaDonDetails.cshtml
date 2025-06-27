@@ -1,0 +1,286 @@
+﻿@model AppData.ViewModel.HoaDonChiTietViewModel
+
+@{
+    ViewData["Title"] = "GetHoaDonDetails";
+}
+
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f4f7fa;
+        color: #333;
+    }
+
+    .content-wrapper {
+        padding: 20px;
+    }
+
+    h1, h4 {
+        color: #495057;
+        margin-bottom: 15px;
+    }
+
+    .timeline {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 20px 0;
+        flex-wrap: wrap;
+    }
+
+    .timeline-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 18%;
+        margin: 10px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        transition: transform 0.2s;
+    }
+
+        .timeline-item:hover {
+            transform: translateY(-5px);
+        }
+
+    .timeline-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #FF9F55;
+        margin-bottom: 10px;
+    }
+
+    .timeline-content {
+        text-align: center;
+    }
+
+    .table {
+        margin-top: 20px;
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .table th, .table td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #dee2e6;
+        }
+
+        .table th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+    .details-card {
+        background: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+</style>
+
+<div class="content-wrapper">
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <div class="card mb-3">
+            <div class="card-body rounded-3">
+                <div class="d-flex mt-5 mb-5">
+                    <img src="/Client/images/—Pngtree—search box with unique design_6595345.png" width="100px" height="100px" />
+                    <h3 class="fw-bold py-3 mb-4">
+                        <span class="text-muted fw-light"><strong>Tra Cứu Đơn Hàng</strong></span>
+                    </h3>
+                </div>
+
+
+                <form id="searchForm" method="post" class="mb-4">
+                    <div class="input-group mb-3">
+                        <input type="text" name="maHoaDon" class="form-control" placeholder="Nhập mã hóa đơn" required />
+                        <button type="submit" class="btn btn-primary">Tìm</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+       <hr />
+
+        @if (Model.HoaDon != null)
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <h4>Lịch sử đơn hàng</h4>
+                    <div class="timeline">
+                        @if (Model.LichSuHoaDons != null && Model.LichSuHoaDons.Any())
+                        {
+                            var sortedItems = Model.LichSuHoaDons.OrderBy(item => item.NgayTao);
+                            foreach (var item in sortedItems)
+                            {
+                                <div class="timeline-item">
+                                    <div class="timeline-icon">
+                                        @switch (item.ThaoTac)
+                                        {
+                                            case "Đã Hủy":
+                                                <i class="fas fa-times-circle" style="color: darkred;" title="Đã Hủy"></i>
+                                                break;
+                                            case "Tạo Đơn Hàng":
+                                                <i class="fas fa-clock" style="color: aqua;" title="Tạo Đơn Hàng"></i>
+                                                break;
+                                            case "Chờ Xác Nhận":
+                                                <i class="fas fa-clock" style="color: orange;" title="Chờ xác nhận"></i>
+                                                break;
+                                            case "Chờ Giao Hàng":
+                                                <i class="fas fa-hourglass-start" style="color: #ffcc00;" title="Chờ giao hàng"></i>
+                                                break;
+                                            case "Đang Vận Chuyển":
+                                                <i class="fas fa-shipping-fast" style="color: #007bff;" title="Đang vận chuyển"></i>
+                                                break;
+                                            case "Đã Thanh Toán":
+                                                <i class="fas fa-money-check-alt" style="color: green;" title="Đã thanh toán"></i>
+                                                break;
+                                            case "Đã Giao Hàng":
+                                                <i class="fas fa-box-open" style="color: mediumseagreen;" title="Đã giao hàng"></i>
+                                                break;
+                                            case "Hoàn Thành":
+                                                <i class="fas fa-flag-checkered" style="color: forestgreen;" title="Hoàn thành"></i>
+                                                break;
+                                            default:
+                                                <i class="fas fa-question-circle" style="color: gray;" title="Trạng thái không xác định"></i>
+                                                break;
+                                        }
+                                    </div>
+                                    <div class="timeline-content">
+                                        <h3>@item.ThaoTac</h3>
+                                        <p>@item.NgayTao.ToString("dd-MM-yyyy HH:mm:ss")</p>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div>No history available.</div>
+                        }
+                    </div>
+
+                    <h4>Thông tin Đơn Hàng</h4>
+                    <div class="details-card">
+                        <strong>Mã Đơn:</strong> @Model.HoaDon?.MaDon<br />
+                        <strong>Khách Hàng:</strong> @Model.HoaDon?.KhachHang<br />
+                        <strong>Trạng Thái:</strong> @Model.HoaDon?.TrangThai<br />
+                        <strong>Số Điện Thoại:</strong> @Model.HoaDon?.SoDienThoaiNguoiNhan<br />
+                        <strong>Loại Hóa Đơn:</strong> @Model.HoaDon?.LoaiHoaDon<br />
+                        <strong>Địa Chỉ Giao Hàng:</strong> @Model.HoaDon?.DiaChiGiaoHang<br />
+                    </div>
+
+                    <h4>Lịch sử thanh toán</h4>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Ngày</th>
+                                <th>Số Tiền</th>
+                                <th>Loại Giao Dịch</th>
+                                <th>Hình Thức Thanh Toán</th>
+                                <th>Người Xác Nhận</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.LichSuThanhToans != null && Model.LichSuThanhToans.Any())
+                            {
+                                foreach (var payment in Model.LichSuThanhToans)
+                                {
+                                    <tr>
+                                        <td>@payment.NgayThanhToan.ToString("dd-MM-yyyy HH:mm:ss")</td>
+                                        <td>@payment.SoTien.ToString("N0")</td>
+                                        <td>@payment.LoaiGiaoDich</td>
+                                        <td>@payment.HinhThucThanhToan</td>
+                                        <td>@payment.NguoiThaoTac</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5">Không có lịch sử thanh toán nào.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <h4>Danh Sách Sản Phẩm</h4>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Tên Sản Phẩm</th>
+                                <th>Số Lượng</th>
+                                <th>Giá</th>
+                                <th>Hình Ảnh</th>
+                                <th>Màu Sắc</th>
+                                <th>Kích Cỡ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.SanPhamChiTiets != null && Model.SanPhamChiTiets.Any())
+                            {
+                                foreach (var sanPham in Model.SanPhamChiTiets)
+                                {
+                                    <tr>
+                                        <td>@sanPham.ProductName</td>
+                                        <td>@sanPham.Quantity</td>
+                                        <td>@sanPham.Price.ToString("N0")</td>
+                                        <td>
+                                            @if (sanPham.HinhAnhs != null && sanPham.HinhAnhs.Any())
+                                            {
+                                                var hinhAnh = sanPham.HinhAnhs.First();
+                                                var base64String = Convert.ToBase64String(hinhAnh.DataHinhAnh);
+                                                var imageUrl = $"data:{hinhAnh.LoaiFileHinhAnh};base64,{base64String}";
+                                                <img src="@imageUrl" alt="Hình ảnh sản phẩm" style="width: 50px; height: auto;" />
+                                            }
+                                            else
+                                            {
+                                                <span>Không có hình ảnh</span>
+                                            }
+                                        </td>
+                                        <td>@string.Join(", ", sanPham.MauSac ?? new List<string> { "Không có màu sắc" })</td>
+                                        <td>@string.Join(", ", sanPham.KichCo ?? new List<string> { "Không có kích cỡ" })</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="6">Không có sản phẩm nào.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <div class="details-card">
+                        <hr />
+                        <dl class="row">
+                            <dt class="col-sm-2">Tổng Tiền Hàng</dt>
+                            <dd class="col-sm-10">@Model.DonGia.ToString("N0")</dd>
+
+                            <dt class="col-sm-2">Giảm Giá</dt>
+                            <dd class="col-sm-10">@Model.GiamGia</dd>
+
+                            <dt class="col-sm-2">Phí Vận Chuyển</dt>
+                            <dd class="col-sm-10">@Model.PhiVanChuyen</dd>
+
+                            <dt class="col-sm-2">Tổng Tiền</dt>
+                            <dd class="col-sm-10">@Model.TongTien.ToString("N0")</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <a href="@Url.Action("Index", "SanPham", new { area = "Client" })" class="btn btn-primary">Tiếp tục mua sắm</a>
+    </div>
+</div>

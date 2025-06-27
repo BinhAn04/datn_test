@@ -1,0 +1,321 @@
+﻿<!-- /*
+* Bootstrap 5
+* Template Name: Furni
+* Template Author: Untree.co
+* Template URI: https://untree.co/
+* License: https://creativecommons.org/licenses/by/3.0/
+*/ -->
+@using AppData.Model;
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="author" content="Untree.co">
+	<link rel="shortcut icon" href="favicon.png">
+
+	<meta name="description" content="" />
+	<meta name="keywords" content="bootstrap, bootstrap4" />
+
+	<!-- Bootstrap CSS -->
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+	<link href="css/tiny-slider.css" rel="stylesheet">
+	<link href="css/style.css" rel="stylesheet">
+	<title>SoleMate Store</title>
+	<style>
+		.sidebar {
+			background-color: #f8f9fa; /* Màu nền nhẹ cho sidebar */
+			padding: 15px; /* Padding cho sidebar */
+			border-radius: 8px; /* Bo góc cho sidebar */
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Hiệu ứng bóng nhẹ */
+		}
+
+		.sidebar-block {
+			margin-bottom: 20px; /* Khoảng cách giữa các block */
+		}
+
+		.sidebar-title {
+			font-weight: bold; /* Đậm tiêu đề */
+			color: #343a40; /* Màu chữ tiêu đề */
+			margin-bottom: 10px; /* Khoảng cách dưới tiêu đề */
+		}
+
+		.color-filters {
+			display: flex; /* Hiển thị các màu sắc theo hàng ngang */
+			flex-wrap: wrap; /* Cho phép xuống dòng nếu cần */
+		}
+
+			.color-filters li {
+				margin: 5px; /* Khoảng cách giữa các màu */
+			}
+
+		.color-swatch {
+			width: 75px; /* Chiều rộng của màu sắc */
+			height: 50px; /* Chiều cao của màu sắc */
+			display: flex; /* Để căn giữa nhãn */
+			justify-content: center; /* Căn giữa nội dung */
+			align-items: center; /* Căn giữa nội dung */
+			cursor: pointer; /* Hiển thị con trỏ khi hover */
+			position: relative; /* Để đặt nhãn */
+			border-radius: 5px; /* Bo góc cho ô màu */
+			border: 1px solid #ced4da; /* Viền nhẹ cho ô màu */
+			background-color: #343a40;
+		}
+
+			.color-swatch:hover {
+			background-color: #a9a9a9; /* Màu nền khi hover */
+		}
+		.color-label {
+			color: white; /* Màu chữ trắng cho nổi bật */
+			font-size: 0.8rem; /* Kích thước chữ nhỏ */
+		}
+
+		.size-filters {
+			display: flex; /* Hiển thị các nút kích thước theo hàng ngang */
+			flex-wrap: wrap; /* Cho phép xuống dòng nếu cần */
+		}
+
+		.size-button {
+			background-color: #343a40; /* Màu nền cho nút kích thước */
+			color: white; /* Màu chữ trắng */
+			border: none; /* Không có viền */
+			border-radius: 5px; /* Bo góc cho nút */
+			padding: 10px 15px; /* Padding cho nút */
+			margin: 5px; /* Khoảng cách giữa các nút */
+			cursor: pointer; /* Hiển thị con trỏ khi hover */
+			transition: background-color 0.3s; /* Hiệu ứng chuyển màu nền */
+			flex: 0 0 auto; /* Không co dãn */
+		}
+
+			.size-button:hover {
+				background-color: #a9a9a9; /* Màu nền khi hover */
+			}
+		/*Slide*/
+		.carousel-item img {
+			height: 470px;
+			object-fit: cover;
+			margin-bottom: 5px;
+			border-radius: 10px;
+		}
+
+		.carousel-caption {
+			background: rgba(0, 0, 0, 0.2); /* Nền tối cho caption */
+			border-radius: 5px; /* Bo góc caption */
+			padding: 10px;
+		}
+
+		.carousel-control-prev-icon,
+		.carousel-control-next-icon {
+			css Copier background-color: rgba(0, 0, 0, 0.4); /* Nền cho các nút điều khiển */
+		}
+
+		/*Danh mục*/
+		#container {
+			text-align: center; /* Căn giữa nội dung trong container */
+		}
+
+		.category-list {
+			display: flex; /* Sử dụng flexbox để bố trí thành hàng */
+			flex-wrap: wrap; /* Cho phép cân bằng các nút trên nhiều hàng nếu cần */
+			gap: 10px; /* Khoảng cách giữa các nút */
+			justify-content: center; /* Căn giữa các nút */
+		}
+
+		.category-button {
+			background-color: #343a40; /* Màu xám nhạt cho nút */
+			color: whitesmoke; /* Màu chữ đen để nổi bật trên nền xám */
+			border: none; /* Không có viền */
+			border-radius: 5px; /* Bo góc nút */
+			padding: 15px; /* Thêm padding cho nút */
+			flex: 1 1 150px; /* Đặt kích thước tối thiểu cho nút */
+			min-width: 150px; /* Đặt chiều rộng tối thiểu cho nút */
+			cursor: pointer; /* Thay đổi con trỏ khi hover */
+			transition: background-color 0.3s; /* Hiệu ứng chuyển màu nền */
+		}
+
+		.category-button:hover {
+			background-color: #a9a9a9; /* Màu xám đậm hơn khi hover */
+		}
+
+		.sidebar-t {
+			font-weight: bold; /* Đậm tiêu đề */
+			color: #343a40; /* Màu chữ tiêu đề */
+			margin-bottom: 10px; /* Khoảng cách dưới tiêu đề */
+			font-size: 1rem; /* Kích thước chữ lớn hơn */
+			text-transform: uppercase; /* Chuyển đổi chữ thành chữ hoa */
+			letter-spacing: 1px; /* Khoảng cách giữa các chữ cái */
+			border-bottom: 2px solid #007bff; /* Đường viền dưới tiêu đề */
+			padding-bottom: 5px; /* Khoảng cách dưới đường viền */
+		}
+	</style>
+	<link rel="stylesheet" href="/Client/css/loading.css" />
+</head>
+
+<body>
+
+	@Html.Partial("_Nav")
+	<div class="">
+		<!-- Slide Show -->
+		<div id="carouselExampleCaptions" class="carousel slide">
+			<div class="carousel-indicators">
+				<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+				<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+				<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+			</div>
+			<div class="carousel-inner">
+				<div class="carousel-item active">
+					<img src="/Client/images/Shoes-Web-Ads-Banne1r-thietkehaithanh.jpg" class="d-block w-100" alt="...">
+					<div class="carousel-caption d-none d-md-block">
+						<h5>Ưu Đãi Đặc Biệt</h5>
+						<p>Giảm giá lên đến 50% cho các sản phẩm chọn lọc!</p>
+					</div>
+				</div>
+				<div class="carousel-item">
+					<img src="/Client/images/20240926111113-0.webp" class="d-block w-100" alt="...">
+					<div class="carousel-caption d-none d-md-block">
+						<h5>Giày Thể Thao Mới Nhất</h5>
+						<p>Khám phá bộ sưu tập giày thể thao mới nhất của chúng tôi!</p>
+					</div>
+				</div>
+				<div class="carousel-item">
+					<img src="/Client/images/banner.webp" class="d-block w-100" alt="...">
+					<div class="carousel-caption d-none d-md-block">
+						<h5>Khám Phá Ngay</h5>
+						<p>Chúng tôi có nhiều kiểu dáng phù hợp với mọi phong cách!</p>
+					</div>
+				</div>
+			</div>
+			<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+				<span class="visually-hidden">Previous</span>
+			</button>
+			<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+				<span class="carousel-control-next-icon" aria-hidden="true"></span>
+				<span class="visually-hidden">Next</span>
+			</button>
+		</div>
+	</div>
+	<!-- End Slide Section -->
+	
+	<div class="loading-container" id="loading" style="display: none;">
+		<div class="loader"></div>
+		<p>Chờ xíu SoleMates đang tìm sản phẩm cho bạn!</p>
+	</div>
+	<div class="container mt-2" id="container">
+		<div class="">
+			<h3 class="text-dark">Danh Mục</h3>
+			<div class="category-list" id="categoryList">
+				@if (ViewData["Categories"] is List<DanhMuc> categories1 && categories1.Count > 0)
+				{
+					foreach (var category in categories1)
+					{
+						<button class="category-button" onclick="showLoadingAndRedirect('@Url.Action("Index", new { name = "", categoryId = category.IdDanhMuc })')">
+							@category.TenDanhMuc
+						</button>
+					}
+				}
+				else
+				{
+					<p>No categories available.</p>
+				}
+			</div>
+		</div>
+		<hr />
+	</div>
+	
+	<div class="untree_co-section product-section before-footer-section">
+		<div class="container">
+			<div class="row">
+				<!-- Bắt đầu lọc -->
+				<div class="col-lg-3 col-md-4 col-sm-12">
+					<h5 class="sidebar-t">
+						<i class="fa-solid fa-filter"></i> Bộ Lọc Tìm Kiếm
+					</h5>
+					<!-- Lọc-->
+					<div class="sidebar">
+						<div class="sidebar-block">
+							<h3 class="sidebar-title">Màu Sắc</h3>
+							<ul class="list-unstyled color-filters" id="colorButtons">
+								@if (ViewData["Colors"] is List<MauSac> colors && colors.Count > 0)
+								{
+									foreach (var color in colors)
+									{
+										<li style="margin-right: 10px; margin-bottom: 10px;">
+											<div class="color-swatch"
+												 onclick="showLoadingAndRedirect('@Url.Action("Index", new { colorId = color.IdMauSac })')"
+												 title="@color.TenMauSac">
+												<span class="color-label">@color.TenMauSac</span>
+											</div>
+										</li>
+									}
+								}
+								else
+								{
+									<li>No colors available.</li>
+								}
+							</ul>
+						</div>
+
+						<div class="sidebar-block">
+							<h3 class="sidebar-title">Kích Cỡ</h3>
+							<div class="size-filters" id="sizeButtons" style="display: flex; flex-wrap: wrap;">
+								@if (ViewData["Sizes"] is List<KichCo> sizes && sizes.Count > 0)
+								{
+									var sortedSizes = sizes.OrderBy(size => size.TenKichCo).ToList();
+									foreach (var size in sortedSizes)
+									{
+										<button class="size-button"
+												onclick="showLoadingAndRedirect('@Url.Action("Index", new { sizeId = size.IdKichCo })')"
+												title="@size.TenKichCo">
+											@size.TenKichCo
+										</button>
+									}
+								}
+								else
+								{
+									<span>No sizes available.</span>
+								}
+							</div>
+						</div>
+					</div>
+					<!--Hết Lọc-->
+
+				</div>
+				<!--Hết bộ lọc-->
+
+				<!--Sản phẩm-->
+				<div class="col-lg-9 col-md-8 col-sm-12" id="productsArea">
+					@RenderBody()
+				</div>
+				<!--Hêt sản phẩm-->
+			</div>
+		</div>
+	</div>
+
+	@Html.Partial("_Footer")
+
+
+
+
+	<script src="js/bootstrap.bundle.min.js"></script>
+	<script src="js/tiny-slider.js"></script>
+	<script src="js/custom.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<script>
+		function showLoadingAndRedirect(url) {
+			// Hiện hiệu ứng loading
+			document.getElementById('loading').style.display = 'flex';
+
+			// Chuyển hướng sau một khoảng thời gian nhất định (ví dụ: 1 giây)
+			setTimeout(function () {
+				window.location.href = url;
+			}, 1000); // Thay đổi thời gian nếu cần
+		}
+	</script>
+</body>
+
+</html>

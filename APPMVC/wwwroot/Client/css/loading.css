@@ -1,0 +1,39 @@
+﻿.loading-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Chiều cao của viewport */
+    position: fixed; /* Giữ ở vị trí cố định */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.8); /* Nền trắng với độ mờ */
+    z-index: 9999; /* Đặt trên cùng */
+}
+
+.loader {
+    border: 8px solid #f3f3f3; /* Màu nền */
+    border-top: 8px solid #3498db; /* Màu của vòng tròn */
+    border-radius: 50%;
+    width: 50px; /* Đường kính vòng tròn */
+    height: 50px; /* Đường kính vòng tròn */
+    animation: spin 1s linear infinite; /* Hiệu ứng quay */
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-container p {
+    margin-top: 15px; /* Khoảng cách giữa vòng tròn và chữ */
+    font-size: 18px; /* Kích thước chữ */
+    color: #333; /* Màu chữ */
+}

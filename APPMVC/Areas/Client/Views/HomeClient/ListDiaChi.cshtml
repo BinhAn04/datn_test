@@ -1,0 +1,101 @@
+﻿@model IEnumerable<AppData.Model.DiaChi>
+<style>
+    .address-container {
+        margin: 20px auto;
+        padding: 20px;
+        max-width: 800px;
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .table {
+        margin: 0;
+        width: 100%;
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: #f2f2f2;
+    }
+
+    .table-bordered {
+        border: 1px solid #ddd;
+    }
+
+    .table-dark th {
+        color: #fff;
+        background-color: #343a40;
+    }
+
+    .alert-warning {
+        background-color: #fff3cd;
+        color: #856404;
+        border-color: #ffeeba;
+        padding: 10px;
+        border-radius: 5px;
+        margin-top: 20px;
+    }
+
+    h2 {
+        margin-bottom: 20px;
+        color: #343a40;
+    }
+</style>
+<div class="address-container">
+    <h2 class="text-center">Danh Sách Địa Chỉ</h2>
+    <a  asp-action="Create">Thêm Mới Địa Chỉ</a>
+    @if (Model != null && Model.Any())
+    {
+        <table class="table table-striped table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">Họ Tên</th>
+                    <th scope="col">SĐT</th>                   
+                    <th scope="col">Thành phố</th>
+                    <th scope="col">Huyện</th>
+                    <th scope="col">Xã</th>
+                    <th scope="col">Địa Chỉ Mặc Định </th>
+                 
+                    <th>Thao Tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var diaChi in Model)
+                {
+                    <tr>
+                        <td>@diaChi.HoTen</td>
+                        <td>@diaChi.SoDienThoai</td>
+                        <td>@diaChi.ProvinceName</td>
+                        <td>@diaChi.DistrictName</td>
+                        <td>@diaChi.WardName</td>
+                        <td>
+                            @if (diaChi.DiaChiMacDinh)
+                            {
+                                <span class="badge bg-success">Mặc Định</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Phụ</span>
+                            }
+                        </td>
+                        <td>
+                            <a  asp-action="EditDC" asp-route-id="@diaChi.IdDiaChi">Chỉnh Sửa</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-warning text-center">
+            Không có địa chỉ nào.
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    </script>
+}

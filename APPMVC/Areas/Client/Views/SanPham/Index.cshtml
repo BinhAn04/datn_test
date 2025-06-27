@@ -1,0 +1,123 @@
+﻿@model List<APPMVC.ViewModel.SanPhamClientViewModel>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Client/Views/Shared/_Sanpham.cshtml";
+}
+<link rel="stylesheet" href="/Client/css/sanPham.css" />
+@if (TempData["SuccessMessage"] != null)
+{
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-icon">&#10003;</span>
+                <span class="modal-title">Thanh toán thành công!</span>
+                <span class="close" id="closeModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p class="modal-message">@Html.Raw(TempData["SuccessMessage"])</p>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-button" onclick="document.getElementById('successModal').style.display='none';">Đóng</button>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="search-form">
+    <form method="get" action="@Url.Action("Index")">
+        <input type="text" name="name" placeholder="Tìm kiếm sản phẩm..." value="@ViewData["SearchTerm"]" />
+        <button type="submit">Tìm kiếm</button>
+    </form>
+</div>
+<div class="container">
+    <div class="row">
+        @if (Model != null && Model.Count > 0)
+        {
+            foreach (var sanPham in Model)
+            {
+                <div class="col-12 col-md-4 col-lg-3 mb-4">
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img id="mainImage_@sanPham.IdSanPham"
+                                 src="@(sanPham.RepresentativeImage != null ? $"data:image;base64,{Convert.ToBase64String(sanPham.RepresentativeImage)}" : "/images/default-product.jpg")" loading="lazy"
+                                 alt="@sanPham.TenSanPham"
+                                 data-original-image="@(sanPham.RepresentativeImage != null ? $"data:image;base64,{Convert.ToBase64String(sanPham.RepresentativeImage)}" : "/images/default-product.jpg")" />
+
+                            @if (sanPham.HighestDiscountPercentage > 0)
+                            {
+                                <div class="discount-badge">Giảm @sanPham.HighestDiscountPercentage%!</div>
+                            }
+                        </div>
+                        <div class="product-info">
+                            <div class="product-colors mb-2">
+                                @foreach (var colorImage in sanPham.ColorImages)
+                                {
+                                    <div class="color-item"
+                                         style="background-image: url('data:image;base64,@Convert.ToBase64String(colorImage.AnhDaiDien)');"
+                                         data-main-image="@Convert.ToBase64String(colorImage.AnhDaiDien)">
+                                    </div>
+                                }
+                            </div>
+                            <h3 class="product-title">@sanPham.TenSanPham</h3>
+                            <p class="product-price">
+                                @(sanPham.GiaThapNhat?.ToString("N0") ?? "N/A") -
+                                @(sanPham.GiaCaoNhat?.ToString("N0") ?? "N/A") VND
+                            </p>
+                            <a href="@Url.Action("Detail", "SanPham", new { sanphamId = sanPham.IdSanPham })"
+                               class="btn btn-primary">Xem chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center">
+                <div class="alert  text-center" role="alert">
+                    <img src="/Client/images/pngwing.com.png" class="alert-image" />
+                    <div class="alert-message">Không có sản phẩm nào được tìm thấy.</div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const productCards = document.querySelectorAll('.product-card');
+
+        productCards.forEach(card => {
+            const mainImage = card.querySelector('img[data-original-image]');
+            const colorItems = card.querySelectorAll('.color-item');
+
+            colorItems.forEach(colorItem => {
+                colorItem.addEventListener('click', function () {
+                    mainImage.src = 'data:image;base64,' + this.getAttribute('data-main-image');
+                });
+            });
+
+            card.addEventListener('mouseleave', function () {
+                const originalImage = mainImage.getAttribute('data-original-image');
+                mainImage.src = originalImage;
+            });
+        });
+
+        // Hiển thị thông báo thành công nếu có
+        const successModal = document.getElementById('successModal');
+        if (successModal) {
+            successModal.style.display = 'flex'; // Hiển thị modal
+
+            // Đóng modal khi nhấn vào nút đóng
+            document.getElementById('closeModal').onclick = function () {
+                successModal.style.display = 'none';
+            };
+
+            // Đóng modal khi nhấn ra ngoài vùng modal
+            window.onclick = function (event) {
+                if (event.target === successModal) {
+                    successModal.style.display = 'none';
+                }
+            };
+        }
+    }); 
+</script>

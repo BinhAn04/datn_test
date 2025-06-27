@@ -1,0 +1,272 @@
+﻿@using X.PagedList.Mvc.Core
+@model X.PagedList.IPagedList<AppData.Model.KichCo>
+
+@{
+    ViewData["Title"] = "Danh sách Kích Cỡ";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content-wrapper">
+    <!-- Thông báo -->
+    <div id="alertContainer" style="position: absolute; top: 20px; right: 20px; z-index: 1000;">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+    </div>
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4">
+            <span class="text-muted fw-light">Quản lý sản phẩm /</span> Kích Cỡ
+        </h4>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-4" style="padding: 20px">
+                    <!-- Nút thêm mới -->
+                    <div class="nav-item d-flex justify-content-end mb-3">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
+                            Thêm Mới
+                        </button>
+                    </div>
+
+                    <!-- Bảng dữ liệu -->
+                    <div class="table-responsive">
+                        <table class="table table-striped" id="kichCoTable">
+                            <thead>
+                                <tr>
+                                    <th>Mã</th>
+                                    <th>Tên Kích Cỡ</th>
+                                    <th>Ngày Tạo</th>
+                                    <th>Kích Hoạt</th>
+                                    <th>Chức Năng</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr data-id="@item.IdKichCo">
+                                        <td>@item.IdKichCo.ToString().Substring(0, 5)</td>
+                                        <td>@item.TenKichCo</td>
+                                        <td>@item.NgayTao.ToString("dd/MM/yyyy")</td>
+                                        <td>
+                                            @(item.KichHoat == 1 ? "Hoạt động" : "Không hoạt động")
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-warning edit-btn" 
+                                                    data-id="@item.IdKichCo" 
+                                                    data-ten="@item.TenKichCo" 
+                                                    data-kichhoat="@item.KichHoat">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger delete-btn" data-id="@item.IdKichCo">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Phân trang -->
+                    <div class="pagination justify-content-center">
+                        @Html.PagedListPager(Model, page => Url.Action("Getall", new { page }),
+                            new PagedListRenderOptions
+                            {
+                                LiElementClasses = new[] { "page-item" },
+                                PageClasses = new[] { "page-link" }
+                            })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Thêm Mới -->
+<div class="modal fade" id="createModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Thêm Mới Kích Cỡ</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createForm">
+                    <div class="mb-3">
+                        <label class="form-label">Tên Kích Cỡ</label>
+                        <input type="text" class="form-control" name="TenKichCo" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Chỉnh Sửa -->
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Chỉnh Sửa Kích Cỡ</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm">
+                    <input type="hidden" name="IdKichCo" id="editId">
+                    <div class="mb-3">
+                        <label class="form-label">Tên Kích Cỡ</label>
+                        <input type="text" class="form-control" name="TenKichCo" id="editTenKichCo" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Kích Hoạt</label>
+                        <select class="form-select" name="KichHoat" id="editKichHoat">
+                            <option value="1">Hoạt động</option>
+                            <option value="0">Không hoạt động</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Xử lý thêm mới
+            $('#createForm').on('submit', function (e) {
+                e.preventDefault();
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    url: '@Url.Action("Create", "KichCo")',
+                    type: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        if (response.success) {
+                            var newRow = `
+                                <tr data-i d="${response.id}">
+                                    <td>${response.id.substring(0, 5)}</td>
+                                    <td>${response.tenKichCo}</td>
+                                    <td>${response.ngayTao}</td>
+                                    <td>${response.kichHoat == 1 ? "Hoạt động" : "Không hoạt động"}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-warning edit-btn" data-id="${response.id}" data-ten="${response.tenKichCo}" data-kichhoat="${response.kichHoat}">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger delete-btn" data-id="${response.id}">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            `;
+                            $('#kichCoTable tbody').append(newRow);
+                            $('#createModal').modal('hide');
+                            toastr.success('Thêm mới thành công');
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    },
+                    error: function () {
+                        toastr.error('Có lỗi xảy ra');
+                    }
+                });
+            });
+
+            // Xử lý chỉnh sửa
+            $(document).on('click', '.edit-btn', function () {
+                var id = $(this).data('id');
+                var ten = $(this).data('ten');
+                var kichHoat = $(this).data('kichhoat');
+
+                $('#editId').val(id);
+                $('#editTenKichCo').val(ten);
+                $('#editKichHoat').val(kichHoat);
+                $('#editModal').modal('show');
+            });
+
+            $('#editForm').on('submit', function (e) {
+    e.preventDefault();
+    
+    var tenKichCo = $('#editTenKichCo').val().trim();
+    
+    // Validate phía client
+    if (!tenKichCo) {
+        toastr.error('Tên kích cỡ không được để trống');
+        return;
+    }
+
+    var formData = {
+        IdKichCo: $('#editId').val(),
+        TenKichCo: tenKichCo,
+        KichHoat: $('#editKichHoat').val()
+    };
+
+    $.ajax({
+        url: '@Url.Action("Edit", "KichCo")',
+        type: 'POST',
+        data: formData,
+        success: function (response) {
+            if (response.success) {
+                var rowToUpdate = $(`tr[data-id='${response.id}']`);
+                rowToUpdate.find('td:nth-child(2)').text(response.tenKichCo);
+                rowToUpdate.find('td:nth-child(4)').text(response.kichHoat == 1 ? 'Hoạt động' : 'Không hoạt động');
+                $('#editModal').modal('hide');
+                toastr.success('Cập nhật thành công');
+            } else {
+                toastr.error(response.message);
+            }
+        },
+        error: function (xhr) {
+            // Log chi tiết lỗi
+            console.error(xhr);
+            toastr.error('Có lỗi xảy ra: ' + xhr.responseText);
+        }
+    });
+});
+
+            // Xử lý xóa
+            $(document).on('click', '.delete-btn', function () {
+                var id = $(this).data('id');
+                if (confirm('Bạn có chắc chắn muốn xóa?')) {
+                    $.ajax({
+                        url: '@Url.Action("Delete", "KichCo")',
+                        type: 'POST',
+                        data: { id: id },
+                        success: function (response) {
+                            if (response.success) {
+                                $(`tr[data-id='${id}']`).remove();
+                                toastr.success('Xóa thành công');
+                            } else {
+                                toastr.error(response.message);
+                            }
+                        },
+                        error: function () {
+                            toastr.error('Có lỗi xảy ra');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

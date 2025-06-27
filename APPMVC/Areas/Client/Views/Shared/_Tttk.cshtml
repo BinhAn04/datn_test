@@ -1,0 +1,177 @@
+﻿<!doctype html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="author" content="Untree.co">
+    <link rel="shortcut icon" href="favicon.png">
+
+    <meta name="description" content="" />
+    <meta name="keywords" content="bootstrap, bootstrap4" />
+
+    <!-- Bootstrap CSS -->
+    <link href="~/Client/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/Client/css/tiny-slider.css" rel="stylesheet">
+    <link href="~/Client/css/style.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9; /* Nền sáng */
+            margin: 0;
+            color: #333;
+        }
+
+        .menu-inner {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .menu-item {
+            margin-bottom: 15px;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            padding: 15px;
+            border-radius: 8px;
+            color: #333;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+            .menu-link:hover {
+                background-color: rgba(0, 0, 0, 0.7);
+                color: #fff;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            }
+
+            .menu-link i {
+                font-size: 20px;
+                margin-right: 10px;
+                color: #5bc0de; /* Biểu tượng màu xanh lam */
+                transition: color 0.3s ease;
+            }
+
+            .menu-link:hover i {
+                color: #fff; /* Biểu tượng trắng khi hover */
+            }
+
+        .menu-header {
+            font-size: 14px;
+            color: #777;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .layout-container {
+            display: flex;
+            background-color: #f9f9f9; /* Nền sáng */
+            min-height: 100vh;
+        }
+
+        .menu-left {
+            width: 280px;
+            background-color: #D0D0D0;
+            padding: 20px;
+            border-right: 3px solid #e0e0e0; /* Đường viền ngăn */
+        }
+
+            .menu-left .menu-header-text {
+                color: rgba(0, 0, 0, 0.7); /* Màu đen mềm mại hơn */
+                font-size: 18px; /* Tăng kích thước font chữ */
+            }
+
+        .content {
+            flex-grow: 1;
+            padding: 40px;
+            background-color: #E0E0E0; /* Nền nội dung trắng */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+            .content h1 {
+                font-size: 28px;
+                color: #333;
+                margin-bottom: 20px;
+            }
+
+            .content p {
+                font-size: 16px;
+                color: #555;
+                line-height: 1.6;
+            }
+
+        .fas.fa-user {
+            color: rgba(0, 0, 0, 1); /* Màu đen với độ mờ 100% */
+        }
+
+        .fas.fa-map-marker-alt {
+            color: rgba(0, 0, 0, 1); /* Màu đen với độ mờ 100% */
+        }
+
+        .fas.fa-lock {
+            color: rgba(0, 0, 0, 1); /* Màu đen với độ mờ 100% */
+        }
+
+        .fas.fa-receipt {
+            color: rgba(0, 0, 0, 1); /* Màu đen với độ mờ 100% */
+        }
+    </style>
+</head>
+
+<body>
+    @Html.Partial("_Nav")
+    <div class="layout-container">
+        <!-- Menu bên trái -->
+        <aside class="menu-left rounded-start">
+            <ul class="menu-inner py-1">
+                <li class="menu-header small text-uppercase">
+                    <span class="menu-header-text">Tài khoản</span>
+                </li>
+                <li class="menu-item">
+                    <a href="@Url.Action("ThongTinKhachHang", "KhachHang", new { area = "Client" })" class="menu-link">
+                        <i class="fas fa-user"></i>
+                        <div>Thông tin tài khoản</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="@Url.Action("Getall", "DiaChi", new { area = "Client" })" class="menu-link">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>Địa chỉ</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="@Url.Action("ChangePassword", "KhachHang", new { area = "Client" })" class="menu-link">
+                        <i class="fas fa-lock"></i>
+                        <div>Đổi mật khẩu</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="@Url.Action("Index", "HoaDon", new { area = "Client" })" class="menu-link">
+                        <i class="fas fa-receipt"></i>
+                        <div>Đơn Hàng</div>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Nội dung bên phải -->
+        <div class="content" style="background-color: #F5F5F5">
+            @RenderBody()
+            @RenderSection("Scripts", required: false)
+        </div>
+    </div>
+
+    <script src="~/Client/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Client/js/tiny-slider.js"></script>
+    <script src="~/Client/js/custom.js"></script>
+</body>
+
+</html>

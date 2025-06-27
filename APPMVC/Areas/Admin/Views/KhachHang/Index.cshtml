@@ -1,0 +1,135 @@
+﻿@model X.PagedList.IPagedList<AppData.ViewModel.KhachHangViewModel> 
+@using X.PagedList.Mvc.Core
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content-wrapper">
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success" style="margin-top: 20px;">
+            @TempData["Success"]
+        </div>
+    }
+    @if (TempData["ErrorKH"] != null)
+    {
+        <div class="alert alert-danger" style="margin-top: 20px;">
+            @TempData["ErrorKH"]
+        </div>
+    }
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4">
+            <span class="text-muted fw-light">Quản lý khách hàng /</span> Danh sách khách hàng
+        </h4>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-4" style="padding: 20px;">
+                    <div class="nav-item d-flex align-items-center" style="display: flex; justify-content: space-between;">
+                        <form action="@Url.Action("SearchKhachHang", "KhachHang", new { area = "Admin" })" method="get" class="d-flex align-items-center">
+                            <i class="bx bx-search fs-4 lh-0"></i>
+                            <input type="text" name="name" class="form-control border-1 shadow-none" placeholder="Tìm kiếm theo tên..." aria-label="Search..." />
+                            <button type="submit" title="Tìm kiếm" class="btn btn-success" style="margin-left: 10px;">Tìm</button>
+                        </form>
+                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal" style="margin-left: 10px;">Tạo mới</a>
+                    </div>
+                    <br>
+                    <div class="panel-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th hidden>ID</th>
+                                    <th>Họ tên</th>
+                                    <th>Số điện thoại</th>
+                                    <th>Email</th>                                   
+                                    <th hidden>Ngày Tạo</th>
+                                    <th hidden>Ngày Cập Nhật</th>
+                                    <th hidden>Người Tạo</th>
+                                    <th hidden>Người Cập Nhật</th>
+                                    <th>Địa Chỉ</th>
+                                    <th>Kích Hoạt</th>
+                                    <th>Chức năng</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Any())
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td hidden>@Html.DisplayFor(modelItem => item.KhachHang.IdKhachHang)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.KhachHang.HoTen)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.KhachHang.SoDienThoai)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.KhachHang.Email)</td>                                           
+                                            <td hidden>@item.KhachHang.NgayTao.ToString("dd/MM/yyyy")</td>
+                                            <td hidden>@item.KhachHang.NgayCapNhat.ToString("dd/MM/yyyy")</td>
+                                            <td hidden>@Html.DisplayFor(modelItem => item.KhachHang.NguoiTao)</td>
+                                            <td hidden>@Html.DisplayFor(modelItem => item.KhachHang.NguoiCapNhat)</td>
+                                            <td>
+                                                @if (item.DiaChi != null && item.DiaChi.Any())
+                                                {
+                                                    @item.DiaChi
+                                                                    }
+                                                else
+                                                {
+                                                    <span>Không có địa chỉ</span>
+                                                }
+                                            </td>
+                                            <td>@(item.KhachHang.KichHoat == 1 ? "Hoạt động" : "Không hoạt động")</td>
+                                            <td>
+                                                <a asp-action="Edit" asp-route-id="@item.KhachHang.IdKhachHang" title="Edit">
+                                                    <i class="fa-solid fa-pen"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td colspan="11">No data available</td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pagination">
+                        @Html.PagedListPager(Model, page => Url.Action("Index", "KhachHang", new { Page = page }),
+                                 new PagedListRenderOptions
+                        {
+                            DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+                            DisplayLinkToLastPage = PagedListDisplayMode.Always,
+                            DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+                            DisplayLinkToNextPage = PagedListDisplayMode.Always,
+                            MaximumPageNumbersToDisplay = 5,
+                            LiElementClasses = new string[] { "page-item" },
+                            PageClasses = new string[] { "page-link" }
+                        })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create Modal -->
+<div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-body">
+            @Html.Partial("Create", new AppData.Model.KhachHang
+       {
+           HoTen = "",
+           SoDienThoai = "",
+           Email = "",
+           MatKhau = "",
+           AuthProvider = "1",
+           NgayTao = DateTime.Now,
+           NgayCapNhat = DateTime.Now,
+           NguoiTao = "admin",
+           NguoiCapNhat = "admin",
+           KichHoat = 1,
+       })
+        </div>
+    </div>
+</div>

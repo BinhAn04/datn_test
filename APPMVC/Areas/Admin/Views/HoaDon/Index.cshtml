@@ -1,0 +1,182 @@
+﻿@using X.PagedList.Mvc.Core
+@model X.PagedList.IPagedList<AppData.ViewModel.HoaDonViewModell>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-top: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+        overflow: hidden;
+    }
+
+        .table th, .table td {
+            padding: 15px;
+            text-align: left;
+            border: 1px solid #dee2e6;
+        }
+
+        .table th {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .table tbody tr:hover {
+            background-color: #e9ecef;
+        }
+
+        .table tbody tr {
+            transition: background-color 0.3s ease;
+        }
+
+    .alert {
+        margin: 20px; /* Consistent margins */
+        padding: 15px;
+        position: relative; /* Changed to relative for better layout */
+        border-radius: 5px;
+    }
+    .btn-group {
+        margin-bottom: 10px; /* Reduced spacing between button group and the table */
+    }
+
+    .btn-secondary {
+        margin: 0 5px; /* Consistent spacing between buttons */
+    }
+
+    .pagination {
+        margin-top: 20px; /* Added margin to separate from table */
+        justify-content: center; /* Center the pagination */
+    }
+
+    .page-item {
+        margin: 0 2px; /* Spacing between pagination items */
+    }
+
+    .page-link {
+        padding: 10px 15px;
+        border-radius: 5px;
+        color: #007bff;
+        transition: background-color 0.2s;
+    }
+
+        .page-link:hover {
+            background-color: #e2e6ea;
+        }
+</style>
+<div class="container mt-4">
+    <div class="content-wrapper">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["Success"]
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">
+                @TempData["Error"]
+            </div>
+        }
+
+        <h4 class="fw-bold py-3 mb-4">
+            <span class="text-muted fw-light">Quản lý hóa đơn /</span> Hóa đơn
+        </h4>
+
+        <div class="card mb-4" style="padding: 20px;">
+            <form method="get" action="@Url.Action("Index", "HoaDon")">
+                <div class="d-flex align-items-center mb-3">
+                    <input type="text" id="searchInput" name="search" value="@ViewBag.CurrentSearch"
+                           placeholder="Theo mã đơn hoặc tên khách hàng..."
+                           class="form-control me-2" style="width: 300px;" />
+                    <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                </div>
+            </form>
+
+            <div class="btn-group" role="group" aria-label="Basic example">
+                @if (ViewBag.Statuses != null)
+                {
+                    <a href="@Url.Action("Index", new { status = "", page = Model.PageNumber, search = ViewBag.CurrentSearch })" class="btn btn-secondary">Tất Cả</a>
+                    <a href="@Url.Action("Index", new { status = "Đã Hủy", page = Model.PageNumber, search = ViewBag.CurrentSearch })" class="btn btn-secondary">Đã Hủy</a>
+                    <a href="@Url.Action("Index", new { status = "Chờ Xác Nhận", page = Model.PageNumber, search = ViewBag.CurrentSearch })" class="btn btn-secondary">Chờ Xác Nhận</a>
+                    <a href="@Url.Action("Index", new { status = "Chờ Giao Hàng", page = Model.PageNumber, search = ViewBag.CurrentSearch })" class="btn btn-secondary">Chờ Giao Hàng</a>
+                    <a href="@Url.Action("Index", new { status = "Đang Vận Chuyển", page = Model.PageNumber, search = ViewBag.CurrentSearch })" class="btn btn-secondary">Đang Vận Chuyển</a>
+                    <a href="@Url.Action("Index", new { status = "Đã Thanh Toán", page = Model.PageNumber, search = ViewBag.CurrentSearch })" class="btn btn-secondary">Đã Thanh Toán</a>
+                    <a href="@Url.Action("Index", new { status = "Đã Giao Hàng", page = Model.PageNumber, search = ViewBag.CurrentSearch })" class="btn btn-secondary">Đã Giao Hàng</a>
+                    <a href="@Url.Action("Index", new { status = "Hoàn Thành", page = Model.PageNumber, search = ViewBag.CurrentSearch })" class="btn btn-secondary">Hoàn Thành</a>
+                }
+            </div>
+
+            <div class="panel-body">
+                <table class="table" id="invoiceTable">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Mã</th>
+                            <th>Tổng SP</th>
+                            <th>Tổng Tiền</th>
+                            <th>Tên Khách Hàng</th>
+                            <th>Ngày Tạo</th>
+                            <th>Loại Hóa Đơn</th>
+                            <th>Trạng Thái</th>
+                            <th>Hành Động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            int stt = (Model.PageNumber - 1) * Model.PageSize + 1;
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@stt</td>
+                                    <td>@item.HoaDon.MaDon</td>
+                                    <td>@item.TotalQuantity</td>
+                                    <td>@item.HoaDon.TongTienHoaDon.ToString("N0")</td>
+                                    <td>@item.HoaDon.NguoiNhan</td>
+                                    <td>@item.HoaDon.NgayTao.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                                    <td>@item.HoaDon.LoaiHoaDon</td>
+                                    <td>@item.HoaDon.TrangThai</td>
+                                    <td>
+                                        <a asp-action="Edit" asp-route-id="@item.HoaDon.IdHoaDon" title="Edit">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                stt++;
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="9" class="text-center">Không có dữ liệu để hiển thị.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination">
+                @Html.PagedListPager(Model, page => Url.Action("Index", "HoaDon", new { Page = page, status = ViewBag.CurrentStatus, search = ViewBag.CurrentSearch }),
+                         new PagedListRenderOptions
+                {
+                    DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+                    DisplayLinkToLastPage = PagedListDisplayMode.Always,
+                    DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+                    DisplayLinkToNextPage = PagedListDisplayMode.Always,
+                    MaximumPageNumbersToDisplay = 5,
+                    LiElementClasses = new[] { "page-item" },
+                    PageClasses = new[] { "page-link" }
+                })
+            </div>
+        </div>
+    </div>
+</div>

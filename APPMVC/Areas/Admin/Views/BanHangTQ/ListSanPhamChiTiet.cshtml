@@ -1,0 +1,180 @@
+﻿@model (List<AppData.ViewModel.HoaDonChiTietViewModel.SanPhamChiTietViewModel> SanPhamChiTiets, Guid IdHoaDon)
+
+@{
+    ViewData["Title"] = "ListSanPhamChiTiet";
+}
+
+<style>
+    .table th, .table td {
+        padding: 10px;
+        text-align: left;
+        border: 1px solid #dee2e6;
+    }
+
+    .table th {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .discounted-price {
+        text-decoration: line-through;
+        color: red;
+        margin-right: 5px;
+    }
+
+    .current-price {
+        color: green;
+        font-weight: bold;
+    }
+</style>
+
+<div class="modal-body">
+    <input type="text" id="searchInput" placeholder="Tìm kiếm theo mã hoặc tên sản phẩm" style="margin-bottom: 10px; padding: 5px; width: 33%;" />
+    <table class="table" id="productTable">
+        <thead>
+            <tr>
+                <th hidden>ID</th>
+                <th>Mã Sản Phẩm</th>
+                <th>Tên Sản Phẩm</th>
+                <th>Giá</th>
+                <th>Số Lượng</th>
+                <th>Màu Sắc</th>
+                <th>Kích Cỡ</th>
+                <th>Hình Ảnh</th>
+                <th>Hành Động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.SanPhamChiTiets != null && Model.SanPhamChiTiets.Any())
+            {
+                foreach (var item in Model.SanPhamChiTiets)
+                {
+                    string rowStyle = string.Empty;
+                    string statusMessage = string.Empty;
+
+                    if (item.KichHoat != 1 || item.HoatKich != 1)
+                    {
+                        rowStyle = "background-color: #d6d6d6;"; 
+                        statusMessage = "Sản phẩm đã ngừng hoạt động"; 
+                    }
+                    else if (item.Quantity == 0)
+                    {
+                        rowStyle = "background-color: #d6d6d6;";
+                        statusMessage = "Đã hết hàng"; 
+                    }
+
+                    <tr style="@rowStyle">
+                        <td hidden>@item.IdSanPhamChiTiet</td>
+                        <td>@item.MaSanPham</td>
+                        <td>@item.ProductName</td>
+                        <td>
+                            @if (item.GiaDaGiam.HasValue && item.GiaDaGiam < item.Price)
+                            {
+                                <span class="discounted-price">
+                                    @item.Price.ToString("#,0") VNĐ
+                                </span>
+                                <span class="current-price">
+                                    @item.GiaDaGiam.Value.ToString("#,0") VNĐ
+                                </span>
+                            }
+                            else
+                            {
+                                <span>@item.Price.ToString("#,0") VNĐ</span>
+                            }
+                        </td>
+                        <td>
+                            @if (statusMessage != string.Empty)
+                            {
+                                <span style="color: red;">@statusMessage</span>
+                                <input type="hidden" value="0" />
+                            }
+                            else
+                            {
+                                @item.Quantity
+                            }
+                        </td>
+                        <td>@string.Join(", ", item.MauSac)</td>
+                        <td>@string.Join(", ", item.KichCo)</td>
+                        <td>
+                            @if (item.HinhAnhs != null && item.HinhAnhs.Any())
+                            {
+                                var hinhAnh = item.HinhAnhs.First();
+                                var base64String = Convert.ToBase64String(hinhAnh.DataHinhAnh);
+                                var imageUrl = $"data:{hinhAnh.LoaiFileHinhAnh};base64,{base64String}";
+
+                                <div style="position: relative;">
+                                    <img src="@imageUrl" alt="Hình ảnh sản phẩm" style="width: 50px; height: auto;" loading="lazy" />
+                                    @if (item.PhanTramGiam.HasValue)
+                                    {
+                                        <div class="discount-badge" style="position: absolute; top: 5px; right: 5px; background-color: red; color: white; padding: 3px 5px; border-radius: 5px; font-weight: bold;">
+                                            Giảm @item.PhanTramGiam%!
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <span>Không có hình ảnh</span>
+                            }
+                        </td>
+                        <td>
+                            @if (item.Quantity > 0 && item.KichHoat == 1 && item.HoatKich == 1)
+                            {
+                                <a href="#" class="btn btn-success add-product-button" data-id-san-pham-chi-tiet="@item.IdSanPhamChiTiet" data-id-hoa-don="@Model.IdHoaDon">
+                                    <i class="fas fa-plus"></i> Thêm
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="8" class="text-center">Không có sản phẩm nào để hiển thị.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).on('click', '.add-product-button', function (e) {
+        e.preventDefault();
+
+        var button = $(this);
+        button.prop('disabled', true);
+
+        $.ajax({
+            url: '@Url.Action("CreateSanPhamChiTiet", "BanHangTQ", new { area = "Admin" })',
+            type: 'POST',
+            data: {
+                IdSanPhamChiTiet: button.data('id-san-pham-chi-tiet'),
+                IdHoaDon: button.data('id-hoa-don')
+            },
+            beforeSend: function () {
+                $('#loadingSpinner').show();
+            },
+            complete: function () {
+                $('#loadingSpinner').hide();
+                button.prop('disabled', false);
+            },
+            success: function (response) {
+                console.log(response);
+                alert(response.message);
+            },
+            error: function () {
+                alert('Đã xảy ra lỗi.');
+            }
+        });
+    });
+
+    $('#searchInput').on('keyup', function () {
+        var value = $(this).val().toLowerCase();
+        $('#productTable tbody tr').filter(function () {
+            $(this).toggle($(this).children('td').eq(1).text().toLowerCase().indexOf(value) > -1 ||
+                          $(this).children('td').eq(2).text().toLowerCase().indexOf(value) > -1);
+        });
+    });
+</script>

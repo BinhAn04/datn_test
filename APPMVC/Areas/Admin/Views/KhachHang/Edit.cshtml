@@ -1,0 +1,108 @@
+﻿@model AppData.Model.KhachHang
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content-wrapper">
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4">
+            <span class="text-muted fw-light">Quản lý khách hàng /</span> Chỉnh sửa khách hàng
+        </h4>
+
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <!-- Center the form -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <form asp-action="Edit">
+                            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                            <input type="hidden" asp-for="IdKhachHang" />
+
+                            <div class="form-group mb-3">
+                                <label asp-for="HoTen" class="control-label">Họ Tên</label>
+                                <input asp-for="HoTen" class="form-control" placeholder="Nhập họ tên" />
+                                <span asp-validation-for="HoTen" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label asp-for="SoDienThoai" class="control-label">Số Điện Thoại</label>
+                                <input asp-for="SoDienThoai" class="form-control" placeholder="Nhập số điện thoại" />
+                                <span asp-validation-for="SoDienThoai" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label asp-for="Email" class="control-label">Email</label>
+                                <input asp-for="Email" class="form-control" placeholder="Nhập email" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group mb-3" hidden>
+                                <label asp-for="AuthProvider" class="control-label">AuthProvider</label>
+                                <input asp-for="AuthProvider" class="form-control" />
+                                <span asp-validation-for="AuthProvider" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group mb-3" hidden>
+                                <label asp-for="MatKhau" class="control-label">Mật Khẩu</label>
+                                <input asp-for="MatKhau" class="form-control" />
+                                <span asp-validation-for="MatKhau" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label class="control-label">Kích Hoạt</label>
+                                <div>
+                                    <input type="radio" asp-for="KichHoat" value="1" id="active" />
+                                    <label for="active">Hoạt động</label>
+                                    <input type="radio" asp-for="KichHoat" value="0" id="inactive" />
+                                    <label for="inactive">Không hoạt động</label>
+                                </div>
+                                <span asp-validation-for="KichHoat" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group mb-3 d-flex justify-content-between">
+                                <input type="submit" value="Lưu" class="btn btn-primary" />
+                                <a asp-action="Index" class="btn btn-secondary">Quay lại danh sách</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function (event) {
+            let isValid = true;
+
+            const hoTen = document.querySelector('input[name="HoTen"]');
+            const soDienThoai = document.querySelector('input[name="SoDienThoai"]');
+            const email = document.querySelector('input[name="Email"]');
+
+            // Kiểm tra các trường thông tin
+            if (!hoTen.value.trim()) {
+                isValid = false;
+                alert("Họ Tên không được để trống.");
+                hoTen.focus();
+            } else if (!soDienThoai.value.trim()) {
+                isValid = false;
+                alert("Số Điện Thoại không được để trống.");
+                soDienThoai.focus();
+            } else if (!email.value.trim()) {
+                isValid = false;
+                alert("Email không được để trống.");
+                email.focus();
+            }
+
+            // Nếu không hợp lệ, ngăn gửi biểu mẫu
+            if (!isValid) {
+                event.preventDefault();
+            }
+        });
+    });
+</script>

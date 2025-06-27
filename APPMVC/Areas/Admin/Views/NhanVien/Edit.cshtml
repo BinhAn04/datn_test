@@ -1,0 +1,132 @@
+﻿@model AppData.ViewModel.NhanVienViewModel
+
+@{
+    ViewData["Title"] = "Chỉnh Sửa Nhân Viên";
+}
+
+<div class="content-wrapper">
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4">
+            <span class="text-muted fw-light">Quản lý nhân viên /</span> Chỉnh Sửa Nhân Viên
+        </h4>
+
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                            <div class="form-group mb-3" hidden>
+                                <label asp-for="NhanVien.IdNhanVien" class="control-label">ID Nhân Viên</label>
+                                <input asp-for="NhanVien.IdNhanVien" class="form-control" readonly />
+                                <span asp-validation-for="NhanVien.IdNhanVien" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label asp-for="NhanVien.TenNhanVien" class="control-label">Tên Nhân Viên</label>
+                                <input asp-for="NhanVien.TenNhanVien" class="form-control" required />
+                                <span asp-validation-for="NhanVien.TenNhanVien" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label asp-for="NhanVien.SoDienThoai" class="control-label">Số Điện Thoại</label>
+                                <input asp-for="NhanVien.SoDienThoai" class="form-control" required />
+                                <span asp-validation-for="NhanVien.SoDienThoai" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label asp-for="NhanVien.Email" class="control-label">Email</label>
+                                <input asp-for="NhanVien.Email" class="form-control" required />
+                                <span asp-validation-for="NhanVien.Email" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label class="control-label">Ảnh Nhân Viên Hiện Tại</label>
+                                @if (!string.IsNullOrEmpty(Model.NhanVien.AnhNhanVien))
+                                {
+                                    <div>
+                                        <img src="~/Admin/imgNV/@Model.NhanVien.AnhNhanVien" class="img-fluid rounded" style="max-width: 200px; max-height: 200px;" />
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div>
+                                        <span>Chưa có ảnh</span>
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label for="imgFile" class="control-label">Chọn Ảnh Mới (nếu có)</label>
+                                <input type="file" name="imgFile" class="form-control" />
+                                <span asp-validation-for="AnhNhanVien" class="text-danger"></span>
+                            </div>
+
+
+                            <div class="form-group mb-3">
+                                <label asp-for="NhanVien.DiaChi" class="control-label">Địa Chỉ</label>
+                                <input asp-for="NhanVien.DiaChi" class="form-control" />
+                                <span asp-validation-for="NhanVien.DiaChi" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label asp-for="NhanVien.IdchucVu" class="control-label">Chức Vụ</label>
+                                <select asp-for="NhanVien.IdchucVu" class="form-control" asp-items="@(new SelectList(Model.ChucVuList, "IdChucVu", "TenChucVu"))" required></select>
+                                <span asp-validation-for="NhanVien.IdchucVu" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group mb-3" hidden>
+                                <label asp-for="NhanVien.NgayTao" class="control-label">Ngày Tạo</label>
+                                <input asp-for="NhanVien.NgayTao" class="form-control" type="date" readonly />
+                                <span asp-validation-for="NhanVien.NgayTao" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group mb-3" hidden>
+                                <label asp-for="NhanVien.NgayCapNhat" class="control-label">Ngày Cập Nhật</label>
+                                <input asp-for="NhanVien.NgayCapNhat" class="form-control" type="date" readonly />
+                                <span asp-validation-for="NhanVien.NgayCapNhat" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group mb-3" hidden>
+                                <label asp-for="NhanVien.NguoiTao" class="control-label">Người Tạo</label>
+                                <input asp-for="NhanVien.NguoiTao" class="form-control" readonly />
+                                <span asp-validation-for="NhanVien.NguoiTao" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group mb-3" hidden>
+                                <label asp-for="NhanVien.NguoiCapNhat" class="control-label">Người Cập Nhật</label>
+                                <input asp-for="NhanVien.NguoiCapNhat" class="form-control" readonly />
+                                <span asp-validation-for="NhanVien.NguoiCapNhat" class="text-danger"></span>
+                            </div>
+                            <div class="form-group mb-3" hidden>
+                                <label asp-for="NhanVien.KichHoat" class="control-label">Kích Hoạt</label>
+                                <select asp-for="NhanVien.KichHoat" class="form-control">
+                                    <option value="1">Có</option>
+                                    <option value="0">Không</option>
+                                </select>
+                                <span asp-validation-for="NhanVien.KichHoat" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label asp-for="NhanVien.TrangThai" class="control-label">Trạng Thái</label>
+                                <select asp-for="NhanVien.TrangThai" class="form-control">
+                                    <option value="1">Hoạt Động</option>
+                                    <option value="0">Không Hoạt Động</option>
+                                </select>
+                                <span asp-validation-for="NhanVien.TrangThai" class="text-danger"></span>
+                            </div>
+                            <div class="form-group mb-3">
+                                <input type="submit" value="Lưu" class="btn btn-primary" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <a asp-action="Index" class="btn btn-secondary">Quay lại danh sách</a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,308 @@
+﻿@model AppData.Model.Voucher
+
+@{
+    ViewData["Title"] = "Tạo Mới Voucher";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">Voucher/</span> Thêm voucher
+    </h4>
+    <div class="">
+        <div class="">
+            <form asp-action="Create" method="post" id="createVoucherForm" class="d-flex">
+                <div class="card shadow-lg me-5">
+                    <div class="card-body">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="MaVoucher" class="form-label fw-bold">Mã Voucher</label>
+                                <input asp-for="MaVoucher" class="form-control" placeholder="Nhập mã voucher" />
+                                <span asp-validation-for="MaVoucher" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="MoTaVoucher" class="form-label fw-bold">Mô Tả</label>
+                                <input asp-for="MoTaVoucher" class="form-control" placeholder="Nhập mô tả voucher" />
+                                <span asp-validation-for="MoTaVoucher" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="LoaiGiamGia" class="form-label fw-bold">Loại Giảm Giá</label>
+                                <select asp-for="LoaiGiamGia" class="form-select">
+                                    <option value="1">Theo % sản phẩm</option>
+                                    <option value="2">Theo số tiền</option>
+                                </select>
+                                <span asp-validation-for="LoaiGiamGia" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="GiaTriGiam" class="form-label fw-bold">Giá Trị Giảm</label>
+                                <div class="input-group">
+                                    <input asp-for="GiaTriGiam" class="form-control" id="GiaTriGiam" placeholder="Nhập giá trị giảm" />
+                                    <span class="input-group-text" id="GiaTriGiamUnit">%</span>
+                                </div>
+                                <span asp-validation-for="GiaTriGiam" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="GiaTriDonHangToiThieu" class="form-label fw-bold">Giá Trị Đơn Hàng Tối Thiểu</label>
+                                <div class="input-group">
+                                    <input asp-for="GiaTriDonHangToiThieu" class="form-control" placeholder="Nhập giá trị tối thiểu" />
+                                    <span class="input-group-text">VNĐ</span>
+                                </div>
+                                <span asp-validation-for="GiaTriDonHangToiThieu" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6" id="SoTienToiDaContainer" class="hidden">
+                                <label asp-for="SoTienToiDa" class="form-label fw-bold">Số Tiền Giảm Tối Đa</label>
+                                <div class="input-group">
+                                    <input asp-for="SoTienToiDa" class="form-control" placeholder="Nhập số tiền tối đa" />
+                                    <span class="input-group-text">VNĐ</span>
+                                </div>
+                                <span asp-validation-for="SoTienToiDa" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="NgayBatDau" class="form-label fw-bold">Ngày Bắt Đầu</label>
+                                <input asp-for="NgayBatDau" class="form-control" type="datetime-local" />
+                                <span asp-validation-for="NgayBatDau" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="NgayKetThuc" class="form-label fw-bold">Ngày Kết Thúc</label>
+                                <input asp-for="NgayKetThuc" class="form-control" type="datetime-local" />
+                                <span asp-validation-for="NgayKetThuc" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <input type="hidden" asp-for="NguoiTao" value="Admin" />
+                        <input type="hidden" asp-for="TrangThai" value="2" />
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <button type="submit" class="btn btn-primary">Tạo Voucher</button>
+                                <a asp-action="Index" class="btn btn-outline-secondary">Quay lại</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card shadow-lg">
+                    <div class="card-body">
+                        <h4 class="mt-4">Danh Sách Khách Hàng</h4>
+                        <table class="table table-bordered table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th><input type="checkbox" id="checkAllCustomers" /> Chọn Tất Cả</th>
+                                    <th>Tên Khách Hàng</th>
+                                    <th>Số Điện Thoại</th>
+                                    <th>Email</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (ViewBag.KhachHang != null)
+                                {
+                                    foreach (var khachHang in ViewBag.KhachHang)
+                                    {
+                                        <tr>
+                                            <td><input type="checkbox" name="selectedKhachHangIds" value="@khachHang.IdKhachHang" /></td>
+                                            <td>@khachHang.HoTen</td>
+                                            <td>@khachHang.SoDienThoai</td>
+                                            <td>@khachHang.Email</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="4" class="text-center">Không có khách hàng nào.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                        <!-- Phân trang -->
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination justify-content-center">
+                                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                                {
+                                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                                        <a class="page-link" href="@Url.Action("Create", new { page = i })">@i</a>
+                                    </li>
+                                }
+                            </ul>
+                        </nav>                  
+                    </div>
+                </div>
+                @* <h4 class="mt-4">Danh Sách Khách Hàng</h4>
+                <table class="table table-bordered table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th><input type="checkbox" id="checkAllCustomers" /> Chọn Tất Cả</th>
+                            <th>Tên Khách Hàng</th>
+                            <th>Số Điện Thoại</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ViewBag.KhachHang != null)
+                        {
+                            @foreach (var khachHang in ViewBag.KhachHang)
+                            {
+                                <tr>
+                                    <td><input type="checkbox" name="selectedKhachHangIds" value="@khachHang.IdKhachHang" /></td>
+                                    <td>@khachHang.HoTen</td>
+                                    <td>@khachHang.SoDienThoai</td>
+                                    <td>@khachHang.Email</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4" class="text-center">Không có khách hàng nào.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <div class="mt-4 d-flex justify-content-between">
+                  
+                   
+                </div> *@
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // Chọn tất cả khách hàng
+        $('#checkAllCustomers').on('change', function () {
+            $('input[name="selectedKhachHangIds"]').prop('checked', $(this).prop('checked'));
+        });
+
+
+        // Cập nhật số lượng voucher khi chọn/bỏ chọn khách hàng
+        $('input[name="selectedKhachHangIds"]').on('change', autoFillVoucherQuantity);
+        $('#checkAllCustomers').on('change', autoFillVoucherQuantity);
+
+        // Validation form trước khi submit
+        $('form').on('submit', function (e) {
+            var selectedIds = $('input[name="selectedKhachHangIds"]:checked');
+
+            if (selectedIds.length === 0) {
+                alert("Vui lòng chọn ít nhất một khách hàng.");
+                e.preventDefault(); // Ngăn không cho gửi form
+                return false;
+            }
+
+            // Kiểm tra giá trị giảm
+            var loaiGiamGia = $('#LoaiGiamGia').val();
+            var giaTriGiam = parseFloat($('#GiaTriGiam').val().replace(/\./g, ''));
+
+            if (loaiGiamGia == 1 && (giaTriGiam <= 0 || giaTriGiam > 100)) {
+                alert("Giảm giá theo % phải từ 1-100%.");
+                e.preventDefault();
+                return false;
+            }
+
+            if (loaiGiamGia == 2 && giaTriGiam <= 0) {
+                alert("Giảm giá theo tiền phải lớn hơn 0.");
+                e.preventDefault();
+                return false;
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        var selectedValue = $('#LoaiGiamGia').val();
+        toggleSoTienToiDa(selectedValue);
+
+        $('#LoaiGiamGia').on('change', function () {
+            var selectedValue = $(this).val();
+            toggleSoTienToiDa(selectedValue);
+        });
+
+        function toggleSoTienToiDa(value) {
+            if (value == 1) {
+                $('#SoTienToiDaContainer').removeClass('hidden').slideDown(500);
+                $('#GiaTriGiamUnit').text('%');
+            } else {
+                $('#SoTienToiDaContainer').slideUp(500, function () {
+                    $(this).addClass('hidden');
+                });
+                $('#GiaTriGiamUnit').text('VNĐ');
+            }
+        }
+
+        function formatNumber(n) {
+            return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        function removeFormatting(value) {
+            return value.replace(/\./g, "");
+        }
+
+        $('#GiaTriGiam, #GiaTriDonHangToiThieu, #SoTienToiDa').on('input', function () {
+            var value = $(this).val();
+            $(this).val(formatNumber(value));
+        });
+
+        $('form').on('submit', function () {
+            $('#GiaTriGiam').val(removeFormatting($('#GiaTriGiam').val()));
+            $('#GiaTriDonHangToiThieu').val(removeFormatting($('#GiaTriDonHangToiThieu').val()));
+            $('#SoTienToiDa').val(removeFormatting($('#SoTienToiDa').val()));
+        });
+
+        $('form').on('submit', function () {
+            var selectedIds = $('input[name="selectedKhachHangIds"]:checked');
+            if (selectedIds.length === 0) {
+                alert("Vui lòng chọn ít nhất một khách hàng.");
+                return false; // Ngăn không cho gửi form
+            }
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        var now = new Date();
+        var gmtPlus7Offset = 7 * 60 * 60 * 1000;
+        var nowInGmtPlus7 = new Date(now.getTime() + gmtPlus7Offset);
+
+        var ngayBatDau = new Date(nowInGmtPlus7.getTime());
+        document.getElementById("NgayBatDau").value = ngayBatDau.toISOString().slice(0, 16); // Định dạng YYYY-MM-DDTHH:mm
+
+        var ngayKetThuc = new Date(ngayBatDau.getTime() + 1 * 24 * 60 * 60 * 1000);
+        document.getElementById("NgayKetThuc").value = ngayKetThuc.toISOString().slice(0, 16); // Định dạng YYYY-MM-DDTHH:mm
+    });
+</script>
+
+<style>
+    .input-container {
+        position: relative;
+    }
+
+    .input-unit {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 16px;
+        color: #999;
+    }
+
+    .hidden {
+        display: none;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+
+    .hidden .show {
+        display: block;
+        opacity: 1;
+    }
+</style>

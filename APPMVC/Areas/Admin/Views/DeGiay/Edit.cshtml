@@ -1,0 +1,64 @@
+﻿@model AppData.Model.DeGiay
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<div class="content-wrapper">
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4">
+            <span class="text-muted fw-light">Quản lý sản phẩm /</span> Đế Giày Chi Tiết
+        </h4>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-4" style="padding: 20px;">
+                    <form asp-action="Edit">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="IdDeGiay" />
+
+                        <div class="nav-item d-flex align-items-center flex-column">
+                            <div class="form-group mb-3">
+                                <label asp-for="TenDeGiay" class="control-label">Tên Đế Giày</label>
+                                <input asp-for="TenDeGiay" class="form-control" />
+                                <span asp-validation-for="TenDeGiay" class="text-danger"></span>
+                            </div>
+                            <div class="form-group" hidden>
+                                <label asp-for="NgayCapNhat" class="control-label">Ngày Cập Nhât</label>
+                                <input asp-for="NgayCapNhat" class="form-control" type="date" asp-format="{0:yyyy-MM-dd}" />
+                                <span asp-validation-for="NgayCapNhat" class="text-danger"></span>
+                            </div>
+                            <div class="form-group" hidden>
+                                <label asp-for="NgayTao" class="control-label">Ngày tạo</label>
+                                <input asp-for="NgayTao" class="form-control" type="date" asp-format="{0:yyyy-MM-dd}" />
+                                <span asp-validation-for="NgayTao" class="text-danger"></span>
+                            </div>
+                            <div class="form-group" hidden>
+                                <label asp-for="NguoiCapNhat" class="control-label">Người Cập Nhật</label>
+                                <input asp-for="NguoiCapNhat" class="form-control" />
+                                <span asp-validation-for="NguoiCapNhat" class="text-danger"></span>
+                            </div>
+                            <div class="form-group" hidden>
+                                <label asp-for="NguoiTao" class="control-label">Người Tạo</label>
+                                <input asp-for="NguoiTao" class="form-control" />
+                                <span asp-validation-for="NguoiTao" class="text-danger"></span>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label asp-for="KichHoat" class="control-label">Kích Hoạt</label>
+                                <div>
+                                    <input type="radio" asp-for="KichHoat" value="1" /> Hoạt động
+                                    <input type="radio" asp-for="KichHoat" value="0" /> Không hoạt động
+                                </div>
+                                <span asp-validation-for="KichHoat" class="text-danger"></span>
+                            </div>
+                            <br />
+                            <div class="form-group mb-3 d-flex justify-content-between">
+                                <input type="submit" value="Save" class="btn btn-primary" />
+                                <a asp-area="Admin" asp-action="Getall" class="btn btn-secondary" style="margin-left:15px;">Back to List</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

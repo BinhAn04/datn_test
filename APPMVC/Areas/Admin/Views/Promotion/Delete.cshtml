@@ -1,0 +1,63 @@
+﻿@model AppData.Model.Promotion
+
+@{
+    ViewData["Title"] = "Delete Promotion";
+}
+
+<h1>Delete Promotion</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Promotion</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IdPromotion)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IdPromotion)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TenPromotion)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TenPromotion)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PhanTramGiam)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PhanTramGiam)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.NgayTao)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NgayTao)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.NgayBatDau)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NgayBatDau)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.NgayKetThuc)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NgayKetThuc)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TrangThai)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TrangThai)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="IdPromotion" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

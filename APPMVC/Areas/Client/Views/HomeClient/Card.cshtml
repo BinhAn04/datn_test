@@ -1,0 +1,421 @@
+﻿@model List<AppData.ViewModel.GioHangChiTietViewModel>
+
+@{
+    ViewData["Title"] = "Giỏ Hàng";
+    Layout = "~/Areas/Client/Views/Shared/_LayoutClient.cshtml";
+
+    string FormatCurrency(decimal amount)
+    {
+        return string.Format("{0:N0}", amount) + " VND"; // Định dạng với dấu phẩy
+    }
+}
+
+<style>
+    .hero {
+        background-image: url('https://ananas.vn/wp-content/uploads/kv_basas_mobileBanner_4_2019.jpg');
+        background-size: cover;
+        background-position: center;
+        height: 400px;
+        display: flex;
+        align-items: center;
+        color: white;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .table th, .table td {
+        vertical-align: middle;
+    }
+
+    .product-thumbnail img {
+        width: 60px; /* Giảm kích thước ảnh */
+        height: auto;
+    }
+
+    .discount-badge {
+        position: absolute;
+        top: 5px; /* Đặt lại vị trí */
+        right: 5px;
+        background-color: red;
+        color: white;
+        padding: 2px 5px; /* Giảm kích thước padding */
+        border-radius: 3px; /* Giảm kích thước border-radius */
+        font-weight: bold;
+        font-size: 12px; /* Giảm kích thước font */
+    }
+
+    .btn-remove {
+        background-color: #dc3545; /* Nút xóa màu đỏ */
+        color: white;
+    }
+
+        .btn-remove:hover {
+            background-color: #c82333; /* Màu khi hover */
+        }
+
+    .quantity-container {
+        max-width: 120px;
+        margin: auto;
+    }
+
+    .total-price {
+        font-weight: bold;
+    }
+
+    .cart-totals {
+        border-top: 2px solid #ccc;
+        padding-top: 20px;
+    }
+</style>
+
+<div class="hero">
+    <div class="container">
+        <div class="row justify-content-center align-items-center text-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 text-white mb-4">Giỏ Hàng Của Bạn</h1>
+                <p class="lead text-white">Quản lý sản phẩm và tiến hành thanh toán</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<div class="untree_co-section before-footer-section">
+    <div class="container">
+        <form id="cartForm">
+            <div class="site-blocks-table">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th hidden>Id</th>
+                            <th>Chọn</th>
+                            <th class="product-thumbnail">Hình Ảnh</th>
+                            <th class="product-name">Sản Phẩm</th>
+                            <th class="product-price">Giá</th>
+                            <th class="product-quantity">Số Lượng</th>
+                            <th class="product-total">Tổng</th>
+                            <th class="product-remove">Xóa</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            decimal itemPrice = item.GiaDaGiam.HasValue && item.GiaDaGiam < item.DonGia
+                            ? Convert.ToDecimal(item.GiaDaGiam.Value)
+                            : Convert.ToDecimal(item.DonGia);
+                            decimal itemTotal = itemPrice * Convert.ToDecimal(item.SoLuong);
+
+                            <tr data-item-price="@itemPrice">
+                                <td hidden>@item.IdGioHangChiTiet</td>
+                                <td>
+                                    @if (item.KichHoat == 1 && item.Quantity > 0 && item.HoatKich == 1)
+                                    {
+                                        <input type="checkbox" name="selectedItems" value="@item.IdGioHangChiTiet" />
+                                    }
+                                    else
+                                    {
+                                        <span class="text-danger">Sản phẩm không khả dụng</span>
+                                        <input type="checkbox" hidden />
+                                    }
+                                </td>
+                                <td class="product-thumbnail">
+                                    @if (item.HinhAnhs != null && item.HinhAnhs.Any())
+                                    {
+                                        var hinhAnh = item.HinhAnhs.First();
+                                        var base64String = Convert.ToBase64String(hinhAnh.DataHinhAnh);
+                                        var imageUrl = $"data:{hinhAnh.LoaiFileHinhAnh};base64,{base64String}";
+
+                                        <div style="position: relative;">
+                                            <img src="@imageUrl" alt="Image" class="img-fluid" />
+                                            @if (item.PhanTramGiam.HasValue)
+                                            {
+                                                <div class="discount-badge">
+                                                    Giảm @item.PhanTramGiam%!
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span>Không có hình ảnh</span>
+                                    }
+                                </td>
+                                <td class="product-name">
+                                    <h2 class="h5 text-black">@item.TenSanPham</h2>
+                                </td>
+                                <td>
+                                    @if (item.GiaDaGiam.HasValue && item.GiaDaGiam < item.DonGia)
+                                    {
+                                        <span class="discount-price" style="text-decoration: line-through;">@FormatCurrency(Convert.ToDecimal(item.DonGia))</span>
+                                        <span class="current-price">@FormatCurrency(Convert.ToDecimal(item.GiaDaGiam.Value))</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="current-price">@FormatCurrency(Convert.ToDecimal(item.DonGia))</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.KichHoat == 1 && item.Quantity == 0 && item.HoatKich == 1)
+                                    {
+                                        <span class="text-danger">Đã hết hàng</span>
+                                    }
+                                    else
+                                    {
+                                        <div class="input-group mb-3 d-flex justify-content-center align-items-center quantity-container">
+                                            <div class="input-group-prepend">
+                                                <button class="btn btn-outline-black decrease rounded-circle" type="button" aria-label="Giảm Số Lượng">&minus;</button>
+                                            </div>
+                                            <input type="number" name="quantities[@item.IdGioHangChiTiet]" class="form-control text-center quantity-amount" value="@item.SoLuong" min="1" max="@item.Quantity" aria-label="Số Lượng" />
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-black increase rounded-circle" type="button" aria-label="Tăng Số Lượng">&plus;</button>
+                                            </div>
+                                        </div>
+                                    }
+                                </td>
+                                <td class="total-price" data-item-total="@itemTotal">@FormatCurrency(itemTotal)</td>
+                                <td>
+                                    <button type="button" class="btn btn-black btn-sm btn-remove" data-id="@item.IdGioHangChiTiet">X</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </form>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <button class="btn btn-outline-black btn-sm btn-block" onclick="window.location='@Url.Action("Index", "SanPham")'">Tiếp Tục Mua Sắm</button>
+            </div>
+        </div>
+
+        <div id="cart-totals" class="cart-totals">
+            <div class="row">
+                <div class="col-md-6">
+                    <h3 class="text-black h4 text-uppercase">Tổng Giỏ Hàng</h3>
+                </div>
+                <div class="col-md-6 text-right">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <span class="text-black">Tổng Tạm Tính</span>
+                        </div>
+                        <div class="col-md-6">
+                            <strong class="text-black" id="subtotal">0 VND</strong>
+                        </div>
+                    </div>
+                    <div class="row mb-5">
+                        <div class="col-md-6">
+                            <span class="text-black">Tổng Cộng</span>
+                        </div>
+                        <div class="col-md-6">
+                            <strong class="text-black" id="total">0 VND</strong>
+                        </div>
+                    </div>
+                    <div class="row mb-6 text-right">
+                        <button type="button" class="btn btn-black btn-lg py-3 btn-block" onclick="checkout()">
+                            Thanh Toán
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+       document.querySelectorAll('.btn-remove').forEach(button => {
+        button.addEventListener('click', function (event) {
+            event.preventDefault();
+            const row = this.closest('tr'); // Get the closest row
+            const id = row.querySelector('td[hidden]').textContent.trim(); // Access the hidden cell to get the ID
+
+            console.log('ID:', id); // Log the ID for debugging
+
+            const confirmDelete = confirm("Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?");
+            if (confirmDelete) {
+                fetch(`/Client/HomeClient/Remove`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ IdGioHangChiTiet: id })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Response:', data); // Log response for debugging
+                    if (data.success) {
+                        row.remove();
+                        updateTotal();
+                    } else {
+                        alert('Failed to remove item.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        });
+    });
+     let previousQuantities = {};
+
+    function initializeQuantityButtons() {
+        document.querySelectorAll('.quantity-amount').forEach(input => {
+            const id = input.closest('tr').querySelector('td').textContent.trim();
+            previousQuantities[id] = input.value;
+
+            input.addEventListener('input', function () {
+                this.value = this.value.replace(/[^0-9]/g, '');
+
+                const maxQuantity = parseInt(this.max);
+                if (parseInt(this.value) < 1) {
+                    this.value = 1;
+                } else if (parseInt(this.value) > maxQuantity) {
+                    alert("Số lượng không thể lớn hơn " + maxQuantity + ".");
+                    this.value = maxQuantity;
+                }
+
+                updateTotal();
+                updateCartQuantity(this);
+            });
+        });
+
+        document.querySelectorAll('.increase').forEach(button => {
+            button.addEventListener('click', handleIncrease);
+        });
+
+        document.querySelectorAll('.decrease').forEach(button => {
+            button.addEventListener('click', handleDecrease);
+        });
+
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', updateTotal);
+        });
+    }
+
+    function handleIncrease() {
+        const input = this.closest('.input-group').querySelector('.quantity-amount');
+        const maxQuantity = parseInt(input.max);
+        let currentVal = parseInt(input.value);
+
+        if (currentVal <= maxQuantity) {
+        } else {
+            alert("Số lượng không thể lớn hơn " + maxQuantity + ".");
+            input.value = maxQuantity; // Reset to max if exceeded
+        }
+
+        updateTotal();
+        updateCartQuantity(input);
+    }
+
+    function handleDecrease() {
+        const input = this.closest('.input-group').querySelector('.quantity-amount');
+        let currentVal = parseInt(input.value);
+
+        if (!isNaN(currentVal) && currentVal > 0) {
+        } else {
+            alert("Số lượng không thể nhỏ hơn 1.");
+            input.value = 1; 
+        }
+
+        updateTotal();
+        updateCartQuantity(input);
+    }
+
+         function updateTotal() {
+        let subtotal = 0;
+        let hasCheckedItems = false;
+
+        document.querySelectorAll('tr[data-item-price]').forEach(row => {
+            const price = parseFloat(row.dataset.itemPrice);
+            const quantityInput = row.querySelector('.quantity-amount');
+            const isChecked = row.querySelector('input[type="checkbox"]').checked;
+
+            if (quantityInput) {
+                let quantity = parseInt(quantityInput.value);
+
+                if (isNaN(quantity) || quantity < 1) {
+                    quantityInput.value = 1;
+                    quantity = 1; 
+                }
+
+                const total = price * quantity;
+                row.querySelector('.total-price').textContent = FormatCurrency(total);
+
+                if (isChecked) {
+                    subtotal += total;
+                    hasCheckedItems = true;
+                }
+            }
+        });
+
+        document.getElementById('subtotal').textContent = FormatCurrency(subtotal);
+        document.getElementById('total').textContent = FormatCurrency(subtotal);
+
+        const cartTotals = document.getElementById('cart-totals');
+        if (cartTotals) {
+            cartTotals.style.display = hasCheckedItems ? 'block' : 'none'; // Check if cartTotals exists
+        }
+    }
+
+
+    function FormatCurrency(amount) {
+        return amount.toLocaleString('vi-VN', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + ' VND';
+    }
+
+        function updateCartQuantity(input) {
+        const row = input.closest('tr');
+        const id = row.querySelector('td').textContent.trim();
+        const price = parseFloat(row.dataset.itemPrice);
+        const quantity = parseInt(input.value);
+        const total = (price * quantity).toFixed(2);
+
+        const quantities = [{
+            IdGioHangChiTiet: id,
+            Quantity: quantity,
+            TongTien: parseFloat(total)
+        }];
+
+        fetch('/Client/HomeClient/UpdateQuantity', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(quantities)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) {
+                input.value = 1; 
+                updateTotal();
+                alert(data.message || 'Failed to update quantities.');
+            } else {
+                previousQuantities[id] = quantity; // Update previous quantity
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            input.value = 1; // Reset to 1 on fetch error
+        });
+    }
+
+        function checkout() {
+        const selectedItems = Array.from(document.querySelectorAll('input[name="selectedItems"]:checked'))
+            .map(checkbox => checkbox.value);
+
+        if (selectedItems.length === 0) {
+            alert("Vui lòng chọn ít nhất một sản phẩm để thanh toán.");
+            return;
+        }
+
+        const url = '@Url.Action("Checkout", "HomeClient", new { area = "Client" })';
+        const params = new URLSearchParams();
+        selectedItems.forEach(id => params.append('selectedItems', id));
+        window.location = `${url}?${params.toString()}`;
+    }
+
+    document.addEventListener('DOMContentLoaded', initializeQuantityButtons);
+</script>

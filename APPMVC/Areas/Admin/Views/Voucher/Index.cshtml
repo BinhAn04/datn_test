@@ -1,0 +1,149 @@
+﻿@model List<AppData.Model.Voucher>
+
+@{
+    ViewData["Title"] = "Voucher List";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<div class="container mt-4 ">
+    <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">Voucher/</span> Danh sách voucher
+    </h4>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" id="successMessage" role="alert">
+            <strong>Thành công!</strong> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <a asp-action="Create" class="btn btn-primary btn-lg">
+                    <i class="bi bi-plus-circle"></i> Tạo mới
+                </a>
+
+            </div>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Mã Voucher</th>
+                        <th>Mô tả</th>
+                        <th>Loại Giảm Giá</th>
+                        <th>Giá Trị Giảm</th>
+                        <th>Trạng Thái</th>
+                        <th>Người Tạo</th>
+                        <th>Ngày Bắt Đầu</th>
+                        <th>Ngày Kết Thúc</th>
+                        <th>Hành Động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        var item = Model[i];
+                        <tr class="text-center">
+                            <td>@(i + 1)</td>
+                            <td>@Html.DisplayFor(modelItem => item.MaVoucher)</td>
+                            <td>@Html.DisplayFor(modelItem => item.MoTaVoucher)</td>
+                            <td>
+                                <span class="badge bg-@(item.LoaiGiamGia == 1 ? "warning" : "success")">
+                                    @item.GetLoaiGiamGiaDisplay()
+                                </span>
+                            </td>
+                            <td>
+                                @Html.Raw(item.LoaiGiamGia == 1 ? $"{item.GiaTriGiam}%" : $"{item.GiaTriGiam:N0}".Replace(",", ".") + " VNĐ")
+                            </td>
+                            <td>
+                                <span class="badge bg-@(item.TrangThai == 1 ? "info" : item.TrangThai == 2 ? "success" : item.TrangThai == 4 ? "danger" : "secondary")">
+                                    @item.GetTrangThaiDisplay()
+                                </span>
+                            </td>
+                            <td>@Html.DisplayFor(modelItem => item.NguoiTao)</td>
+                            <td>@item.NgayBatDau.ToString("dd/MM/yyyy")</td>
+                            <td>@item.NgayKetThuc.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@item.VoucherId">
+                                   Xem
+                                </a>|
+                                <a asp-action="Edit" asp-route-id="@item.VoucherId" class="text-warning" >
+                                  Sửa
+                                </a>|
+                                <a asp-action="Delete" asp-route-id="@item.VoucherId" class="text-danger"  onclick="return confirmDelete('@item.MaVoucher')">
+                                  Ẩn
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="d-flex justify-content-center mt-4">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        @if (ViewBag.CurrentPage > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.CurrentPage - 1)">&lt;</a>
+                            </li>
+                        }
+
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                                <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
+                            </li>
+                        }
+
+                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.CurrentPage + 1)"> > </a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft.signalr/5.0.11/signalr.min.js"></script>
+
+<script>
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/voucherHub")
+        .build();
+
+    connection.on("VoucherStatusUpdated", function (voucherId) {
+        // Cập nhật giao diện người dùng mà không cần reload trang
+        console.log("Voucher status updated: " + voucherId);
+
+        // Tìm phần tử tương ứng với voucherId và cập nhật trạng thái
+        const voucherRow = document.querySelector(`tr[data-voucher-id='${voucherId}']`);
+        if (voucherRow) {
+            // Giả sử bạn có một thuộc tính trạng thái để cập nhật
+            const statusCell = voucherRow.querySelector("td:nth-child(7)"); // Cột trạng thái
+            if (statusCell) {
+                // Cập nhật trạng thái (giả sử bạn đã có logic để xác định trạng thái mới)
+                statusCell.innerHTML = "<span class='text-success'>Đang kích hoạt</span>"; // Cập nhật trạng thái
+            }
+        } else {
+            console.log("Voucher không tìm thấy: " + voucherId);
+        }
+    });
+    function confirmDelete(voucherCode) {
+        return confirm(`Bạn có chắc chắn muốn xóa voucher ${voucherCode} không?`);
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        var message = document.getElementById("successMessage");
+        if (message) {
+            setTimeout(function () {
+                message.style.display = 'none';
+            }, 5000);
+        }
+    });
+</script>

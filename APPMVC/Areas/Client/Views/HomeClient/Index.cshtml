@@ -1,0 +1,404 @@
+﻿@{
+    ViewData["Title"] = "HomeClient";
+    Layout = "~/Areas/Client/Views/Shared/_LayoutClient.cshtml";
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+<style>
+	.product-thumbnail {
+		width: 100%;
+		height: auto; 
+		max-height: 200px; 
+		object-fit: cover; 
+	}
+    /* Style cho slideshow */
+    .carousel-item img {
+        height: 470px;
+        object-fit: cover; 
+        margin-bottom: 5px;
+        border-radius: 10px;
+    }
+
+    .carousel-caption {
+        background: rgba(0, 0, 0, 0.2); /* Nền tối cho caption */
+        border-radius: 5px; /* Bo góc caption */
+        padding: 10px;
+    }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        css Copier background-color: rgba(0, 0, 0, 0.4); /* Nền cho các nút điều khiển */
+    }
+
+    .hero {          
+        border-radius: 10px; /* Bo góc */
+    }
+
+    /* Nút CTA */
+    .btn {
+       
+        color: white; /* Chữ trắng */
+        border-radius: 50px; /* Bo góc */
+        padding: 10px 20px; /* Thêm padding */
+    }
+
+    /* Hiệu ứng hover cho sản phẩm */
+    .product-item:hover {
+        transform: scale(1.05); /* Phóng to khi hover */
+        transition: transform 0.3s; /* Thêm hiệu ứng chuyển tiếp */
+    }
+
+    /* Khoảng cách giữa các phần tử */
+    .section-title {
+        margin-bottom: 1.5rem; /* Tăng khoảng cách dưới tiêu đề */
+    }
+</style>
+
+<!-- Slide Show -->
+<!-- Slide Show -->
+<div id="carouselExampleCaptions" class="carousel slide">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img src="/Client/images/Shoes-Web-Ads-Banne1r-thietkehaithanh.jpg" class="d-block w-100" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+                <h5>Ưu Đãi Đặc Biệt</h5>
+                <p>Giảm giá lên đến 50% cho các sản phẩm chọn lọc!</p>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img src="/Client/images/20240926111113-0.webp" class="d-block w-100" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+                <h5>Giày Thể Thao Mới Nhất</h5>
+                <p>Khám phá bộ sưu tập giày thể thao mới nhất của chúng tôi!</p>                
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img src="/Client/images/banner.webp" class="d-block w-100" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+                <h5>Khám Phá Ngay</h5>
+                <p>Chúng tôi có nhiều kiểu dáng phù hợp với mọi phong cách!</p>
+            </div>
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+
+<div class="hero">
+	<div class="container">
+		<div class="row justify-content-between">
+			<div class="col-lg-5">
+				<div class="intro-excerpt">
+					<h1>Nike Air Jordan 4 Retro 2024 <span clsas="d-block">‘Military Blue’ FV5029‑141</span></h1>
+					<p class="mb-4">Nike Air Jordan 4 Retro 2024 'Military Blue' (FV5029-141) có các tông màu trắng, xanh quân đội và xám, cùng với một đơn vị Air-Sole mang lại sự thoải mái.</p>
+					<p><a  href="@Url.Action("Index", "SanPham", new { area = "Client" })" class="btn btn-secondary me-2">Khám phá</a>
+				</div>
+			</div>
+			<div class="col-lg-7">
+				<div class="hero-img-wrap">
+					<img src="/Client/img/giaymau1.png" class="img-fluid">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- End Hero Section -->
+<!-- Start Product Section -->
+<div class="product-section">
+    <div class="container">
+        <div class="row">
+
+			<!-- Start Column 1 -->
+			<div class="col-md-12 col-lg-3 mb-5 mb-lg-0">
+				<h2 class="mb-4 section-title">Những đôi giày thể thao tốt nhất cho hiệu suất và sự thoải mái.</h2>
+				<p class="mb-4">Chúng tôi cam kết rằng 100% sản phẩm của chúng tôi là chính hãng, nguyên bản và có chất lượng cao nhất.</p>
+				<p><a href="@Url.Action("Index", "SanPham", new { area = "Client" })" class="btn">Khám phá</a></p>
+			</div>
+			<!-- End Column 1 -->
+			<!-- Start Column 2 -->
+			<div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
+                <a class="product-item" href="@Url.Action("Index", "SanPham", new { area = "Client" })">
+					<img src="/Client/img/pngegg.png" class="img-fluid product-thumbnail">
+					<h3 class="product-title">Giày Nike Air Zoom Pegasus 32</h3>
+				</a>
+			</div>
+			<!-- End Column 2 -->
+			<div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
+                <a class="product-item" href="@Url.Action("Index", "SanPham", new { area = "Client" })">
+					<img src="/Client/img/sanpham2.png" class="img-fluid product-thumbnail">
+					<h3 class="product-title">Nike AIR JORDAN XXXI Banned</h3>
+				</a>
+			</div>
+			<!-- End Column 3 -->
+			<div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
+                <a class="product-item" href="@Url.Action("Index", "SanPham", new { area = "Client" })">
+					<img src="/Client/img/sanpham3.png" class="img-fluid product-thumbnail">
+					<h3 class="product-title">Giày adidas NMD_R1 ‘Focus Olive’ IG5534</h3>
+				</a>
+			</div>
+			<!-- End Column 4 -->
+
+        </div>
+    </div>
+</div>
+<!-- End Product Section -->
+<!-- Start Why Choose Us Section -->
+<div class="why-choose-section">
+	<div class="container">
+		<div class="row justify-content-between">
+			<div class="col-lg-6">
+				<h2 class="section-title">Tại sao chọn chúng tôi?</h2>
+				<p>Chúng tôi cam kết cung cấp 100% sản phẩm chính hãng, đảm bảo chất lượng vượt trội và độ bền cao.</p>
+
+				<div class="row my-5">
+					<div class="col-6 col-md-6">
+						<div class="feature">
+							<div class="icon">
+								<img src="~/Client/img/truck.svg" alt="Image" class="imf-fluid">
+							</div>
+							<h3>Fast &amp; Free Shipping</h3>
+							<p>Miễn phí giao hàng và chính sách đổi trả trong 30 ngày, mang lại sự an tâm cho bạn.</p>
+						</div>
+					</div>
+
+					<div class="col-6 col-md-6">
+						<div class="feature">
+							<div class="icon">
+								<img src="~/Client/img/bag.svg" alt="Image" class="imf-fluid">
+							</div>
+							<h3>Easy to Shop</h3>
+							<p>Cập nhật các mẫu giày thể thao mới nhất, luôn theo kịp xu hướng thời trang.</p>
+						</div>
+					</div>
+
+					<div class="col-6 col-md-6">
+						<div class="feature">
+							<div class="icon">
+								<img src="~/Client/img/support.svg" alt="Image" class="imf-fluid">
+							</div>
+							<h3>24/7 Support</h3>
+							<p>Đội ngũ hỗ trợ khách hàng nhiệt tình, giúp bạn chọn lựa sản phẩm phù hợp nhanh chóng.</p>
+						</div>
+					</div>
+
+					<div class="col-6 col-md-6">
+						<div class="feature">
+							<div class="icon">
+								<img src="~/Client/img/return.svg" alt="Image" class="imf-fluid">
+							</div>
+							<h3>Hassle Free Returns</h3>
+							<p>Chính sách Đổi trả không phiền phức giúp bạn thực hiện đổi trả dễ dàng, nhanh chóng và thuận tiện</p>
+						</div>
+					</div>
+
+                </div>
+            </div>
+
+			<div class="col-lg-5">
+				<div class="img-wrap">
+					<img src="~/Client/img/maugiay2.jpg" alt="Image" class="img-fluid">
+				</div>
+			</div>
+
+        </div>
+    </div>
+</div>
+<!-- End Why Choose Us Section -->
+<!-- Start We Help Section -->
+
+<div class="we-help-section">
+	<div class="container">
+		<div class="row justify-content-between">
+			<div class="col-lg-7 mb-5 mb-lg-0">
+				<div class="imgs-grid">
+					<div class="grid grid-1"><img src="/Client/img/WMNS+AIR+JORDAN+1+MID1.jpg" alt="Untree.co"></div>
+					<div class="grid grid-2"><img src="/Client/img/WMNS+AIR+JORDAN+1+MID2.jpg" alt="Untree.co"></div>
+					<div class="grid grid-3"><img src="/Client/img/WMNS+AIR+JORDAN+1+MID3.png" alt="Untree.co"></div>
+				</div>
+			</div>
+			<div class="col-lg-5 ps-lg-5">
+                <h2 class="section-title mb-4">Chúng tôi giúp bạn tìm được đôi giày hoàn hảo</h2>
+
+                <ul class="list-unstyled custom-list my-4">
+                    <li>Sản Phẩm Chất Lượng: Mỗi đôi giày được chọn lựa cẩn thận để đảm bảo tính xác thực và chất lượng tốt nhất.</li>
+                    <li>Thiết Kế Hiện Đại: Chúng tôi cung cấp các mẫu giày với thiết kế trendy phù hợp với phong cách sống và thời trang hiện đại.</li>
+                    <li>Đáp Ứng Nhu Cầu: Chúng tôi hiểu rằng mỗi khách hàng có nhu cầu riêng, vì vậy chúng tôi cung cấp nhiều tùy chọn từ giày thể thao đến giày thời trang.</li>
+                </ul>
+                <p><a href="#" class="btn">Khám Phá</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End We Help Section -->
+<!-- Start Popular Product -->
+<div class="popular-product">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-12 col-md-6 col-lg-4 mb-4 mb-lg-0">
+                <div class="product-item-sm d-flex">
+                    <div class="thumbnail">
+                        <img src="~/Client/images/giay1.png" alt="Hình ảnh" class="img-fluid">
+                    </div>
+                    <div class="pt-3">
+                        <h3>Nike Air Jordan 1 x Off-White ‘University Blue’ </h3>
+                        <p>
+                            Nike Air Jordan 1 x Off-White ‘University Blue’ có màu xanh nổi bật với chi tiết trắng và cam, kết hợp thiết kế cổ điển với chất liệu cao cấp.
+                        </p>
+                        <p><a href="#">Đọc Thêm</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-4 mb-lg-0">
+                <div class="product-item-sm d-flex">
+                    <div class="thumbnail">
+                        <img src="~/Client/images/giay1.png" alt="Hình ảnh" class="img-fluid">
+                    </div>
+                    <div class="pt-3">
+                        <h3>Nike Air Jordan 1 x Off-White ‘University Blue’ </h3>
+                        <p>
+                            Nike Air Jordan 1 x Off-White ‘University Blue’ có màu xanh nổi bật với chi tiết trắng và cam, kết hợp thiết kế cổ điển với chất liệu cao cấp.
+                        </p>
+                        <p><a href="#">Đọc Thêm</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-4 mb-lg-0">
+                <div class="product-item-sm d-flex">
+                    <div class="thumbnail">
+                        <img src="~/Client/images/giay1.png" alt="Hình ảnh" class="img-fluid">
+                    </div>
+                    <div class="pt-3">
+                        <h3>Nike Air Jordan 1 x Off-White ‘University Blue’ </h3>
+                        <p>
+                            Nike Air Jordan 1 x Off-White ‘University Blue’ có màu xanh nổi bật với chi tiết trắng và cam, kết hợp thiết kế cổ điển với chất liệu cao cấp.
+                        </p>
+                        <p><a href="#">Đọc Thêm</a></p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- End Popular Product -->
+<!-- Start Testimonial Slider -->
+<div class="testimonial-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-7 mx-auto text-center">
+                <h2 class="section-title">Nhận Xét</h2>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-12">
+                <div class="testimonial-slider-wrap text-center">
+
+                    <div id="testimonial-nav">
+                        <span class="prev" data-controls="prev"><span class="fa fa-chevron-left"></span></span>
+                        <span class="next" data-controls="next"><span class="fa fa-chevron-right"></span></span>
+                    </div>
+
+                    <div class="testimonial-slider">
+
+                        <div class="item">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-8 mx-auto">
+
+                                    <div class="testimonial-block text-center">
+                                        <blockquote class="mb-5">
+                                            <p>&ldquo;Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer convallis volutpat dui quis scelerisque.&rdquo;</p>
+                                        </blockquote>
+
+                                        <div class="author-info">
+                                            <div class="author-pic">
+                                                <img src="~/Client/images/person-1.png" alt="Maria Jones" class="img-fluid">
+                                            </div>
+                                            <h3 class="font-weight-bold">Maria Jones</h3>
+                                            <span class="position d-block mb-3">CEO, Đồng Sáng Lập, XYZ Inc.</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END item -->
+
+                        <div class="item">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-8 mx-auto">
+
+                                    <div class="testimonial-block text-center">
+                                        <blockquote class="mb-5">
+                                            <p>&ldquo;Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer convallis volutpat dui quis scelerisque.&rdquo;</p>
+                                        </blockquote>
+
+                                        <div class="author-info">
+                                            <div class="author-pic">
+                                                <img src="~/Client/images/person-1.png" alt="Maria Jones" class="img-fluid">
+                                            </div>
+                                            <h3 class="font-weight-bold">Maria Jones</h3>
+                                            <span class="position d-block mb-3">CEO, Đồng Sáng Lập, XYZ Inc.</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END item -->
+
+                        <div class="item">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-8 mx-auto">
+
+                                    <div class="testimonial-block text-center">
+                                        <blockquote class="mb-5">
+                                            <p>&ldquo;Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer convallis volutpat dui quis scelerisque.&rdquo;</p>
+                                        </blockquote>
+
+                                        <div class="author-info">
+                                            <div class="author-pic">
+                                                <img src="~/Client/images/person-1.png" alt="Maria Jones" class="img-fluid">
+                                            </div>
+                                            <h3 class="font-weight-bold">Maria Jones</h3>
+                                            <span class="position d-block mb-3">CEO, Đồng Sáng Lập, XYZ Inc.</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END item -->
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

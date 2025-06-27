@@ -1,0 +1,146 @@
+﻿@model List<AppData.Model.Promotion>
+@{
+    ViewData["Title"] = "Danh Sách Khuyến Mãi";
+    var currentPage = ViewBag.CurrentPage;
+    var totalPages = ViewBag.TotalPages;
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<div class="container mt-4">
+    <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">Promotion/</span> Danh sách promotion
+    </h4>
+    @* Hiển thị thông báo *@
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @Html.Raw(TempData["ErrorMessage"])
+        </div>
+    }
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <a asp-action="Create" class="btn btn-primary btn-lg">
+                    <i class="bi bi-plus-circle"></i> Tạo mới
+                </a>
+
+            </div>
+
+            <p>Số lượng Khuyến Mãi: @Model.Count</p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            STT
+                        </th>
+                        <th>
+                            Tên Khuyến Mãi
+                        </th>
+                        <th>
+                            Phần Trăm Giảm
+                        </th>
+                        <th>
+                            Ngày Tạo
+                        </th>
+                        <th>
+                            Ngày Bắt Đầu
+                        </th>
+                        <th>
+                            Ngày Kết Thúc
+                        </th>
+                        <th>
+                            Trạng Thái
+                        </th>
+                        <th>
+                            Hành Động
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int ii = 1;
+                    }
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @ii
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TenPromotion)
+                            </td>
+                            <td>
+                                <span class="badge bg-success">
+                                    @Html.DisplayFor(modelItem => item.PhanTramGiam)%
+                                </span>                             
+                            </td>
+                            <td>
+                                
+                                @item.NgayTao.ToString("dd/MM/yyyy | HH:mm tt")
+                            </td>
+                            <td>
+                                @item.NgayBatDau.ToString("dd/MM/yyyy | HH:mm tt")
+                            </td>
+                            <td>
+                                @item.NgayKetThuc.ToString("dd/MM/yyyy | HH:mm tt")
+                            </td>
+                            <td>
+                                <span class="badge bg-@(item.TrangThai switch
+                                {
+                                    0 => "danger",   // Đỏ cho Disabled
+                                    1 => "success",  // Xanh cho Active
+                                    2 => "warning",  // Vàng cho Paused
+                                    3 => "secondary",// Xám cho Expired
+                                     _ => "muted"     // Mặc định cho trạng thái không xác định
+                                })">
+                                    @item.GetTrangThaiDisplay()
+                                </span>
+                            </td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.IdPromotion">Chỉnh Sửa</a> |
+                                <a asp-action="Delete" asp-route-id="@item.IdPromotion" onclick="return confirm('Bạn có chắc chắn muốn xoá khuyến mãi này?');">Ẩn</a>
+                            </td>
+                        </tr>
+                        ii++;
+                    }
+                </tbody>
+            </table>
+
+            <div class="d-flex justify-content-center mt-4">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        @if (ViewBag.CurrentPage > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.CurrentPage - 1)"> &lt; </a>
+                            </li>
+                        }
+
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                                <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
+                            </li>
+                        }
+
+                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.CurrentPage + 1)">></a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            </div>
+
+
+        </div>
+
+    </div>
+</div>

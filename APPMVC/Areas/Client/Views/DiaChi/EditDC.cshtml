@@ -1,0 +1,157 @@
+﻿@{
+    ViewData["Title"] = "Chỉnh sửa Địa Chỉ";
+    Layout = "~/Areas/Client/Views/Shared/_Tttk.cshtml";
+}
+@using Newtonsoft.Json
+@model AppData.Model.DiaChi
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@error.ErrorMessage</p>
+        }
+    </div>
+}
+
+<h1 class="text-center text-primary">Chỉnh sửa Địa Chỉ</h1>
+<hr />
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <form asp-action="EditDC">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group" hidden>
+                <label asp-for="IdDiaChi" class="control-label"></label>
+                <input asp-for="IdDiaChi" class="form-control" />
+                <span asp-validation-for="IdDiaChi" class="text-danger"></span>
+            </div>
+            <!-- Họ tên -->
+            <div class="form-group">
+                <label asp-for="HoTen" class="form-label">Họ và tên</label>
+                <input asp-for="HoTen" class="form-control form-control-lg" placeholder="Nhập họ tên" />
+                <span asp-validation-for="HoTen" class="text-danger"></span>
+            </div>
+
+            <!-- Số điện thoại -->
+            <div class="form-group">
+                <label asp-for="SoDienThoai" class="form-label">Số điện thoại</label>
+                <input asp-for="SoDienThoai" class="form-control form-control-lg" placeholder="Nhập số điện thoại" />
+                <span asp-validation-for="SoDienThoai" class="text-danger"></span>
+            </div>
+
+            <!-- Mô tả địa chỉ -->
+            <div class="form-group">
+                <label asp-for="MoTa" class="form-label">Mô tả địa chỉ</label>
+                <input asp-for="MoTa" class="form-control form-control-lg" placeholder="Ví dụ: Gần trường học" />
+                <span asp-validation-for="MoTa" class="text-danger"></span>
+            </div>
+
+            <!-- Tỉnh/Thành phố -->
+            <div class="form-group">
+                <label class="form-label">Tỉnh/Thành phố</label>
+                <select id="ProvinceId" asp-for="ProvinceId" class="form-control" asp-items="@(new SelectList(ViewBag.Provinces, "ProvinceId", "ProvinceName"))">
+                    <option value="">Chọn tỉnh/thành phố</option>
+                </select>
+                <input type="hidden" id="ProvinceName" name="ProvinceName" asp-for="ProvinceName" />
+            </div>
+
+            <!-- Quận/Huyện -->
+            <div class="form-group">
+                <label class="form-label">Quận/Huyện</label>
+                <select asp-for="DistrictId" class="form-control" asp-items="@(new SelectList(ViewBag.Districts, "DistrictId", "DistrictName", Model.DistrictId))">
+                    <option value="">Chọn Quận/Huyện</option>
+                </select>
+                <input type="hidden" id="DistrictName" name="DistrictName" asp-for="DistrictName" />
+            </div>
+
+            <!-- Phường/Xã -->
+            <div class="form-group">
+                <label class="form-label">Phường/Xã</label>
+                <select asp-for="WardId" class="form-control" asp-items="@(new SelectList(ViewBag.Wards, "WardId", "WardName", Model.WardId))">
+                    <option value="">Chọn Phường/Xã</option>
+                </select>
+                <input type="hidden" id="WardName" name="WardName" asp-for="WardName" />
+            </div>
+
+            <!-- Địa chỉ mặc định -->
+            <div class="form-check form-switch mb-3 mt-3">
+                <input class="form-check-input" asp-for="DiaChiMacDinh" id="DiaChiMacDinh" />
+                <label class="form-check-label" for="DiaChiMacDinh">Đặt làm địa chỉ mặc định</label>
+                <span asp-validation-for="DiaChiMacDinh" class="text-danger"></span>
+            </div>
+
+            <!-- Submit button -->
+            <div class="form-group text-center">
+                <input type="submit" value="Lưu thay đổi" class="btn btn-primary btn-sm" />
+                <a asp-action="GetAll" class="btn btn-secondary btn-sm ms-3">Quay lại danh sách</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var isDefaultAddress = @Html.Raw(JsonConvert.SerializeObject(ViewBag.HasDefaultAddress));
+            if (isDefaultAddress) {
+                $('#DiaChiMacDinh').prop('disabled', true);
+                $('label[for="DiaChiMacDinh"]').text("Địa chỉ mặc định đã tồn tại");
+            }
+
+            $("#ProvinceId").val("@Model.ProvinceId").change();
+            $("#DistrictId").val("@Model.DistrictId").change();
+            $("#WardId").val("@Model.WardId").change();
+
+            // Tỉnh thay đổi
+            $("#ProvinceId").change(function () {
+                var provinceId = $(this).val();
+                if (provinceId) {
+                    $.get("/Client/DiaChi/GetDistricts?provinceId=" + provinceId, function (data) {
+                        $("#DistrictId").empty().append('<option value="">Chọn Quận/Huyện</option>');
+                        $.each(data, function (index, item) {
+                            $("#DistrictId").append('<option value="' + item.districtId + '">' + item.districtName + '</option>');
+                        });
+                        $("#ProvinceName").val($("#ProvinceId option:selected").text());
+                    });
+                }
+            });
+
+            // Quận thay đổi
+            $("#DistrictId").change(function () {
+                var districtId = $(this).val();
+                if (districtId) {
+                    $.get("/Client/DiaChi/GetWards?districtId=" + districtId, function (data) {
+                        $("#WardId").empty().append('<option value="">Chọn Phường/Xã</option>');
+                        $.each(data, function (index, item) {
+                            $("#WardId").append('<option value="' + item.wardId + '">' + item.wardName + '</option>');
+                        });
+                        $("#DistrictName").val($("#DistrictId option:selected").text());
+                    });
+                }
+            });
+
+            // Phường/Xã thay đổi
+            $("#WardId").change(function () {
+                $("#WardName").val($("#WardId option:selected").text());
+            });
+
+            // Đảm bảo giá trị WardName được cập nhật khi trang được tải lại
+           
+            $("form").submit(function (e) {
+                var provinceId = $("#ProvinceId").val();
+                var districtId = $("#DistrictId").val();
+                var wardId = $("#WardId").val();
+
+                // Nếu bất kỳ trường nào trống, hiển thị cảnh báo và ngừng gửi form
+                if (!provinceId || !districtId || !wardId) {
+                    e.preventDefault();
+                    alert("Vui lòng chọn đầy đủ Tỉnh/Thành phố, Quận/Huyện và Phường/Xã.");
+                    return false;
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,159 @@
+@model AppData.ViewModel.PromotionViewModel // Cập nhật kiểu model
+
+@{
+    ViewData["Title"] = "Chỉnh Sửa Promotion";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @Html.Raw(TempData["ErrorMessage"])
+    </div>
+}
+<div class="container mt-4">
+    <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">Promotion/</span> Cập nhật promotion
+    </h4>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <form asp-action="Edit" method="post" onsubmit="return validateEditForm()">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="Promotion.IdPromotion" />
+                        <div class="form-group">
+                            <label asp-for="Promotion.TenPromotion" class="control-label">Tên Promotion</label>
+                            <input asp-for="Promotion.TenPromotion" class="form-control" />
+                            <span asp-validation-for="Promotion.TenPromotion" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Promotion.PhanTramGiam" class="control-label">Phần Trăm Giảm</label>
+                            <input asp-for="Promotion.PhanTramGiam" class="form-control" />
+                            <span asp-validation-for="Promotion.PhanTramGiam" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Promotion.NgayBatDau" class="control-label">Ngày Bắt Đầu</label>
+                            <input asp-for="Promotion.NgayBatDau" class="form-control date-input" type="datetime-local" value="@Model.Promotion.NgayBatDau.ToString("yyyy-MM-ddTHH:mm")" />
+                            <span asp-validation-for="Promotion.NgayBatDau" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Promotion.NgayKetThuc" class="control-label">Ngày Kết Thúc</label>
+                            <input asp-for="Promotion.NgayKetThuc" class="form-control date-input" type="datetime-local" value="@Model.Promotion.NgayKetThuc.ToString("yyyy-MM-ddTHH:mm")" />
+                            <span asp-validation-for="Promotion.NgayKetThuc" class="text-danger"></span>
+                        </div>
+                        <div class="form-group" hidden>
+                            <label asp-for="Promotion.NgayTao" class="control-label">Ngày Tạo</label>
+                            <input asp-for="Promotion.NgayTao" class="form-control" type="datetime-local" value="@Model.Promotion.NgayTao.ToString("yyyy-MM-ddTHH:mm")" readonly />
+                            <span asp-validation-for="Promotion.NgayTao" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Promotion.TrangThai" class="control-label">Trạng Thái</label>
+                            <select asp-for="Promotion.TrangThai" class="form-control" asp-items="ViewBag.TrangThaiList" id="trangThaiSelect"></select>
+                            <span asp-validation-for="Promotion.TrangThai" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mt-2">
+                            <input type="submit" value="Lưu" class="btn btn-primary" />
+                            <a asp-action="Index" class="btn btn-secondary">Quay Lại</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h4>Sản Phẩm Chi Tiết Áp Dụng</h4>
+                    <ul class="list-group">
+                        @foreach (var item in Model.SanPhamChiTiets)
+                        {
+                            <li class="list-group-item">
+                                Mã Sản Phẩm: @item.MaSP <br />
+                                Tên: @item.ProductName <br />
+                                Giá: @item.Price <br />
+                                Số Lượng: @item.Quantity <br />
+                                <strong>Màu Sắc:</strong> @string.Join(", ", item.MauSac) <br />
+                                <strong>Kích Cỡ:</strong> @string.Join(", ", item.KichCo) <br />
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var dateInputs = document.querySelectorAll('.date-input');
+        var trangThaiSelect = document.getElementById('trangThaiSelect');
+
+        function updateStatusOptions() {
+            var startDate = new Date(document.querySelector('input[name="Promotion.NgayBatDau"]').value);
+            var endDate = new Date(document.querySelector('input[name="Promotion.NgayKetThuc"]').value);
+            var currentDate = new Date();
+
+            // Clear existing options
+            trangThaiSelect.innerHTML = '';
+
+            let firstOptionValue = null;
+
+            if (endDate > currentDate && startDate > currentDate) {
+                // Only allow "Inactive" and "Pending Activation"
+                trangThaiSelect.innerHTML += `
+                    <option value="2">Chờ Hoạt Động</option>
+                    <option value="0">Dừng Hoạt Động</option>
+                `;
+                firstOptionValue = '2'; // first available option
+            } else if (currentDate >= startDate && currentDate <= endDate) {
+                // Only allow "Active" and "Inactive"
+                trangThaiSelect.innerHTML += `
+                    <option value="1">Hoạt Động</option>
+                    <option value="0">Dừng Hoạt Động</option>
+                `;
+                firstOptionValue = '1'; // first available option
+            } else {
+                // Restore all options if the current date is before the promotion dates
+                trangThaiSelect.innerHTML += `
+                    <option value="1">Hoạt Động</option>
+                    <option value="0">Dừng Hoạt Động</option>
+                    <option value="2">Chờ Hoạt Động</option>
+                `;
+                firstOptionValue = '1'; // first available option
+            }
+
+            // Set the initial selected status based on the first available option
+            trangThaiSelect.value = firstOptionValue;
+        }
+
+        // Initial call to set options based on current dates and the initial state
+        updateStatusOptions();
+
+        dateInputs.forEach(function (input) {
+            input.addEventListener('change', updateStatusOptions);
+        });
+    });
+    function validateEditForm() {
+        var isValid = true;
+
+        // Kiểm tra phần trăm giảm
+        var phanTramGiamInput = document.querySelector('input[name="Promotion.PhanTramGiam"]');
+        var numericValue = parseFloat(phanTramGiamInput.value);
+        if (isNaN(numericValue) || numericValue <= 0 || numericValue > 100) {
+            alert("Phần trăm giảm phải là một số từ 1 đến 100.");
+            isValid = false;
+        }
+
+        // Kiểm tra ngày bắt đầu và kết thúc nếu cần
+        var startDateInput = document.querySelector('input[name="Promotion.NgayBatDau"]');
+        var endDateInput = document.querySelector('input[name="Promotion.NgayKetThuc"]');
+        var startDate = new Date(startDateInput.value);
+        var endDate = new Date(endDateInput.value);
+        if (endDate <= startDate) {
+            alert("Ngày Kết Thúc phải sau Ngày Bắt Đầu.");
+            isValid = false;
+        }
+
+        return isValid; // Trả về trạng thái tổng hợp
+    }
+</script>

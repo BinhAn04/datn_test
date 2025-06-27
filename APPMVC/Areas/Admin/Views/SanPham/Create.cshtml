@@ -1,0 +1,398 @@
+﻿@model AppData.ViewModel.SanPhamViewModel
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+
+}
+<div class="content-wrapper">
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4">
+            <span class="text-muted fw-light">Quản lý sản phẩm /</span> Thêm Sản Phẩm
+        </h4>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-4" style="padding: 20px">
+                    <div id="error-message" class="text-danger mb-3">
+                        @Html.Raw(TempData["Error"])
+                    </div>
+                    <form asp-action="Create" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input asp-for="SanPham.IdSanPham" class="form-control"  hidden>
+                        <div class="form-group">
+                            <label asp-for="SanPham.TenSanPham" class="control-label">Tên Sản Phẩm</label>
+                            <input asp-for="SanPham.TenSanPham" class="form-control" />
+                            <span asp-validation-for="SanPham.TenSanPham" class="text-danger"></span>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label asp-for="SanPham.IdChatLieu" class="control-label">Chất liệu</label>
+                                <select asp-for="IdChatLieu" class="form-control" asp-items="ViewBag.IdChatLieu"></select>
+                            </div>
+                            <div class="col">
+                                <label asp-for="SanPham.IdDeGiay" class="control-label">Đế giày</label>
+                                <select asp-for="IdDeGiay" class="form-control" asp-items="@(ViewBag.IdDeGiay)"></select>
+                            </div>
+                            <div class="col">
+                                <label asp-for="SanPham.IdDanhMuc" class="control-label">Danh mục</label>
+                                <select asp-for="IdDanhMuc" class="form-control" asp-items="@(ViewBag.IdDanhMuc)"></select>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label asp-for="SanPham.IdThuongHieu" class="control-label">Thương hiệu</label>
+                                <select asp-for="IdThuongHieu" class="form-control" asp-items="@(ViewBag.IdThuongHieu)" ></select>
+                            </div>
+                            <div class="col">
+                                <label asp-for="SanPham.IdKieuDang" class="control-label">Kiểu dáng</label>
+                                <select asp-for="IdKieuDang" class="form-control" asp-items="@(ViewBag.IdKieuDang)" ></select>
+                            </div>
+                        </div>
+                        <div class="form-group" hidden>
+                            <label asp-for="SanPham.NgayCapNhat" class="control-label"></label>
+                            <input asp-for="SanPham.NgayCapNhat" class="form-control" type="date" asp-format="{0:yyyy-MM-dd}" />
+                            <span asp-validation-for="SanPham.NgayCapNhat" class="text-danger"></span>
+                        </div>
+                        <div class="form-group" hidden>
+                            <label asp-for="SanPham.NgayTao" class="control-label"></label>
+                            <input asp-for="SanPham.NgayTao" class="form-control" type="date" asp-format="{0:yyyy-MM-dd}" />
+                            <span asp-validation-for="SanPham.NgayTao" class="text-danger"></span>
+                        </div>
+                        <div class="form-group" hidden>
+                            <label asp-for="SanPham.NguoiCapNhat" class="control-label"></label>
+                            <input asp-for="SanPham.NguoiCapNhat" class="form-control" />
+                            <span asp-validation-for="SanPham.NguoiCapNhat" class="text-danger"></span>
+                        </div>
+                        <div class="form-group" hidden>
+                            <label asp-for="SanPham.NguoiTao" class="control-label"></label>
+                            <input asp-for="SanPham.NguoiTao" class="form-control" />
+                            <span asp-validation-for="SanPham.NguoiTao" class="text-danger"></span>
+                        </div>
+                        <div class="form-group" hidden>
+                            <label asp-for="SanPham.KichHoat" class="control-label"></label>
+                            <input asp-for="SanPham.KichHoat" class="form-control" />
+                            <span asp-validation-for="SanPham.KichHoat" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="SanPham.MoTa" class="control-label">Mô Tả</label>
+                            <input asp-for="SanPham.MoTa" class="form-control" />
+                            <span asp-validation-for="SanPham.MoTa" class="text-danger"></span>
+                        </div>
+                        <div class="form-group" hidden>
+                            <label asp-for="SanPham.Sale" class="control-label"></label>
+                            <input asp-for="SanPham.Sale" class="form-control" />
+                            <span asp-validation-for="SanPham.Sale" class="text-danger"></span>
+                        </div>
+                        @*                         <input asp-for="SanPhamChiTiet.IdSanPhamChiTiet" class="form-control"  hidden> *@
+                        <div class="row mb-3">
+                            <div class="col">
+                                @if (Model.KichCoOptions != null)
+                                {
+                                    <div class="form-group">
+                                        <label asp-for="SelectedKichCoIds" class="control-label">Chọn Kích Cỡ:</label>
+                                        <div>
+                                            @foreach (var kichCoOption in Model.KichCoOptions)
+                                            {
+                                                <input type="checkbox" name="SelectedKichCoIds" value="@kichCoOption.Value" />
+                                                <label>@kichCoOption.Text</label>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="col">
+                                @if (Model.MauSacOptions != null)
+                                {
+                                    <div class="form-group">
+                                        <label asp-for="SelectedMauSacIds" class="control-label">Chọn Màu Sắc:</label>
+                                        <div>
+                                            @foreach (var mauSacOption in Model.MauSacOptions)
+                                            {
+                                                <input type="checkbox" name="SelectedMauSacIds" value="@mauSacOption.Value" />
+                                                <label>@mauSacOption.Text</label>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            
+                        </div>
+                                          <div class="form-group">
+                            <label class="control-label">Tổ hợp Kích Cỡ và Màu Sắc</label>
+                            <div id="combinations" class="border p-2">
+                                <strong>Các Tổ Hợp:</strong>
+                                <br />
+                                <table id="combinations-table" class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Tên Sản Phẩm</th>
+                                            <th>Kích Cỡ</th>
+                                            <th>Màu Sắc</th>
+                                            <th>Giá</th>
+                                            <th>Số Lượng</th>
+                                            <th>Xuất Xứ</th>
+                                            <th>Hình ảnh</th>
+                                            <th>Hình ảnh mẫu</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="combinations-tbody">
+                                        <!-- Nội dung sẽ được cập nhật bởi JavaScript -->
+                                    </tbody>
+                                </table>
+                                <p id="no-combinations-message" style="display:none;">Không có tổ hợp nào được chọn.</p>
+                            </div>
+                        </div>
+
+                        <br />
+                        <div class="form-group mb-3 d-flex justify-content-center">
+                            <div class="mx-auto">
+                                <input type="submit" value="Create" class="btn btn-primary" enctype="multipart/form-data" />
+                                <a asp-area="Admin" asp-action="Getall" class="btn btn-secondary">Back to List</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+     </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+                  var errorMessage = '@Html.Raw(TempData["Error"])';
+                  if (errorMessage) {
+                      $('#error-message').text(errorMessage);
+                  }
+              });
+        $(document).ready(function () {
+            let combinationIndex = 0;
+            const kichCoNames = {};
+            const mauSacNames = {};
+
+            $("input[name='SelectedKichCoIds']").each(function() {
+                kichCoNames[$(this).val()] = $(this).next('label').text();
+            });
+
+            $("input[name='SelectedMauSacIds']").each(function() {
+                mauSacNames[$(this).val()] = $(this).next('label').text();
+            });
+
+               function updateCombinations() {
+        const selectedKichCoIds = $("input[name='SelectedKichCoIds']:checked").map(function () {
+            return $(this).val();
+        }).get();
+
+        const selectedMauSacIds = $("input[name='SelectedMauSacIds']:checked").map(function () {
+            return $(this).val();
+        }).get();
+
+        const tenSanPham = $("input[name='SanPham.TenSanPham']").val();
+        const combinationsContainer = $("#combinations");
+        combinationsContainer.empty();
+        combinationIndex = 0;
+
+        if (selectedKichCoIds.length > 0 && selectedMauSacIds.length > 0) {
+            const headerRow = $("<tr><th>Tên Sản Phẩm</th><th>Kích Cỡ</th><th>Màu Sắc</th><th>Giá</th><th>Số Lượng</th><th>Xuất Xứ</th><th>Hình ảnh</th><th>Hình ảnh mẫu</th></tr>");
+            combinationsContainer.append("<strong>Các Tổ Hợp:</strong><table class='table table-bordered'><thead>" + headerRow.prop('outerHTML') + "</thead><tbody id='combinations-tbody'></tbody></table>");
+
+            selectedMauSacIds.forEach(function (mauSacId) {
+                selectedKichCoIds.forEach(function (kichCoId) {
+                    const row = $("<tr>");
+                    row.append($("<td>").text(tenSanPham));
+                    row.append($("<td>").text(kichCoNames[kichCoId]));
+                    row.append($("<td>").text(mauSacNames[mauSacId]));
+                    row.append($("<td>").append($("<input type='number' name='Combinations[" + combinationIndex + "].Gia' class='form-control' value='100000' placeholder='Giá'>")));
+                    row.append($("<td>").append($("<input type='number' name='Combinations[" + combinationIndex + "].SoLuong' class='form-control' value='10' placeholder='Số lượng'>")));
+                    row.append($("<td>").append($("<input type='text' name='Combinations[" + combinationIndex + "].XuatXu' class='form-control' value='Việt Nam' placeholder='Xuất xứ'>")));
+
+                    // Add KichCoId and MauSacId to the combination
+                    row.append($("<input type='hidden' name='Combinations[" + combinationIndex + "].KichCoId' value='" + kichCoId + "'/>"));
+                    row.append($("<input type='hidden' name='Combinations[" + combinationIndex + "].MauSacId' value='" + mauSacId + "'/>"));
+
+                    const imageCell = $("<td><input type='file' name='Combinations[" + combinationIndex + "].Files' class='form-control image-upload' multiple></td>");
+                    const sampleImageCell = $("<td class='image-display' style='display: flex; flex-direction: row; flex-wrap: wrap;'></td>");
+                    row.append(imageCell).append(sampleImageCell);
+
+                    $("#combinations-tbody").append(row);
+                    combinationIndex++;
+                });
+            });
+        } else {
+            combinationsContainer.append("<p>Không có tổ hợp nào được chọn.</p>");
+        }
+
+                $(".image-upload").change(function () {
+                    const files = this.files;
+                    const imageContainer = $(this).closest("tr").find(".image-display");
+                    imageContainer.empty();
+
+                    if (files.length > 3) {
+                        alert("Bạn chỉ có thể chọn tối đa 3 hình ảnh.");
+                        $(this).val(""); // Reset file input
+                        return;
+                    }
+
+                    $.each(files, function (index, file) {
+                        if (!file.type.match('image.*')) {
+                            alert("Chỉ có thể chọn các tệp hình ảnh.");
+                            return;
+                        }
+
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            const image = $("<img src='" + e.target.result + "' width='100' height='100' style='margin-right: 5px;'>");
+                            imageContainer.append(image);
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                });
+            }
+
+            $("input[name='SelectedKichCoIds']").change(updateCombinations);
+            $("input[name='SelectedMauSacIds']").change(updateCombinations);
+        });
+        // Xử lý thêm kích cỡ
+        $('#saveSize').click(function () {
+            var sizeName = $('#newSizeName').val().trim();
+
+            if (!sizeName) {
+                $('#sizeError').text('Tên kích cỡ không được để trống').show();
+                return;
+            }
+
+            // Validate kích cỡ là số tự nhiên từ 19-46
+            var sizeNumber = parseInt(sizeName);
+            if (isNaN(sizeNumber) || sizeNumber < 19 || sizeNumber > 46) {
+                $('#sizeError').text('Kích cỡ phải là số từ 19 đến 46').show();
+                return;
+            }
+
+            // Kiểm tra trùng tên kích cỡ
+            var isDuplicate = false;
+            $('input[name="SelectedKichCoIds"]').each(function () {
+                var existingSize = $(this).next('label').text().trim();
+                if (existingSize.toLowerCase() === sizeName.toLowerCase()) {
+                    isDuplicate = true;
+                    return false; // Thoát khỏi vòng lặp
+                }
+            });
+
+            if (isDuplicate) {
+                $('#sizeError').text('Kích cỡ này đã tồn tại').show();
+                return;
+            }
+
+            if (confirm(`Bạn có chắc muốn thêm kích cỡ "${sizeName}" không?`)) {
+                $.ajax({
+                    url: '@Url.Action("Create", "KichCo")',
+                    type: 'POST',
+                    data: { TenKichCo: sizeName },
+                    success: function (response) {
+                        if (response.success) {
+                            // Thêm checkbox mới
+                            var $checkboxContainer = $('input[name="SelectedKichCoIds"]').parent();
+
+                            $checkboxContainer.append(
+                                $('<input>', {
+                                    type: 'checkbox',
+                                    name: 'SelectedKichCoIds',
+                                    value: response.id,
+                                    checked: true
+                                })
+                            ).append(
+                                $('<label>').text(response.tenKichCo)
+                            );
+
+                            // Đóng modal
+                            var sizeModal = bootstrap.Modal.getInstance(document.getElementById('addSizeModal'));
+                            sizeModal.hide();
+
+                            // Reset form
+                            $('#newSizeName').val('');
+                            $('#sizeError').hide();
+
+                            // Cập nhật tổ hợp
+                            updateCombinations();
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function (xhr) {
+                        console.error(xhr);
+                        alert('Có lỗi xảy ra: ' + xhr.responseText);
+                    }
+                });
+            }
+        });
+
+        // Tương tự cho màu sắc
+        $('#saveColor').click(function () {
+            var colorName = $('#newColorName').val().trim();
+
+            if (!colorName) {
+                $('#colorError').text('Tên màu không được để trống').show();
+                return;
+            }
+
+            // Kiểm tra trùng tên màu
+            var isDuplicate = false;
+            $('input[name="SelectedMauSacIds"]').each(function () {
+                var existingColor = $(this).next('label').text().trim();
+                if (existingColor.toLowerCase() === colorName.toLowerCase()) {
+                    isDuplicate = true;
+                    return false; // Thoát khỏi vòng lặp
+                }
+            });
+
+            if (isDuplicate) {
+                $('#colorError').text('Màu này đã tồn tại').show();
+                return;
+            }
+
+            if (confirm(`Bạn có chắc muốn thêm màu "${colorName}" không?`)) {
+                $.ajax({
+                    url: '@Url.Action("Create", "MauSac")',
+                    type: 'POST',
+                    data: { TenMauSac: colorName },
+                    success: function (response) {
+                        if (response.success) {
+                            // Thêm checkbox mới
+                            var $checkboxContainer = $('input[name="SelectedMauSacIds"]').parent();
+
+                            $checkboxContainer.append(
+                                $('<input>', {
+                                    type: 'checkbox',
+                                    name: 'SelectedMauSacIds',
+                                    value: response.id,
+                                    checked: true
+                                })
+                            ).append(
+                                $('<label>').text(response.tenMauSac)
+                            );
+
+                            // Đóng modal
+                            var colorModal = bootstrap.Modal.getInstance(document.getElementById('addColorModal'));
+                            colorModal.hide();
+
+                            // Reset form
+                            $('#newColorName').val('');
+                            $('#colorError').hide();
+
+                            // Cập nhật tổ hợp
+                            updateCombinations();
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function (xhr) {
+                        console.error(xhr);
+                        alert('Có lỗi xảy ra: ' + xhr.responseText);
+                    }
+                });
+            }
+        });
+    </script>
+}

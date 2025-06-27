@@ -1,0 +1,136 @@
+﻿@using Newtonsoft.Json
+@model AppData.Model.DiaChiHoaDon
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@error.ErrorMessage</p>
+        }
+    </div>
+}
+<h1>EditDC</h1>
+
+<h4>DiaChi</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="IdDiaChiHoaDon" class="control-label"></label>
+                <input asp-for="IdDiaChiHoaDon" class="form-control" />
+                <span asp-validation-for="IdDiaChiHoaDon" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="HoTen" class="control-label"></label>
+                <input asp-for="HoTen" class="form-control" />
+                <span asp-validation-for="HoTen" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SoDienThoai" class="control-label"></label>
+                <input asp-for="SoDienThoai" class="form-control" />
+                <span asp-validation-for="SoDienThoai" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MoTa" class="control-label"></label>
+                <input asp-for="MoTa" class="form-control" />
+                <span asp-validation-for="MoTa" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label>Tỉnh/Thành phố</label>
+                <select id="ProvinceId" asp-for="ProvinceId" class="form-control" asp-items="@(new SelectList(ViewBag.Provinces, "ProvinceId", "ProvinceName"))">
+                    <option value="">Chọn tỉnh/thành phố</option>
+                </select>
+                <input type="hidden" id="ProvinceName" name="ProvinceName" asp-for="ProvinceName" />
+            </div>
+            <div class="form-group mb-3">
+                <label>Quận/Huyện</label>
+                <select asp-for="DistrictId" class="form-control" asp-items="@(new SelectList(ViewBag.Districts, "DistrictId", "DistrictName", Model.DistrictId))">
+                    <option value="">Chọn Quận/Huyện</option>
+                </select>
+                <input type="hidden" id="DistrictName" name="DistrictName" asp-for="DistrictName" />
+            </div>
+
+            <div class="form-group mb-3">
+                <label>Phường/Xã</label>
+                <select asp-for="WardId" class="form-control" asp-items="@(new SelectList(ViewBag.Wards, "WardId", "WardName", Model.WardId))">
+                    <option value="">Chọn Phường/Xã</option>
+                </select>
+                <input type="hidden" id="WardName" name="WardName" asp-for="WardName" />
+            </div>
+
+            <div class="form-group mb-3">
+                <input class="form-check-input" asp-for="DiaChiMacDinh" id="DiaChiMacDinh" />
+                <label for="DiaChiMacDinh">Đặt làm địa chỉ mặc định</label>
+                <span asp-validation-for="DiaChiMacDinh" class="text-danger"></span>
+            </div>
+
+
+            <div class="form-group mb-3">
+                <input type="submit" value="Lưu thay đổi" class="btn btn-success" />
+                <a asp-action="GetAll" class="btn btn-secondary" style="margin-left:15px;">Quay lại danh sách</a>
+            </div>
+        </form>
+    </div>
+</div>
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {                  
+            $("#ProvinceId").val("@Model.ProvinceId").change();
+            $("#DistrictId").val("@Model.DistrictId").change();
+            $("#WardId").val("@Model.WardId").change();
+
+            // Khi tỉnh được chọn
+            $("#ProvinceId").change(function () {
+                var provinceId = $(this).val();
+                if (provinceId) {
+                    $.get("/Client/DiaChiHd/GetDistricts?provinceId=" + provinceId, function (data) {
+                        $("#DistrictId").empty();
+                        $("#DistrictId").append('<option value="">Chọn Quận/Huyện</option>');
+                        $.each(data, function (index, item) {
+                            $("#DistrictId").append('<option value="' + item.districtId + '">' + item.districtName + '</option>');
+                        });
+
+                        // Lưu lại giá trị của tỉnh
+                        var selectedProvince = $("#ProvinceId option:selected").text();
+                        $("#ProvinceName").val(selectedProvince);
+                    });
+                }
+            });
+
+            // Khi quận được chọn
+            $("#DistrictId").change(function () {
+                var districtId = $(this).val();
+                if (districtId) {
+                    $.get("/Client/DiaChiHd/GetWards?districtId=" + districtId, function (data) {
+                        $("#WardId").empty();
+                        $("#WardId").append('<option value="">Chọn Phường/Xã</option>');
+                        $.each(data, function (index, item) {
+                            $("#WardId").append('<option value="' + item.wardId + '">' + item.wardName + '</option>');
+                        });
+
+                        // Lưu lại giá trị của quận
+                        var selectedDistrict = $("#DistrictId option:selected").text();
+                        $("#DistrictName").val(selectedDistrict);
+                    });
+                }
+            });
+            // Khi phường/xã được chọn
+            $("#WardId").change(function () {
+                var wardName = $("#WardId option:selected").text();
+                $("#WardName").val(wardName); // Lưu tên phường/xã
+            });
+            // Đảm bảo giá trị WardName được cập nhật khi trang được tải lại
+            $("#WardId").val("@Model.WardId");
+            var selectedWard = $("#WardId option:selected").text();
+            $("#WardName").val(selectedWard);
+        });
+    </script>
+}

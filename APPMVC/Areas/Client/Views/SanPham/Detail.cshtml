@@ -1,0 +1,565 @@
+﻿@model APPMVC.ViewModel.SanPhamChiTietClientViewModel
+@{
+    ViewData["Title"] = "Detail";
+    Layout = "~/Areas/Client/Views/Shared/_SanphamCT.cshtml";
+}
+
+<div class="container">
+    <div class="row mt-2">
+        <!-- Ảnh sản phẩm -->
+        <div class="col-lg-6 product-detail-image text-center">
+            @if (Model.SanPhamChiTietList != null && Model.SanPhamChiTietList.Any())
+            {
+                var firstDetail = Model.SanPhamChiTietList.FirstOrDefault();
+                if (firstDetail.HinhAnhs != null && firstDetail.HinhAnhs.Any())
+                {
+                    var firstImage = firstDetail.HinhAnhs.First();
+                    var base64String = Convert.ToBase64String(firstImage.DataHinhAnh);
+                    var imageUrl = $"data:{firstImage.LoaiFileHinhAnh};base64,{base64String}";
+
+                    <img src="@imageUrl" class="img-fluid" alt="Hình ảnh sản phẩm" style="width:592px; height:592px;" id="mainImage" />
+                }
+                else
+                {
+                    <span class="text-muted">Không có hình ảnh cho sản phẩm này.</span>
+                }
+            }
+            else
+            {
+                <span class="text-muted">Không có thông tin chi tiết cho sản phẩm này.</span>
+            }
+
+            <div class="thumbs mt-2">
+                @if (Model.SanPhamChiTietList != null && Model.SanPhamChiTietList.Any())
+                {
+                    foreach (var detail in Model.SanPhamChiTietList)
+                    {
+                        if (detail.HinhAnhs != null && detail.HinhAnhs.Any())
+                        {
+                            foreach (var hinhAnh in detail.HinhAnhs)
+                            {
+                                var base64String = Convert.ToBase64String(hinhAnh.DataHinhAnh);
+                                var imageUrl = $"data:{hinhAnh.LoaiFileHinhAnh};base64,{base64String}";
+                                <img src="@imageUrl" alt="Hình ảnh sản phẩm" class="img-thumbnail thumb-image" style="width:100px; height: 100px;" data-target="@imageUrl" />
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    <span class="text-muted">Không có hình ảnh cho sản phẩm này.</span>
+                }
+            </div>
+        </div>
+
+        <!-- Thông tin sản phẩm -->
+        <div class="col-lg-6 product-detail-info">
+            <h2 class="product-title">@Model.TenSanPham</h2>
+            <p id="product-price" class="price"></p>
+            <p id="product-quantity" class="quantity">
+                Số lượng: @(Model.SoLuong.HasValue ? Model.SoLuong.Value.ToString() : "Không có thông tin")
+            </p>
+
+            <div class="color-options">
+                <p><strong>Chọn Màu:</strong></p>
+                <div class="color-selector btn-group d-flex flex-wrap">
+                    @if (Model.AvailableColors != null && Model.AvailableColors.Any())
+                    {
+                        var distinctColors = Model.AvailableColors.DistinctBy(c => c.IdMauSac).ToList();
+                        foreach (var color in distinctColors)
+                        {
+                            <button value="@color.IdMauSac"
+                                    class="btn btn-dark color-btn @(color.IdMauSac == Model.SelectedColorId ? "active" : "")"
+                                    type="button">
+                                @color.TenMauSac
+                            </button>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-muted">Không có màu sắc nào có sẵn.</p>
+                    }
+                </div>
+            </div>
+
+            <div class="size-options">
+                <p><strong>Chọn Size:</strong></p>
+                <div class="size-selector btn-group d-flex flex-wrap">
+                    @if (Model.AvailableSizes != null && Model.AvailableSizes.Any())
+                    {
+                        var distinctSizes = Model.AvailableSizes.DistinctBy(s => s.IdKichCo).ToList();
+                        foreach (var size in distinctSizes)
+                        {
+                            <button value="@size.IdKichCo"
+                                    class="btn btn-dark size-btn @(size.IdKichCo == Model.SelectedSizeId ? "active" : "")"
+                                    type="button">
+                                @size.TenKichCo
+                            </button>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-muted">Không có kích cỡ nào có sẵn.</p>
+                    }
+                </div>
+            </div>
+
+            <div class="product-detail-specs">
+                <p><strong>Mô tả:</strong></p>
+                <ul>
+                    <li><strong>Made in:</strong> Vietnam</li>
+                    <li><strong>Tên sản phẩm: @Model.TenSanPham</strong></li>
+                </ul>              
+            </div>
+
+            <div class="actions mt-3">
+                <button id="add-to-cart-btn" class="btn btn-primary" type="button">Thêm vào giỏ hàng</button>
+                <button id="buy-now-btn" class="btn btn-success mt-3" type="button">Mua Ngay</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container bg-shadow mt-5 rounded-2" style="background-color: #ffffff; height: 132px;">
+    <div class="d-flex ps-2 pt-4">
+        <div class="d-flex " style="width: 369px; height: 82px;">
+            <img src="/Client/images/AIR+FORCE+1+'07.png" class="" style="border-radius: 50%; width:78px ; height: 78px;">
+            <div class="ps-2 pt-2" style="font-weight: 400; font-size: 1rem; color: rgba(0,0,0,.87);">
+                SoleMates Store
+                <p style="margin: 0; font-weight: 300; font-size: 0.9rem; color: rgba(0,0,0,.6);">
+                    Địa chỉ: 123 Đường XYZ, Thành phố ABC
+                </p>
+                <p style="margin: 0; font-weight: 300; font-size: 0.9rem; color: rgba(0,0,0,.6);">
+                    Số điện thoại: (012) 345-6789
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container bg-shadow mt-2 rounded-2" style="background-color: #ffffff; height: auto;">
+    <div class="ms-3 mt-3 mb-10">
+        <h4>Chi Tiết Sản Phẩm</h4>
+        <div class="d-flex mt-4">
+            <p class="me-2">Tên Sản Phẩm:</p>
+            @Model.TenSanPham
+        </div>
+        <div class="mt-1">
+            <p class="me-2">Mô Tả Sản Phẩm:</p>
+            @Model.MoTa
+        </div>
+        <div class="mt-3 mb-5">
+            <p class="me-2 fw-bold">Hình Ảnh Sản Phẩm:</p>
+            <div class="d-flex me-3">
+                @if (Model.SanPhamChiTietList != null && Model.SanPhamChiTietList.Any())
+                {
+                    foreach (var detail in Model.SanPhamChiTietList)
+                    {
+                        if (detail.HinhAnhs != null && detail.HinhAnhs.Any())
+                        {
+                            foreach (var hinhAnh in detail.HinhAnhs)
+                            {
+                                var base64String = Convert.ToBase64String(hinhAnh.DataHinhAnh);
+                                var imageUrl = $"data:{hinhAnh.LoaiFileHinhAnh};base64,{base64String}";
+                                <img src="@imageUrl" class="img-fluid mt-2" alt="Hình ảnh sản phẩm" style="width: 160px; height: 200px; border-radius: 8px;" />
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    <span class="text-muted">Không có hình ảnh cho sản phẩm này.</span>
+                }
+            </div>                   
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="quantityModal" tabindex="-1" role="dialog" aria-labelledby="quantityModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="quantityModalLabel">Nhập Số Lượng</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label for="quantity-input">Số lượng:</label>
+                <input type="number" id="quantity-input" class="form-control" min="1" step="1" value="1" required>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                <button type="button" id="confirm-buy-btn" class="btn btn-success">Mua Ngay</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        let selectedColor = '@Model.SelectedColorId' || '';
+        let selectedSize = '@Model.SelectedSizeId' || '';
+        let sanPhamId = '@Model.IdSanPham';
+        let availableQuantity = @(Model.SoLuong.HasValue ? Model.SoLuong.Value : 0);
+
+        // Hiển thị giá ban đầu
+        let firstDetail = @Html.Raw(Json.Serialize(Model.SanPhamChiTietList.FirstOrDefault()));
+        let initialPriceDisplay = '';
+
+        if (firstDetail && firstDetail.DiscountedPrice < firstDetail.Gia) {
+            initialPriceDisplay = `
+                <div style="display: flex; align-items: center;">
+                    <span style="text-decoration: line-through; color: red; margin-right: 10px;">
+                        ${firstDetail.Gia.toLocaleString()} VND
+                    </span>
+                    <span style="color: green;">
+                        ${firstDetail.DiscountedPrice.toLocaleString()} VND
+                    </span>
+                </div>
+            `;
+        } else {
+            initialPriceDisplay = firstDetail.Gia ? `${firstDetail.Gia.toLocaleString()} VND` : "Vui lòng chọn màu sắc và kích cỡ";
+        }
+
+        $('#product-price').html(initialPriceDisplay);
+
+        if (selectedColor) {
+            $('.color-btn[value="' + selectedColor + '"]').addClass('active');
+        }
+
+        if (selectedSize) {
+            $('.size-btn[value="' + selectedSize + '"]').addClass('active');
+        }
+
+           $('.color-btn').click(function () {
+        // Bỏ active cho tất cả nút màu
+        $('.color-btn').removeClass('active');
+        $(this).addClass('active'); // Thêm active cho nút được nhấn
+        selectedColor = $(this).val(); // Cập nhật màu đã chọn
+        updateProductVariant(); // Cập nhật biến thể sản phẩm
+    });
+
+    $('.size-btn').click(function () {
+        // Bỏ active cho tất cả nút kích cỡ
+        $('.size-btn').removeClass('active');
+        $(this).addClass('active'); // Thêm active cho nút được nhấn
+        selectedSize = $(this).val(); // Cập nhật kích cỡ đã chọn
+        updateProductVariant(); // Cập nhật biến thể sản phẩm
+    });
+
+    function updateProductVariant() {
+        if (selectedColor && selectedSize) {
+            $.ajax({
+                url: '/Client/SanPham/GetVariant',
+                type: 'GET',
+                data: { productId: sanPhamId, colorId: selectedColor, sizeId: selectedSize },
+                success: function (data) {
+                    if (data.success) {
+                        if (data.kichHoat !== 1) {
+                            $('#product-price').html(''); // Xóa giá
+                            $('#product-quantity').text(''); // Xóa số lượng
+                            $('.thumbs').empty(); // Xóa hình ảnh
+
+                            // Ẩn nút màu và kích cỡ đã chọn
+                            $('.color-btn.active').removeClass('active'); // Ẩn màu đã chọn
+                            $('.size-btn.active').removeClass('active'); // Ẩn kích cỡ đã chọn
+
+                            // Đặt lại biến màu và kích cỡ đã chọn
+                            selectedColor = '';
+                            selectedSize = '';
+
+                            // Hiện lại tất cả các nút màu và kích cỡ
+                            $('.color-btn').show(); // Hiện tất cả nút màu
+                            $('.size-btn').show(); // Hiện tất cả nút kích cỡ
+
+                            alert('Sản phẩm không hoạt động.');
+                        } else {
+                            // Cập nhật giá
+                            let priceDisplay = '';
+                            if (data.discountedPrice !== null && data.discountedPrice < data.originalPrice) {
+                                priceDisplay = `
+                                    <div style="display: flex; align-items: center;">
+                                        <span style="text-decoration: line-through; color: red; margin-right: 10px;">
+                                            ${data.originalPrice.toLocaleString()} VND
+                                        </span>
+                                        <span style="color: green;">
+                                            ${data.discountedPrice.toLocaleString()} VND
+                                        </span>
+                                    </div>
+                                `;
+                            } else {
+                                priceDisplay = `${data.originalPrice.toLocaleString()} VND`;
+                            }
+
+                            $('#product-price').html(priceDisplay);
+                            $('#product-quantity').text('Số lượng: ' + data.quantity);
+                            availableQuantity = data.quantity; // Cập nhật số lượng có sẵn
+
+                            // Cập nhật hình ảnh
+                            const firstImage = data.images[0];
+                            $('#mainImage').attr('src', 'data:' + firstImage.type + ';base64,' + firstImage.base64);
+
+                            // Cập nhật thumbnail
+                            $('.thumbs').empty();
+                            data.images.forEach(function (image) {
+                                $('.thumbs').append(`
+                                        <img src="data:${image.type};base64,${image.base64}" alt="Hình ảnh sản phẩm" class="img-thumbnail thumb-image" style="width: 100px;height: 100px ; margin: 5px;" data-target="data:${image.type};base64,${image.base64}" />
+                                `);
+                            });
+                        }
+                    } else {
+                        // Nếu không thành công, ẩn các nút màu và kích cỡ
+                        $('.color-btn.active').removeClass('active');
+                        $('.size-btn.active').removeClass('active');
+                            selectedColor = '';
+                            selectedSize = '';
+                        alert(data.message);
+                    }
+                },
+                error: function () {
+                    // Ẩn các nút khi có lỗi
+                    $('.color-btn.active').removeClass('active');
+                    $('.size-btn.active').removeClass('active');
+
+                    // Reset lại tất cả các nút màu và kích cỡ
+                    selectedColor = ''; // Đặt lại biến màu đã chọn
+                    selectedSize = ''; // Đặt lại biến kích cỡ đã chọn
+                    $('.color-btn').show(); // Hiện tất cả nút màu
+                    $('.size-btn').show(); // Hiện tất cả nút kích cỡ
+
+                    alert('Không thể cập nhật thông tin sản phẩm. Vui lòng thử lại.');
+                }
+            });
+        }
+    }
+          $('#add-to-cart-btn').click(function () {
+        if (!selectedColor || !selectedSize) {
+            alert('Vui lòng chọn màu và kích thước trước khi thêm vào giỏ hàng.');
+            return;
+        }
+
+        $.ajax({
+            url: '/Client/SanPham/AddToCard',
+            type: 'POST',
+            data: { productId: sanPhamId, colorId: selectedColor, sizeId: selectedSize },
+            success: function (response) {
+                if (response.success) {
+                    alert('Sản phẩm đã được thêm vào giỏ hàng.');
+                } else {
+                    alert(response.message); // Hiển thị thông báo lỗi từ server
+                }
+            },
+            error: function (xhr) {
+                // Hiển thị thông báo lỗi từ server nếu có
+                const errorMessage = xhr.responseJSON?.message || 'Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng. Vui lòng thử lại.';
+                alert(errorMessage);
+            }
+        });
+    });
+
+        $('#quantity-input').on('input', function () {
+            let quantity = $(this).val();
+
+            // Kiểm tra tính hợp lệ của đầu vào
+            if (!quantity || quantity < 1 || isNaN(quantity)) {
+                $(this).val(1); // Đặt lại thành 1 nếu không hợp lệ
+            } else if (quantity > availableQuantity) {
+                alert('Số lượng không được vượt quá số lượng sản phẩm có sẵn: ' + availableQuantity);
+                $(this).val(availableQuantity); // Đặt lại thành số lượng tối đa có sẵn
+            }
+        });
+
+        $('#buy-now-btn').click(function () {
+            if (!selectedColor || !selectedSize) {
+                alert('Vui lòng chọn màu và kích thước trước khi mua ngay.');
+                return;
+            }
+            $('#quantityModal').modal('show');
+        });
+
+        $('#confirm-buy-btn').click(function () {
+            let quantity = $('#quantity-input').val();
+
+            // Kiểm tra đầu vào số lượng
+            if (!quantity || quantity < 1 || isNaN(quantity)) {
+                alert('Vui lòng nhập số lượng hợp lệ.');
+                $('#quantity-input').val(1); // Đặt lại đầu vào thành 1
+                return;
+            } else if (quantity > availableQuantity) {
+                alert('Số lượng không được vượt quá số lượng sản phẩm có sẵn: ' + availableQuantity);
+                $('#quantity-input').val(availableQuantity); // Đặt lại thành số lượng tối đa có sẵn
+                return;
+            }
+
+            // Thực hiện mua hàng
+            $.ajax({
+                url: '/Client/SanPham/BuyNow',
+                type: 'POST',
+                data: {
+                    productId: sanPhamId,
+                    colorId: selectedColor,
+                    sizeId: selectedSize,
+                    quantity: quantity
+                },
+                success: function (response) {
+                    if (response.success) {
+                        window.location.href = response.redirectUrl; // Chuyển hướng đến URL trả về
+                    } else {
+                        alert(response.message); // Hiển thị thông báo lỗi
+                    }
+                },
+                error: function () {
+                    alert('Có lỗi xảy ra khi mua sản phẩm. Vui lòng thử lại.');
+                }
+            });
+
+            $('#quantityModal').modal('hide');
+        });
+
+        $('.btn-secondary').click(function () {
+            $('#quantity-input').val(1); // Đặt lại giá trị đầu vào thành 1
+            $('#quantityModal').modal('hide'); // Đóng modal
+        });
+
+        // Sự kiện click cho thumbnail
+        $(document).on('click', '.thumb-image', function () {
+            const newImageUrl = $(this).data('target');
+            $('#mainImage').attr('src', newImageUrl);
+        });
+    });
+</script>
+
+<style>
+    /*Sản phâm*/
+    .product-title {
+        font-size: 24px; 
+        font-weight: bold; 
+        color: #333; 
+        margin-bottom: 15px; 
+        text-transform: capitalize; 
+        word-wrap: break-word; 
+        overflow-wrap: break-word; 
+        white-space: normal; 
+    }
+    /*Hết sản phẩm*/
+
+    .color-selector, .size-selector {
+        display: flex;
+        flex-wrap: wrap; 
+        gap: 5px; 
+    }
+
+    .color-selector .btn, .size-selector .btn {
+        flex: 0 0 auto; 
+        font-size: 15px; 
+        padding: 5px 10px; 
+        border-radius: 4px;
+        text-align: center;
+        min-width: 90px; 
+        min-height:50px;
+    }
+
+    .color-selector .btn.active, .size-selector .btn.active {
+       background-color: #0056b3;
+       color: #fff;
+       box-shadow: 0 0 10px rgba(0, 86, 179, 0.7), 0 0 20px rgba(0, 86, 179, 0.5);
+    }
+
+    .color-options, .size-options {
+        margin-bottom: 20px;
+    }
+
+    .text-muted {
+        font-size: 14px;
+    }
+    /**/
+    .color-btn, .size-btn {
+        transition: box-shadow 0.3s ease;
+    }
+
+    .color-btn.active, .size-btn.active {
+        background-color: #0056b3;
+        color: #fff;
+        box-shadow: 0 0 10px rgba(0, 86, 179, 0.7), 0 0 20px rgba(0, 86, 179, 0.5);
+    }
+
+    .product-detail-image {
+        text-align: center;
+    }
+
+    .product-detail-info {
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .price {
+        font-size: 24px;
+        color: #007bff;
+        margin-bottom: 20px;
+    }
+
+    .quantity {
+        font-size: 20px;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .color-options, .size-options {
+        margin-bottom: 20px;
+    }
+
+    .btn-dark {
+        margin-right: 5px;
+        border-radius: 5px;
+    }
+
+    .actions {
+        margin-top: 20px;
+    }
+
+    #add-to-cart-btn, #buy-now-btn {
+        width: 100%;
+    }
+
+    #buy-now-btn {
+        margin-top: 15px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+    }
+
+    #buy-now-btn:hover {
+        background-color: #218838;
+        color: white;
+    }
+
+    .thumb-image {
+        transition: transform 0.2s;
+    }
+
+    .thumb-image:hover {
+            transform: scale(1.1);
+            border: 2px solid #007bff;
+    }
+
+    #anh {
+        padding: 0.25rem;
+        background-color: #f8f9fa; 
+        border: 1px solid #dee2e6; 
+        border-radius: 0.375rem; 
+    }
+
+    h4 {
+        font-weight: 600; 
+        margin-bottom: 15px; 
+    }
+
+    .d-flex {
+        flex-wrap: wrap; 
+        gap: 10px; 
+    }
+</style>

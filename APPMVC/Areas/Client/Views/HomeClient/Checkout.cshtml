@@ -1,0 +1,475 @@
+﻿@using System.Globalization
+@model AppData.ViewModel.ThanhToanViewModel
+@{
+    ViewData["Title"] = "Checkout";
+    Layout = "~/Areas/Client/Views/Shared/_LayoutClient.cshtml";
+}
+<style>
+    .custom-control-inline {
+        display: inline-flex;
+        align-items: center;
+        margin-right: 1rem;
+    }
+
+    .custom-control-label {
+        display: inline-flex;
+        align-items: center;
+        font-weight: normal;
+        cursor: pointer;
+    }
+
+    .custom-control-label i {
+        font-size: 1.5rem;
+        margin-right: 0.5rem;
+    }
+
+    .custom-control-input:checked ~ .custom-control-label {
+        color: #007bff;
+    }
+
+    .xBNaac {
+        background-image: repeating-linear-gradient(45deg, #6fa6d6, #6fa6d6 33px, transparent 0, transparent 41px, #f18d9b 0, #f18d9b 74px, transparent 0, transparent 82px);
+        background-position-x: -30px;
+        background-size: 116px 3px;
+        height: 3px;
+        width: 100%;
+    }
+
+    .font-extra-bold {
+        font-weight: 700; 
+    }
+</style>
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert" style="padding: 15px; margin-right: 20px; margin-top: 20px; position: fixed; top: 20px; right: 20px; z-index: 1050; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); background-color: #d4edda; border-color: #c3e6cb;">
+        <strong style="font-size:15px; color:red;">@TempData["ErrorMessage"]</strong>
+    </div>
+}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <h2 class="my-4">Thông Tin Giao Hàng</h2>
+            <div class="card">               
+                <div class="xBNaac "></div>
+                <h5 class="ms-3 my-3">Thông Tin Người Nhận</h5>
+                <div class="d-flex">
+                    <div class="d-flex justify-content-center">
+                        <p class="font-extra-bold h6 text-black ms-3 mb-3" id="Dia_chi_12" name="NguoiNhan">@Model.NguoiNhan</p>
+                        <p class="font-extra-bold h6 text-black ms-2 mb-3" id="so_dien_thoai" name="SoDienThoaiNguoiNhan">@Model.SoDienThoai</p>
+                        <p class="font-weight-bold h6 text-black ms-2 mb-3" id="diaChiCuThe" name="diaChiCuThe">@Model.DiaChiCuThe </p>
+                        <a href="javascript:void(0);" class="menu-link ms-5" data-bs-toggle="modal" data-bs-target="#addressListModal" onclick="loadUserAddresses()">
+                            <i class="menu-icon tf-icons bx bx-map"></i>
+                            <div data-i18n="Address">Thay Đổi</div>
+                        </a>
+                    </div>
+                    
+                </div>
+            </div>
+         
+
+            <div class="modal fade" id="addressListModal" tabindex="-1" aria-labelledby="addressListModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addressListModalLabel">Danh Sách Địa Chỉ</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="addressList">
+                                <!-- Danh sách địa chỉ sẽ được tải ở đây -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h3 class="my-4">Địa Giao Hàng</h3>
+            <div class="card">     
+                <div class="ms-3">
+                    <div class="d-flex mb-4 mt-4" >
+                        <div class="form-group mb-1 me-5">
+                            <label>Họ tên</label>
+                            <input class="form-control" asp-for="NguoiNhan" readonly />
+                            <span asp-validation-for="NguoiNhan"></span>
+                        </div>
+
+                        <div class="form-group mb-1 ms-5">
+                            <label>Số điện thoại</label>
+                            <input class="form-control" asp-for="SoDienThoai" readonly />
+                            <span asp-validation-for="SoDienThoai"></span>
+                        </div>
+                    </div>
+                   
+                    <div class="d-flex mt-5 mb-2">
+                        <div class="form-group mb-1 me-5">
+                            <label>Tỉnh/Thành phố</label>
+                            <input type="text" class="form-control" id="province" name="ProvinceName" value="@Model.ProvinceName " readonly/>
+                        </div>
+                        <div class="form-group mb-3 ms-5 me-5">
+                            <label>Quận/Huyện</label>                     
+                            <input type="text" class="form-control" id="district" name="DistrictName" value="@Model.DistrictName" readonly/>
+                        </div>
+                        <div class="form-group mb-3 ms-4">
+                            <label>Phường/Xã</label>
+                            <input type="text" class="form-control" id="ward" name="WardName" value="@Model.WardName" readonly />
+                        </div>                       
+                    </div>  
+                    
+                </div>              
+            </div>
+            <form asp-action="ProcessCheckout" method="post">
+                <div class="form-group" hidden>
+                    <label for="Dia_chi_12">Họ và tên</label>
+                    <input type="text" class="form-control" id="Dia_chi_12" name="NguoiNhan" value="@Model.NguoiNhan" required hidden />
+                </div>
+                <div class="form-group" hidden>
+                    <label for="so_dien_thoai">Số điện thoại</label>
+                    <input type="tel" class="form-control" id="so_dien_thoai" name="SoDienThoaiNguoiNhan" value="@Model.SoDienThoai" required hidden />
+                </div>
+                <div class="form-group">
+                    <label for="province" hidden>Tỉnh/Thành phố</label>
+                    <input type="text" class="form-control" id="province" name="ProvinceName" value="@Model.ProvinceName" hidden />
+                </div>
+                <div class="form-group" hidden>
+                    <label for="district">Quận/Huyện</label>
+                    <input type="text" class="form-control" id="district" name="DistrictName" value="@Model.DistrictName" readonly hidden />
+                </div>
+                <div class="form-group" hidden>
+                    <label for="ward">Phường/Xã</label>
+                    <input type="text" class="form-control" id="ward" name="WardName" value="@Model.WardName" readonly hidden />
+                </div>
+                <div class="form-group" hidden>
+                    <label for="diaChiCuThe">Địa Chỉ Cụ Thể/Xã</label>
+                    <input type="text" class="form-control" id="diaChiCuThe" name="diaChiCuThe" value="@Model.DiaChiCuThe" readonly hidden />
+                </div>
+                <div class="form-group" hidden>
+                    <label for="diaChiCuThe">Địa Chỉ Cụ Thể/Xã</label>
+                    <input type="text" class="form-control" id="diaChiCuThe" name="diaChiCuThe" value="@Model.DiaChiCuThe" readonly hidden />
+                </div>
+                <div class="form-group">
+                    <h4 class="my-3">Phương thức thanh toán</h4>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="thanh_toan_khi_nhan_hang" name="PaymentMethod" value="cash_on_delivery" class="custom-control-input"
+                        @(Model.PaymentMethod == "cash_on_delivery" ? "checked" : "")>
+                        <label class="custom-control-label" for="thanh_toan_khi_nhan_hang">
+                            <i class="fas fa-money-bill-alt"></i> Thanh toán khi nhận hàng
+                        </label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="thanh_toan_ngay" name="PaymentMethod" value="online_payment" class="custom-control-input"
+                        @(Model.PaymentMethod == "online_payment" ? "checked" : "")>
+                        <label class="custom-control-label" for="thanh_toan_ngay">
+                            <i class="fas fa-credit-card"></i> Thanh toán ngay
+                        </label>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-primary" onclick="confirmCheckout()">Hoàn thành đặt hàng</button>
+
+            </form>           
+        </div>
+
+        
+        <div class="col-md-4">
+            <h2 class="my-4">Đơn hàng</h2>
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="my-3">Thông tin đơn hàng</h4>
+                    @if (Model.CartItems != null && Model.CartItems.Any())
+                    {
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Sản phẩm</th>
+                                    <th>Số lượng</th>
+                                    <th>Giá</th>
+                                    <th hidden>ID Sản phẩm Chi tiết</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.CartItems)
+                                {
+                                    <tr>
+                                        <td>@item.ProductName</td>
+                                        <td>@item.Quantity</td>
+                                        <td>
+                                            @if (item.OriginalPrice > item.Price)
+                                            {
+                                                <span style="text-decoration: line-through;">
+                                                    @(item.OriginalPrice.ToString("N0", new CultureInfo("vi-VN")) + " VND")
+                                                </span>
+                                                <br />
+                                            }
+                                            @(item.Price.ToString("N0", new CultureInfo("vi-VN")) + " VND")
+                                        </td>
+                                        <td hidden>@item.IdSanPhamChiTiet</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <div class="form-group">
+                            <label for="tong_so_tien">Tổng số tiền</label>
+                            <input type="text" class="form-control" id="tong_so_tien"
+                                   value="@(Model.CartItems.Sum(i => i.Price * i.Quantity).ToString(new CultureInfo("vi-VN")) + " VND")" readonly />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phi_van_chuyen">Phí vận chuyển</label>
+                            <input type="text" class="form-control" id="phi_van_chuyen"
+                                   value="@(Model.PhiVanChuyen.ToString(new CultureInfo("vi-VN")) + " VND")" readonly />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tong_tien">Tổng tiền hóa đơn</label>
+                            <input type="text" class="form-control" id="tong_tien"
+                                   value="@((Model.CartItems.Sum(i => i.Price * i.Quantity) + Model.PhiVanChuyen)
+           .ToString(new CultureInfo("vi-VN")) + " VND")" readonly />
+                        </div>
+
+                        <div class="card mt-3">
+                            <div class="card-header">
+                                <h4 class="mb-0">Áp Dụng Voucher</h4>
+                            </div>
+                            <div class="card-body">
+                                @if (ViewBag.AvailableVouchers != null && ViewBag.AvailableVouchers.Count > 0)
+                                {
+                                    <div class="voucher-list">
+                                        @foreach (var voucher in ViewBag.AvailableVouchers)
+                                        {
+                                            <div class="voucher-item border mb-2 p-2">
+                                                <div class="form-check">
+                                                    <input class="form-check-input voucher-radio"
+                                                           type="radio"
+                                                           name="SelectedVoucher"
+                                                           id="voucher_@(voucher.VoucherId)"
+                                                           value="@voucher.VoucherId"
+                                                           data-type="@voucher.LoaiGiamGia"
+                                                           data-value="@voucher.GiaTriGiam"
+                                                           data-max-value="@(voucher.SoTienToiDa ?? 0)"
+                                                           data-min-order="@(voucher.GiaTriDonHangToiThieu ?? 0)">
+                                                    <label class="form-check-label w-100" for="voucher_@(voucher.VoucherId)">
+                                                        <div class="d-flex justify-content-between">
+                                                            <div>
+                                                                <strong>@voucher.MaVoucher</strong>
+                                                                <p class="text-muted mb-0">@voucher.MoTaVoucher</p>
+                                                            </div>
+                                                            <div class="text-right">
+                                                                @if (voucher.LoaiGiamGia == 1)
+                                                                {
+                                                                    <span class="badge bg-primary">Giảm @(voucher.GiaTriGiam)%</span>
+                                                                    @if (voucher.SoTienToiDa > 0)
+                                                                    {
+                                                                        <small class="d-block text-muted">Tối đa @(voucher.SoTienToiDa.ToString("N0"))đ</small>
+                                                                    }
+
+                                                                }
+                                                                else
+                                                                {
+                                                                    <span class="badge bg-success">Giảm @(voucher.GiaTriGiam.ToString("N0"))đ</span>
+                                                                }
+                                                                @if (voucher.GiaTriDonHangToiThieu > 0)
+                                                                {
+                                                                    <small class="d-block text-muted">Áp dụng cho đơn hàng từ @(voucher.GiaTriDonHangToiThieu.ToString("N0"))đ</small>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                                else
+                                {
+                                    <p class="text-muted">Không có voucher khả dụng</p>
+                                }
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <p>Giỏ hàng của bạn hiện đang trống.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function confirmCheckout() {
+           const totalBill = parseFloat(document.getElementById('tong_tien').value.replace(/[^0-9.-]+/g, "")) || 0;
+
+           const confirmationMessage = `Bạn có chắc chắn muốn thanh toán tổng cộng ${formatCurrency(totalBill)}?`;
+           if (confirm(confirmationMessage)) {
+               // Submit the form if the user confirms
+               document.querySelector('form').submit();
+           }
+       }
+    // Define the formatCurrency function in the global scope
+    
+
+    // Load user addresses function
+    function loadUserAddresses() {
+        $.ajax({
+            url: '@Url.Action("GetUserAddresses", "HomeClient", new { area = "Client" })',
+            type: 'GET',
+            success: function(data) {
+                $('#addressList').html(data);
+            },
+            error: function() {
+                $('#addressList').html('<p>Không thể tải danh sách địa chỉ.</p>');
+            }
+        });
+    }
+
+    // Load districts when province changes
+    $("#ProvinceId").change(function() {
+        var provinceId = $(this).val();
+        console.log("ProvinceId:", provinceId);
+        $.get('/Client/HomeClient/GetDistricts', { provinceId: provinceId }, function(data) {
+            console.log(data);
+            $("#DistrictId").empty().append('<option value="">Chọn quận/huyện</option>');
+            if (Array.isArray(data)) {
+                $.each(data, function(i, item) {
+                    $("#DistrictId").append('<option value="' + item.districtId + '">' + item.districtName + '</option>');
+                });
+            } else {
+                $("#DistrictId").append('<option value="">Không có quận/huyện</option>');
+            }
+            var selectedProvince = $("#ProvinceId option:selected").text();
+            $("#ProvinceName").val(selectedProvince);
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error("Error: " + textStatus, errorThrown);
+            alert("Có lỗi khi tải dữ liệu quận/huyện!");
+        });
+    });
+
+    // Load wards when district changes
+    $("#DistrictId").change(function() {
+        var districtId = $(this).val();
+        console.log("DistrictId:", districtId);
+        $.get('@Url.Action("GetWards", "HomeClient", new { area = "Client" })?districtId=' + districtId, function(data) {
+            console.log(data);
+            $("#WardId").empty().append('<option value="">Chọn phường/xã</option>');
+            $.each(data, function(i, item) {
+                $("#WardId").append('<option value="' + item.wardId + '">' + item.wardName + '</option>');
+            });
+            // Set DistrictName
+            var selectedDistrict = $("#DistrictId option:selected").text();
+            $("#DistrictName").val(selectedDistrict);
+        });
+    });
+
+    // When changing Ward, set WardName
+    $("#WardId").change(function() {
+        var wardName = $("#WardId option:selected").text();
+        $("#WardName").val(wardName);
+    });
+
+    let lastSelectedVoucher = null; // Variable to store the last selected voucher
+
+    $('.voucher-radio').on('click', function() {
+        var voucherId = $(this).val();
+        var shippingFee = parseFloat($('#phi_van_chuyen').val().replace(/[^0-9.-]+/g, "")) || 0; // Get shipping fee
+        var originalTotal = parseFloat($('#tong_so_tien').val().replace(/[^0-9.-]+/g, "")) || 0; // Get original total amount
+
+        // If the same voucher is clicked again
+        if (lastSelectedVoucher === voucherId) {
+            // Uncheck radio button
+            $(this).prop('checked', false);
+            lastSelectedVoucher = null; // Reset state variable
+            $('#discount-row').remove(); // Remove discount info
+            $('input[name="SelectedVoucherId"]').remove();
+            $('input[name="DiscountAmount"]').remove();
+
+            // Send request to clear voucher from session
+            $.ajax({
+                url: '@Url.Action("ClearVoucherSession", "HomeClient", new { area = "Client" })',
+                type: 'POST',
+                success: function(response) {
+                    if (!response.success) {
+                        alert(response.message); // Show error message if any
+                    } else {
+                        // Reset total amount
+                        resetTotalAmount(shippingFee); // Reset total amount
+                    }
+                },
+                error: function() {
+                    alert('An error occurred while clearing the voucher from session.');
+                }
+            });
+        } else {
+            // If a new voucher is selected
+            lastSelectedVoucher = voucherId; // Update last selected voucher
+
+            $.ajax({
+                url: '@Url.Action("ApplyVoucher", "HomeClient", new { area = "Client" })',
+                type: 'POST',
+                data: { voucherId: voucherId, shippingFee: shippingFee },
+                success: function(response) {
+                    // Format the discount values
+                    response.totalAfterDiscount = formatCurrency(response.totalAfterDiscount);
+                    response.discountAmount = formatCurrency(response.discountAmount);
+
+                    // If response is successful
+                    if (response.success) {
+                        // Remove previous vouchers
+                        $('#discount-row').remove();
+                        $('input[name="SelectedVoucherId"]').remove();
+                        $('input[name="DiscountAmount"]').remove();
+
+                        // Show discount info
+                        $('#tong_so_tien').closest('.form-group').after(`
+                            <div id="discount-row" class="form-group">
+                                <label>Giảm giá Voucher</label>
+                                <input type="text" class="form-control" value="${response.discountAmount}" readonly />
+                            </div>
+                        `);
+
+                        // Update total amount with the voucher
+                        $('#tong_tien').val(response.totalAfterDiscount);
+
+                        // Add hidden fields for voucher info
+                        $('form').append(`
+                            <input type="hidden" name="SelectedVoucherId" value="${response.voucherId}" />
+                            <input type="hidden" name="DiscountAmount" value="${response.discountAmount.replace(/[^0-9.-]+/g, "")}" />
+                        `);
+                    } else {
+                        // If not successful
+                        alert(response.message); // Show error message
+                    }
+                },
+                error: function() {
+                    alert('An error occurred. Please try again.');
+                }
+            });
+        }
+    });
+
+    // Function to reset total amount
+    function resetTotalAmount(shippingFee) {
+        var originalTotal = parseFloat($('#tong_so_tien').val().replace(/[^0-9.-]+/g, "")) || 0; // Get original total amount
+        var newTotal = originalTotal + shippingFee; // Add shipping fee
+        $('#tong_tien').val(formatCurrency(newTotal)); // Update total amount
+    }
+
+    // Function to format currency
+    function formatCurrency(value) {
+        if (value !== undefined && value !== null) {
+            return value.toLocaleString('vi-VN') + ' VND';
+        }
+        return '0 VND'; // Default return for undefined or null
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get total amounts
+        const totalAmount = parseFloat(document.getElementById('tong_so_tien').value.replace(/[^0-9.-]+/g, "")) || 0;
+        const shippingFee = parseFloat(document.getElementById('phi_van_chuyen').value.replace(/[^0-9.-]+/g, "")) || 0;
+        const totalBill = totalAmount + shippingFee;
+
+        // Format and update values
+        document.getElementById('tong_so_tien').value = formatCurrency(totalAmount);
+        document.getElementById('phi_van_chuyen').value = formatCurrency(shippingFee); // Ensure shipping fee is formatted
+        document.getElementById('tong_tien').value = formatCurrency(totalBill);
+    });
+</script>

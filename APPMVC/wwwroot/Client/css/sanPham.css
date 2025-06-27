@@ -1,0 +1,190 @@
+﻿body {
+    font-family: Arial, sans-serif;
+}
+
+.search-form {
+    display: flex;
+    justify-content: left;
+    margin: 20px 0 20px 20px;
+}
+
+    .search-form input {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: 300px;
+        margin-right: 10px;
+    }
+
+    .search-form button {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+        .search-form button:hover {
+            background-color: #0056b3;
+        }
+
+.product-card {
+    background-color: #fff;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    height: 100%;
+    min-height: 350px;
+}
+
+    .product-card:hover {
+        transform: translateY(-5px);
+    }
+
+.product-image {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+    .product-image img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+.discount-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: red;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.product-colors {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.color-item {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin: 0 5px;
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+    .color-item:hover {
+        transform: scale(1.2);
+    }
+
+.product-info {
+    padding: 15px;
+    text-align: center;
+}
+
+.product-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.product-price {
+    font-size: 15px;
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+.modal {
+    display: none; /* Ẩn modal mặc định */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.7); /* Nền mờ tối hơn */
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 500px;
+    margin: auto;
+    text-align: center;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+    .close:hover,
+    .close:focus {
+        color: black;
+    }
+
+.modal-icon {
+    font-size: 50px;
+    color: #28a745; /* Màu xanh thành công */
+}
+
+.modal-message {
+    margin: 20px 0;
+    font-size: 18px;
+}
+
+.modal button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+    .modal button:hover {
+        background-color: #0056b3;
+    }
+
+.alert {
+    padding: 1rem; /* Kích thước padding cho alert */
+}
+
+.alert-image {
+    max-width: 500px; /* Giảm kích thước hình ảnh */
+    height: auto; /* Giữ tỷ lệ hình ảnh */
+    margin-bottom: 0.5rem; /* Khoảng cách giữa hình ảnh và văn bản */
+}
+
+.alert-message {
+    font-size: 16px; /* Kích thước font chữ */
+}

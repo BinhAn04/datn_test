@@ -1,0 +1,354 @@
+﻿@model AppData.ViewModel.HoaDonChiTietViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<style>
+    .quantity-container {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0;
+    }
+
+        .quantity-container .btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            margin-bottom: 20px;
+        }
+
+    .quantity-amount {
+        width: 60px;
+        height: 40px;
+        text-align: center;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        outline: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .modal-dialog {
+        max-width: 80%;
+        width: auto;
+    }
+
+    .modal-body {
+        padding: 1rem;
+    }
+
+    .table {
+        width: 100%;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f4f7fa;
+        color: #333;
+    }
+
+    .content-wrapper {
+        padding: 20px;
+    }
+
+    h4 {
+        color: #495057;
+        margin-bottom: 15px;
+    }
+
+    .table {
+        margin-top: 20px;
+        border-collapse: collapse;
+    }
+
+        .table th, .table td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #dee2e6;
+        }
+
+        .table th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+    .btn {
+        margin-top: 20px;
+    }
+
+    #customerSearch {
+        height: calc(2.25rem + 2px); /* Match the button height */
+    }
+
+    #btnAddCustomer {
+        height: calc(2.25rem + 2px); /* Match the input height */
+    }
+
+    .product-image {
+        width: 70px; /* Set the desired width */
+        height: 70px; /* Set the desired height */
+        object-fit: cover; /* Ensure the image covers the area without distortion */
+    }
+
+    .discount-badge {
+        position: absolute;
+        top: 1px; /* Adjust as needed */
+        right: 10px; /* Adjust as needed */
+        background-color: rgba(255, 0, 0, 0.8); /* Semi-transparent red */
+        color: white;
+        padding: 5px 10px; /* Padding for better appearance */
+        border-radius: 5px; /* Rounded corners */
+        font-weight: bold;
+        font-size: 0.9em; /* Slightly smaller font size */
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+    }
+
+    .modal-row {
+        display: flex; /* Sử dụng Flexbox để chia thành 2 cột */
+        justify-content: space-between; /* Đặt khoảng cách giữa các phần */
+        margin-top: 20px; /* Khoảng cách từ đầu modal */
+    }
+
+    .order-info, .qr-code {
+        flex: 1; /* Mỗi phần chiếm một nửa không gian */
+        padding: 10px; /* Đệm cho các phần */
+    }
+
+    .qr-code {
+        text-align: center; /* Căn giữa mã QR */
+    }
+
+        .qr-code img {
+            max-width: 100%; /* Đảm bảo ảnh không vượt quá chiều rộng của phần */
+            height: auto; /* Giữ tỷ lệ khung hình */
+        }
+</style>
+
+<div class="content-wrapper">
+    <h4>Danh Sách Sản Phẩm</h4>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
+        Thêm Sản Phẩm
+    </button>
+
+    <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true" data-idhoadon="@Model.HoaDon.IdHoaDon">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addProductModalLabel">Danh Sách Sản Phẩm Chi Tiết</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="productDetailList">
+                        @await Html.PartialAsync("ListSanPhamChiTiet", (Model.SanPhamChiTiets, Model.HoaDon.IdHoaDon))
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Mã Sản Phẩm</th>
+                <th>Tên Sản Phẩm</th>
+                <th>Số Lượng</th>
+                <th>Giá</th>
+                <th>Hình Ảnh</th>
+                <th>Màu Sắc</th>
+                <th>Kích Cỡ</th>
+                <th>Hành Động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.SanPhamChiTiets != null && Model.SanPhamChiTiets.Any())
+            {
+                foreach (var sanPham in Model.SanPhamChiTiets)
+                {
+                    string rowStyle = string.Empty;
+                    string statusMessage = string.Empty;
+
+                    // Kiểm tra KichHoat và HoatKich
+                    if (sanPham.KichHoat != 1 || sanPham.HoatKich != 1)
+                    {
+                        rowStyle = "background-color: #d6d6d6;"; // Màu xám
+                        statusMessage = "Sản phẩm đã ngừng hoạt động"; // Thông điệp hiển thị
+                    }
+                    else if (sanPham.SoLuong == 0)
+                    {
+                        rowStyle = "background-color: #d6d6d6;"; // Màu xám nếu không có hàng
+                        statusMessage = "Đã hết hàng"; // Thông điệp hiển thị
+                    }
+
+                    <tr style="@rowStyle">
+                        <td>@sanPham.MaSanPham</td>
+                        <td>@sanPham.ProductName</td>
+                        <td>
+                            <div class="quantity-container">
+                                @if (sanPham.SoLuong > 0 && sanPham.KichHoat == 1 && sanPham.HoatKich == 1)
+                                {
+                                    <button class="btn btn-outline-secondary decrease" type="button" aria-label="Decrease Quantity" data-id="@sanPham.IdSanPhamChiTiet">−</button>
+                                    <input type="number" name="quantities[@sanPham.IdSanPhamChiTiet]"
+                                           class="form-control quantity-amount"
+                                           value="@sanPham.Quantity"
+                                           min="1"
+                                           aria-label="Quantity"
+                                           data-id="@sanPham.IdSanPhamChiTiet"
+                                           data-original-quantity="@sanPham.SoLuong" />
+                                    <button class="btn btn-outline-secondary increase" type="button" aria-label="Increase Quantity" data-id="@sanPham.IdSanPhamChiTiet">+</button>
+                                }
+                                else
+                                {
+                                    <span style="color: red;">@statusMessage</span>
+                                    <input type="hidden" value="0" />
+                                }
+                            </div>
+                        </td>
+                        <td>
+                            @if (sanPham.GiaDaGiam.HasValue && sanPham.GiaDaGiam < sanPham.Price)
+                            {
+                                <span style="text-decoration: line-through; color: gray;">@sanPham.Price.ToString("#,0") VNĐ</span>
+                                <span style="color: red; font-weight: bold;">@sanPham.GiaDaGiam.Value.ToString("#,0") VNĐ</span>
+                            }
+                            else
+                            {
+                                <span>@sanPham.Price.ToString("#,0") VNĐ</span>
+                            }
+                        </td>
+                        <td>
+                            <div style="position: relative;">
+                                @if (sanPham.HinhAnhs != null && sanPham.HinhAnhs.Any())
+                                {
+                                    var hinhAnh = sanPham.HinhAnhs.First();
+                                    var base64String = Convert.ToBase64String(hinhAnh.DataHinhAnh);
+                                    var imageUrl = $"data:{hinhAnh.LoaiFileHinhAnh};base64,{base64String}";
+                                    <img src="@imageUrl" alt="Hình ảnh sản phẩm" class="product-image" loading="lazy" />
+                                }
+                                else
+                                {
+                                    <span>Không có hình ảnh</span>
+                                }
+
+                                @if (sanPham.PhanTramGiam.HasValue)
+                                {
+                                    <span class="discount-badge">
+                                        Giảm @sanPham.PhanTramGiam %
+                                    </span>
+                                }
+                            </div>
+                        </td>
+                        <td>
+                            @if (sanPham.MauSac != null && sanPham.MauSac.Any())
+                            {
+                                @string.Join(", ", sanPham.MauSac)
+                            }
+                            else
+                            {
+                                <span>Không có màu sắc</span>
+                            }
+                        </td>
+                        <td>
+                            @if (sanPham.KichCo != null && sanPham.KichCo.Any())
+                            {
+                                @string.Join(", ", sanPham.KichCo)
+                            }
+                            else
+                            {
+                                <span>Không có kích cỡ</span>
+                            }
+                        </td>
+                        <td>
+                            @if (sanPham.Quantity > 0)
+                            {
+                                <button class="btn btn-danger"
+                                        onclick="deleteProduct('@sanPham.IdHoaDonChiTiet', '@Model.HoaDon.IdHoaDon')">
+                                    Xóa
+                                </button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-danger" disabled>
+                                    Xóa
+                                </button>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="8">Không có sản phẩm nào.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <br />
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>Khách Hàng</h4>
+        <div class="d-flex align-items-center">
+            <input type="text" id="customerSearch" class="form-control me-2" placeholder="Tìm kiếm theo SDT hoặc Email" style="width: 250px; margin-top:19px" />
+            <input type="hidden" id="invoiceId" value="@Model.HoaDon.IdHoaDon" />
+            <button class="btn btn-secondary ms-2" id="btnSearchCustomer">Tìm Kiếm</button>
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="row">
+        <div class="col-md-6">
+            <dl class="row" id="customerDetails">
+                <dt class="col-sm-4">Tên Khách Hàng</dt>
+                <dd class="col-sm-8" id="customerName">Khách Lẻ</dd>
+            </dl>
+        </div>
+        <div class="col-md-6 details-card">
+            <dl class="row">
+                <dt class="col-sm-6">Tổng Tiền Hàng</dt>
+                <dd class="col-sm-6">@Model.DonGia.ToString("#,0") VNĐ</dd>
+                <dt class="col-sm-6">Giảm Giá</dt>
+                <dd class="col-sm-6">0 VNĐ</dd>
+                <dt class="col-sm-6">Tổng Tiền</dt>
+                <dd class="col-sm-6" id="totalAmount" data-value="@Model.TongTien">@Model.TongTien.ToString("#,0") VNĐ</dd>
+                <dt class="col-sm-6" id="amountGivenLabel">Tiền khách đưa</dt>
+                <dd class="col-sm-6" id="amountGiven">
+                    <input type="number" id="amountGivenInput" placeholder="Nhập số tiền" value="@Model.TienKhachDua" />
+                </dd>
+                <dt class="col-sm-6">Phương Thức Thanh Toán</dt>
+                <dd class="col-sm-6">
+                    <div>
+                        <label>
+                            <input type="radio" name="paymentMethod" value="cash" checked /> Tiền Mặt
+                        </label>
+                        <label>
+                            <input type="radio" name="paymentMethod" value="bankTransfer" /> Chuyển Khoản
+                        </label>
+                    </div>
+                </dd>
+            </dl>
+
+            <div class="text-right mt-3">
+                <form id="paymentForm" action="@Url.Action("XacNhanThanhToan", "BanHangTQ", new { area = "Admin" })" method="post">
+                    <input type="hidden" name="idHoaDon" value="@Model.HoaDon.IdHoaDon" />
+                    <input type="hidden" id="customerId" name="idKhachHang" />
+                    <button id="paymentButton" class="btn btn-success" type="button" onclick="handlePayment()">Xác Nhận Thanh Toán</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <br />
+    <a asp-action="Index" class="btn btn-primary">Quay lại danh sách</a>
+
+    
+</div>
