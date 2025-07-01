@@ -4,6 +4,7 @@
     Layout = "~/Areas/Client/Views/Shared/_LayoutDnDK.cshtml";
 }
 
+<
 <style>
     body {
         font-family: Arial, sans-serif;
@@ -21,7 +22,7 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background-image: url('https://www.elleman.vn/app/uploads/2022/03/29/212830/sneakers-giay-nam-2022.jpg');
+        background: linear-gradient(135deg, #d3e3f5 0%, #a3c1e5 100%);
         background-size: cover;
         background-position: center;
         z-index: -1;
@@ -48,7 +49,7 @@
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         padding: 30px;
         width: 320px;
-        height: 60vh;
+        height: 400px;
     }
 
     .cont_form_login, .cont_form_sign_up {
@@ -69,7 +70,7 @@
     }
 
     .form-control {
-        width: 100%;
+        width: 280px;
         padding: 10px;
         border: 1px solid #ddd;
         border-radius: 4px;
@@ -101,9 +102,25 @@
         color: white;
     }
 
-        .btn_login:hover {
-            background-color: #0056b3;
-        }
+    .btn {
+        background-color: #26c6da;
+        border: none;
+        padding: 10px;
+        width: 200px;
+        border-radius: 3px;
+        box-shadow: 1px 5px 20px -5px rgba(0, 0, 0, 0.4);
+        color: #fff;
+        margin-top: 10px;
+        cursor: pointer;
+    }
+
+    .btn_login:hover {
+        background-color: #0056b3;
+    }
+
+    .btn:hover {
+        background-color: #417b82;
+    }
 
     .btn_sign_up {
         background-color: #28a745;
@@ -119,54 +136,129 @@
         font-size: 24px;
         color: #666;
     }
+
+    .back-home {
+        text-decoration: none;
+    }
+
+    .cont_form_login > h2 {
+        margin-top: 80px !important;
+        font-weight: 400;
+        color: #757575;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    input[type="email"],
+    input[type="password"],
+    input[type="text"] {
+        width: 280px;
+        padding: 12px 40px 12px 10px;
+        font-size: 16px;
+        background: transparent;
+        border: none;
+        border-bottom: 2px solid #bbb;
+        outline: none;
+        color: #333;
+    }
+
+    input::placeholder {
+        color: #aaa;
+    }
+
+    .eye-icon {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        font-size: 18px;
+    }
+
+    .cotn_principal {
+        position: absolute;
+        width: 100%;
+        display: flex;
+        height: 100%;
+        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#cfd8dc+0,607d8b+100,b0bec5+100 */
+        background: #cfd8dc; /* Old browsers */
+        background: -moz-linear-gradient( -45deg, #ffffff 0%, #000000 100%, #000000 100% ); /* FF3.6-15 */
+        background: -webkit-linear-gradient( -45deg, #ffffff 0%, #000000 100%, #000000 100% ); /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient( 135deg, #ffffff 0%, #000000 100%, #000000 100% ); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cfd8dc', endColorstr='#b0bec5',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+    }
 </style>
 
 <div class="background"></div>
 <div class="cont_forms">
     <div class="cont_form_login" id="loginForm" style="display:block;">
-        <a href="@Url.Action("Index", "HomeClient", new { area = "Client" })"><i class="material-icons">&#xE5C4;</i></a>
+        <a class="back-home" href="@Url.Action("Index", "HomeClient", new { area = "Client" })">🔙</a>
         <h2>LOGIN</h2>
         <form asp-action="Login" method="post">
             <div class="form-group">
-                <label asp-for="Email"></label>
-                <input asp-for="Email" class="form-control" />
+                <input asp-for="Email" type="email" placeholder="Nhập Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label>Mật Khẩu</label>
-                <input asp-for="MatKhau" type="password" class="form-control" />
+                <input asp-for="MatKhau" id="password" type="password" placeholder="Nhập Mật Khẩu" class="form-control">
+                <span class="eye-icon" onclick="togglePassword()">👁️</span>
                 <span asp-validation-for="MatKhau" class="text-danger"></span>
             </div>
-            <button type="submit" class="btn_login" >LOGIN</button>
+            <button type="submit" class="btn_login">LOGIN</button>
             <button type="button" class="btn" onclick="location.href='@Url.Action("ForgotPassword", "KhachHang")'">Quên Mật Khẩu</button>
         </form>
     </div>
 
     <div class="cont_form_sign_up" id="signUpForm" style="display:none;">
-        <a href="@Url.Action("Index", "HomeClient", new { area = "Client" })"><i class="material-icons">&#xE5C4;</i></a>
+        <a class="back-home" href="@Url.Action("Index", "HomeClient", new { area = "Client" })">🔙</a>
         <h2>SIGN UP</h2>
         <form asp-action="Register" method="post">
             <div class="form-group">
-                <label>Họ Tên</label>
-                <input asp-for="HoTen" class="form-control" />
+                <input asp-for="HoTen" placeholder="Nhập Họ Và Tên" class="form-control" />
                 <span asp-validation-for="HoTen" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label>Số Điện Thoại</label>
-                <input asp-for="SoDienThoai" class="form-control" />
+                <input asp-for="SoDienThoai" placeholder="Nhập Số Điện Thoại" class="form-control" />
                 <span asp-validation-for="SoDienThoai" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label>Email</label>
-                <input asp-for="Email" class="form-control" />
+                <input asp-for="Email" placeholder="Nhập Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label>Mật Khẩu</label>
-                <input asp-for="MatKhau" type="password" class="form-control" />
+                <input asp-for="MatKhau" placeholder="Nhập Mật Khẩu" id="signupPassword" type="password" class="form-control" />
+                <span class="eye-icon" onclick="toggleSignupPassword()">👁️</span>
                 <span asp-validation-for="MatKhau" class="text-danger"></span>
             </div>
             <button type="submit" class="btn_sign_up">SIGN UP</button>
         </form>
     </div>
 </div>
+
+<script>
+    function togglePassword() {
+        const input = document.getElementById("password");
+        const icon = document.querySelector(".eye-icon");
+        if (input.type === "password") {
+            input.type = "text";
+            icon.textContent = "🙈"; // đổi biểu tượng nếu muốn
+        } else {
+            input.type = "password";
+            icon.textContent = "👁️";
+        }
+    }
+    function toggleSignupPassword() {
+        const input = document.getElementById("signupPassword");
+        const icon = input.nextElementSibling;
+        if (input.type === "password") {
+            input.type = "text";
+            icon.textContent = "🙈";
+        } else {
+            input.type = "password";
+            icon.textContent = "👁️";
+        }
+    }
+</script>
